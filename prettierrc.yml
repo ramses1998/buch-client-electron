@@ -1,0 +1,5 @@
+singleQuote: false
+tabWidth: 4
+trailingComma: all
+overrides:
+  - files: ['*.ts', '*.mts', '*.js', '*.mjs', '*.cjs']

@@ -1,6 +1,22 @@
+// eslint-disable-next-line eslint-comments/disable-enable-pair
+/* eslint-disable @typescript-eslint/no-unsafe-assignment */
 import "@/styles/globals.css";
-import type { AppProps } from "next/app";
+import { LayoutComponent } from "@/components/LayoutComponent";
+import React, { ComponentType } from "react";
 
-export default function App({ Component, pageProps }: AppProps) {
-  return <Component {...pageProps} />;
-}
+type Props = {
+    Component: ComponentType;
+    pageProps: any;
+};
+
+const App: React.FC<Props> = (props: Props) => {
+    const { Component, pageProps } = props;
+
+    return (
+        <LayoutComponent>
+            <Component {...pageProps} />
+        </LayoutComponent>
+    );
+};
+
+export default App;
