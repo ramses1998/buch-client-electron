@@ -9,13 +9,13 @@ type Props = {
     value: ReactNode;
 };
 
-export const PriceBadgeComponent: React.FC<Props> = (props) => {
+export const CustomBadgeComponent: React.FC<Props> = (props) => {
     const { value } = props;
     const theme = useTheme();
 
     return (
         <StyledChip variant="outlined" color="primary" theme={theme}>
-            {`${value} €`}
+            {value}
         </StyledChip>
     );
 };

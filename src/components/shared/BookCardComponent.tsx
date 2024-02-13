@@ -1,6 +1,6 @@
 import React from "react";
 import { Buch } from "@/api/buch";
-import { PriceBadgeComponent } from "@/components/shared/PriceBadgeComponent";
+import { CustomBadgeComponent } from "@/components/shared/CustomBadgeComponent";
 import { Box, Card, Typography } from "@mui/joy";
 import styled from "styled-components";
 import { RatingComponent } from "@/components/shared/RatingComponent";
@@ -19,7 +19,7 @@ export const BookCardComponent: React.FC<Props> = (props) => {
         <BookCardWrapper>
             <BookCardContainer>
                 <CardContent>
-                    <PriceBadgeComponent value={buch.preis} />
+                    <CustomBadgeComponent value={`${buch.preis} €`} />
                     <BuchTitle>{buch.titel}</BuchTitle>
                 </CardContent>
             </BookCardContainer>

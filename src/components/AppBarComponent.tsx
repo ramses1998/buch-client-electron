@@ -9,12 +9,11 @@ export const AppBarComponent: React.FC = () => {
     return (
         <NavigationBarContainer>
             <Typography component="p" level="title-md">
-                HKA Bücher
+                {process.env.NEXT_PUBLIC_APPLICATION_NAME!}
             </Typography>
             <SearchInputContainer>
                 <SearchInputComponent />
             </SearchInputContainer>
-            <div></div>
         </NavigationBarContainer>
     );
 };

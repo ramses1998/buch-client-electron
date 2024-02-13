@@ -42,7 +42,7 @@ export const SidebarComponent: React.FC = () => {
             label: "Bücher",
             icon: <StyleOutlinedIcon />,
             isActive: router.pathname === "/buecher",
-            onClick: () => alert("In Bearbeitung"),
+            onClick: () => router.push("/buecher"),
         },
         {
             label: "Anlegen",
@@ -119,17 +119,13 @@ const ButtonListComponent: React.FC<PropsButtonList> = (
                     key={`${button.label}${index}`}
                     onClick={button.onClick}
                 >
-                    <ListItemButton
+                    <StyledListItemButton
                         selected={button.isActive}
                         color={button.isActive ? "primary" : "neutral"}
-                        sx={{
-                            borderRadius: "var(--border-medium)",
-                            p: "var(--gap-1) var(--gap-1)",
-                        }}
                     >
                         <ListItemDecorator>{button.icon}</ListItemDecorator>
                         {showLabel ? button.label : null}
-                    </ListItemButton>
+                    </StyledListItemButton>
                 </ListItem>
             ))}
         </List>
@@ -142,4 +138,8 @@ const SidebarContainer = styled(Box)`
     grid-template-rows: 1fr max-content;
     height: 100%;
     padding: 0 var(--gap-1) var(--gap-1) var(--gap-1);
+`;
+const StyledListItemButton = styled(ListItemButton)`
+    border-radius: var(--border-medium);
+    padding: var(--gap-1) var(--gap-1);
 `;
