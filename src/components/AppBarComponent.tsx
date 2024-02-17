@@ -1,7 +1,13 @@
 import React from "react";
 import styled from "styled-components";
 import { Box, Sheet, Typography } from "@mui/joy";
-import { SearchInputComponent } from "@/components/shared/SearchInputComponent";
+import dynamic from "next/dynamic";
+
+// So kann der Hydration-Fehler vermieden werden.
+const SearchInputComponent = dynamic(
+    () => import("../components/shared/SearchInputComponent"),
+    { ssr: false },
+);
 
 const MAX_WIDTH_OF_SEARCH_INPUT_FIELD = "500px";
 

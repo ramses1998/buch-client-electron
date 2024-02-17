@@ -1,13 +1,7 @@
 "use client";
 // eslint-disable-next-line eslint-comments/disable-enable-pair
 /* eslint-disable @typescript-eslint/no-unsafe-assignment */
-import React, {
-    ComponentType,
-    ReactNode,
-    useState,
-    useEffect,
-    ChangeEvent,
-} from "react";
+import React, { ComponentType, ReactNode, useState, ChangeEvent } from "react";
 import { PageWrapperComponent } from "@/components/shared/PageWrapperComponent";
 import styled from "styled-components";
 import { Box, Button, IconButton, ButtonGroup, Input, Stack } from "@mui/joy";
@@ -24,6 +18,7 @@ import { useMediaQuery } from "@/hooks/useMediaQuery";
 import GridViewOutlinedIcon from "@mui/icons-material/GridViewOutlined";
 import ViewListOutlinedIcon from "@mui/icons-material/ViewListOutlined";
 import FormatListBulletedOutlinedIcon from "@mui/icons-material/FormatListBulletedOutlined";
+import { useSearchBooks } from "@/hooks/useSearchBooks";
 
 const BooksPage: React.FC = () => {
     const {
@@ -62,33 +57,13 @@ const BookSearchWrapper: React.FC<PropsBooksSearchWrapper> = (
     props: PropsBooksSearchWrapper,
 ) => {
     const { buecher, children } = props;
-    const [searchResult, setSearchResult] = useState<Buch[]>(buecher);
     const [inputValue, setInputValue] = useState<string>("");
+    const { searchResult } = useSearchBooks({
+        buecher,
+        searchQuery: inputValue,
+    });
 
     const [view, setView] = useState<BookListViewType>("CARD");
-
-    useEffect(() => {
-        setSearchResult(buecher);
-    }, [buecher]);
-
-    useEffect(() => {
-        const searchBuchFromInputString = (
-            queryString: string,
-            buecherList: Buch[],
-        ): Buch[] => {
-            if (buecherList === undefined || queryString === "")
-                return buecherList;
-
-            const queryToLowercase = queryString.toLowerCase();
-
-            return buecherList.filter((item) =>
-                item.titel.toLowerCase().includes(queryToLowercase),
-            );
-        };
-
-        const result = searchBuchFromInputString(inputValue, buecher);
-        setSearchResult(result);
-    }, [buecher, inputValue]);
 
     const handleChange = (event: ChangeEvent<HTMLInputElement>) => {
         event?.preventDefault();

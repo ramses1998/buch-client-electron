@@ -11,7 +11,7 @@ export const LayoutComponent: React.FC<Props> = (props: PropsWithChildren) => {
 
     return (
         <ApplicationMainContainer>
-            <StickyContainer>
+            <StickyContainer zindex={10000}>
                 <AppBarComponent />
             </StickyContainer>
             <SidebarAndMainContentContainer>
@@ -30,10 +30,11 @@ const ApplicationMainContainer = styled(Box)`
     overflow-y: hidden;
 `;
 
-const StickyContainer = styled(Box)`
+const StickyContainer = styled(Box)<{ zindex?: number }>`
     position: sticky;
     top: 0;
     left: 0;
+    z-index: ${(props) => props.zindex ?? "unset"};
 `;
 
 const SidebarAndMainContentContainer = styled(Box)`
