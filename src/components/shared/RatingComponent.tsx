@@ -7,26 +7,26 @@ import styled from "styled-components";
 const MAX_RATING_VALUE = 5;
 
 type PropsRating = {
-    stars: number;
+  stars: number;
 };
 
 export const RatingComponent: React.FC<PropsRating> = (props: PropsRating) => {
-    const { stars } = props;
+  const { stars } = props;
 
-    return (
-        <RatingContainer>
-            {Array.from(Array(MAX_RATING_VALUE).keys()).map((v, index) =>
-                index < stars ? (
-                    <StarIcon key={v} color="primary" fontSize={"small"} />
-                ) : (
-                    <StarBorderIcon key={v} fontSize={"small"} />
-                ),
-            )}
-        </RatingContainer>
-    );
+  return (
+    <RatingContainer>
+      {Array.from(Array(MAX_RATING_VALUE).keys()).map((v, index) =>
+        index < stars ? (
+          <StarIcon key={v} color="primary" fontSize={"small"} />
+        ) : (
+          <StarBorderIcon key={v} fontSize={"small"} />
+        ),
+      )}
+    </RatingContainer>
+  );
 };
 
 const RatingContainer = styled(Box)`
-    display: grid;
-    grid-template-columns: repeat(${MAX_RATING_VALUE}, 1fr);
+  display: grid;
+  grid-template-columns: repeat(${MAX_RATING_VALUE}, 1fr);
 `;

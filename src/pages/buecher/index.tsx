@@ -11,8 +11,8 @@ import { Buch } from "@/api/buch";
 import { LoadingComponent } from "@/components/shared/LoadingComponent";
 import Alert from "@mui/material/Alert";
 import {
-    BookListComponent,
-    BookListViewType,
+  BookListComponent,
+  BookListViewType,
 } from "@/components/shared/BookListComponent";
 import { useMediaQuery } from "@/hooks/useMediaQuery";
 import GridViewOutlinedIcon from "@mui/icons-material/GridViewOutlined";
@@ -22,152 +22,150 @@ import { useSearchBooks } from "@/hooks/useSearchBooks";
 import { useApplicationContextApi } from "@/context/ApplicationContextApi";
 
 const BooksPage: React.FC = () => {
-    const appContext = useApplicationContextApi();
-    const {
-        data: buecher,
-        isLoading,
-        error,
-    } = useSWR<Buch[]>("getAll", appContext.getAlleBuecher);
+  const appContext = useApplicationContextApi();
+  const {
+    data: buecher,
+    isLoading,
+    error,
+  } = useSWR<Buch[]>("getAll", appContext.getAlleBuecher);
 
-    if (isLoading || buecher === undefined)
-        return <LoadingComponent message="Bücher werden geladen..." />;
+  if (isLoading || buecher === undefined)
+    return <LoadingComponent message="Bücher werden geladen..." />;
 
-    if (error) {
-        return (
-            <Alert severity="error">
-                Ein Fehler ist aufgetreten: {(error as Error).toString()}
-            </Alert>
-        );
-    }
-
+  if (error) {
     return (
-        <PageWrapperComponent title={"Bücher"}>
-            <Stack direction="column" spacing={"var(--gap-4)"}>
-                <BookSearchWrapper buecher={buecher} />
-            </Stack>
-        </PageWrapperComponent>
+      <Alert severity="error">
+        Ein Fehler ist aufgetreten: {(error as Error).toString()}
+      </Alert>
     );
+  }
+
+  return (
+    <PageWrapperComponent title={"Bücher"}>
+      <Stack direction="column" spacing={"var(--gap-4)"}>
+        <BookSearchWrapper buecher={buecher} />
+      </Stack>
+    </PageWrapperComponent>
+  );
 };
 
 type PropsBooksSearchWrapper = {
-    buecher: Buch[];
-    // eslint-disable-next-line no-unused-vars
-    children?: (searchResult: Buch[]) => ReactNode;
+  buecher: Buch[];
+  // eslint-disable-next-line no-unused-vars
+  children?: (searchResult: Buch[]) => ReactNode;
 };
 
 const BookSearchWrapper: React.FC<PropsBooksSearchWrapper> = (
-    props: PropsBooksSearchWrapper,
+  props: PropsBooksSearchWrapper,
 ) => {
-    const { buecher, children } = props;
-    const [inputValue, setInputValue] = useState<string>("");
-    const { searchResult } = useSearchBooks({
-        buecher,
-        searchQuery: inputValue,
-    });
+  const { buecher, children } = props;
+  const [inputValue, setInputValue] = useState<string>("");
+  const { searchResult } = useSearchBooks({
+    buecher,
+    searchQuery: inputValue,
+  });
 
-    const [view, setView] = useState<BookListViewType>("CARD");
+  const [view, setView] = useState<BookListViewType>("CARD");
 
-    const handleChange = (event: ChangeEvent<HTMLInputElement>) => {
-        event?.preventDefault();
-        setInputValue(event.target.value);
-    };
+  const handleChange = (event: ChangeEvent<HTMLInputElement>) => {
+    event?.preventDefault();
+    setInputValue(event.target.value);
+  };
 
-    return (
-        <>
-            <FilterContainer>
-                <Input
-                    startDecorator={<SearchIcon fontSize="small" />}
-                    placeholder="Suchen"
-                    size="md"
-                    value={inputValue}
-                    onChange={handleChange}
-                />
-                <ViewSwitcherComponent view={view} setView={setView} />
-            </FilterContainer>
-            {searchResult.length === 0 ? (
-                <Alert severity="warning">Keine Bücher gefunden.</Alert>
-            ) : (
-                <BookListComponent view={view} buecher={searchResult} />
-            )}
-            {children ? children(searchResult) : null}
-        </>
-    );
+  return (
+    <>
+      <FilterContainer>
+        <Input
+          startDecorator={<SearchIcon fontSize="small" />}
+          placeholder="Suchen"
+          size="md"
+          value={inputValue}
+          onChange={handleChange}
+        />
+        <ViewSwitcherComponent view={view} setView={setView} />
+      </FilterContainer>
+      {searchResult.length === 0 ? (
+        <Alert severity="warning">Keine Bücher gefunden.</Alert>
+      ) : (
+        <BookListComponent view={view} buecher={searchResult} />
+      )}
+      {children ? children(searchResult) : null}
+    </>
+  );
 };
 
 type ViewOption = {
-    view: BookListViewType;
-    title: string;
-    icon: ComponentType<any>;
+  view: BookListViewType;
+  title: string;
+  icon: ComponentType<any>;
 };
 type PropsViewSwitch = {
-    view: BookListViewType;
-    // eslint-disable-next-line no-unused-vars
-    setView: (view: BookListViewType) => void;
+  view: BookListViewType;
+  // eslint-disable-next-line no-unused-vars
+  setView: (view: BookListViewType) => void;
 };
 const ViewSwitcherComponent: React.FC<PropsViewSwitch> = (
-    props: PropsViewSwitch,
+  props: PropsViewSwitch,
 ) => {
-    const { view, setView } = props;
-    const { isSmall } = useMediaQuery();
+  const { view, setView } = props;
+  const { isSmall } = useMediaQuery();
 
-    const viewOptions: ViewOption[] = [
-        {
-            view: "CARD",
-            title: "Kartenansicht",
-            icon: GridViewOutlinedIcon,
-        },
-        {
-            view: "TABLE",
-            title: "Tabellenansicht",
-            icon: ViewListOutlinedIcon,
-        },
-        {
-            view: "LIST",
-            title: "Listenansicht",
-            icon: FormatListBulletedOutlinedIcon,
-        },
-    ];
+  const viewOptions: ViewOption[] = [
+    {
+      view: "CARD",
+      title: "Kartenansicht",
+      icon: GridViewOutlinedIcon,
+    },
+    {
+      view: "TABLE",
+      title: "Tabellenansicht",
+      icon: ViewListOutlinedIcon,
+    },
+    {
+      view: "LIST",
+      title: "Listenansicht",
+      icon: FormatListBulletedOutlinedIcon,
+    },
+  ];
 
-    return (
-        <ButtonGroup sx={{ justifySelf: "end" }}>
-            {isSmall ? (
-                <>
-                    {viewOptions.map((option) => (
-                        <IconButton key={option.view}>
-                            <option.icon
-                                sx={{ padding: "5px" }}
-                                fontSize="large"
-                                color={
-                                    view === option.view ? "primary" : "neutral"
-                                }
-                                onClick={() => setView(option.view)}
-                            />
-                        </IconButton>
-                    ))}
-                </>
-            ) : (
-                <>
-                    {viewOptions.map((option) => (
-                        <Button
-                            key={option.view}
-                            color={view === option.view ? "primary" : "neutral"}
-                            variant={view === option.view ? "solid" : undefined}
-                            onClick={() => setView(option.view)}
-                        >
-                            {option.title}
-                        </Button>
-                    ))}
-                </>
-            )}
-        </ButtonGroup>
-    );
+  return (
+    <ButtonGroup sx={{ justifySelf: "end" }}>
+      {isSmall ? (
+        <>
+          {viewOptions.map((option) => (
+            <IconButton key={option.view}>
+              <option.icon
+                sx={{ padding: "5px" }}
+                fontSize="large"
+                color={view === option.view ? "primary" : "neutral"}
+                onClick={() => setView(option.view)}
+              />
+            </IconButton>
+          ))}
+        </>
+      ) : (
+        <>
+          {viewOptions.map((option) => (
+            <Button
+              key={option.view}
+              color={view === option.view ? "primary" : "neutral"}
+              variant={view === option.view ? "solid" : undefined}
+              onClick={() => setView(option.view)}
+            >
+              {option.title}
+            </Button>
+          ))}
+        </>
+      )}
+    </ButtonGroup>
+  );
 };
 
 const FilterContainer = styled(Box)`
-    display: grid;
-    grid-template-columns: max-content 1fr;
-    align-content: center;
-    align-items: center;
+  display: grid;
+  grid-template-columns: max-content 1fr;
+  align-content: center;
+  align-items: center;
 `;
 
 export default BooksPage;

@@ -22,124 +22,113 @@ import { useRouter } from "next/router";
 const INITIAL_SIDEBAR_STATE = true;
 
 type NavigationButton = {
-    label: string;
-    icon: ReactNode;
-    isActive?: boolean;
-    onClick: () => void;
+  label: string;
+  icon: ReactNode;
+  isActive?: boolean;
+  onClick: () => void;
 };
 export const SidebarComponent: React.FC = () => {
-    const [isOpen, setIsOpen] = useState<boolean>(INITIAL_SIDEBAR_STATE);
-    const router = useRouter();
+  const [isOpen, setIsOpen] = useState<boolean>(INITIAL_SIDEBAR_STATE);
+  const router = useRouter();
 
-    const upperButtons: NavigationButton[] = [
-        {
-            label: "Startseite",
-            icon: <DashboardOutlinedIcon />,
-            isActive: router.pathname === "/",
-            onClick: () => router.push("/"),
-        },
-        {
-            label: "Bücher",
-            icon: <StyleOutlinedIcon />,
-            isActive: router.pathname === "/buecher",
-            onClick: () => router.push("/buecher"),
-        },
-        {
-            label: "Anlegen",
-            icon: <AddOutlinedIcon />,
-            isActive: router.pathname === "/anlegen",
-            onClick: () => alert("In Bearbeitung"),
-        },
-        {
-            label: "Analysen",
-            icon: <BarChartOutlinedIcon />,
-            isActive: router.pathname === "/analysen",
-            onClick: () => alert("In Bearbeitung"),
-        },
-        {
-            label: "Mitteilungen",
-            icon: <NotificationsOutlinedIcon />,
-            isActive: router.pathname === "/mitteilungen",
-            onClick: () => alert("In Bearbeitung"),
-        },
-    ];
+  const upperButtons: NavigationButton[] = [
+    {
+      label: "Startseite",
+      icon: <DashboardOutlinedIcon />,
+      isActive: router.pathname === "/",
+      onClick: () => router.push("/"),
+    },
+    {
+      label: "Bücher",
+      icon: <StyleOutlinedIcon />,
+      isActive: router.pathname.includes("/buecher"),
+      onClick: () => router.push("/buecher"),
+    },
+    {
+      label: "Anlegen",
+      icon: <AddOutlinedIcon />,
+      isActive: router.pathname.includes("/anlegen"),
+      onClick: () => alert("In Bearbeitung"),
+    },
+    {
+      label: "Analysen",
+      icon: <BarChartOutlinedIcon />,
+      isActive: router.pathname.includes("/analysen"),
+      onClick: () => alert("In Bearbeitung"),
+    },
+    {
+      label: "Mitteilungen",
+      icon: <NotificationsOutlinedIcon />,
+      isActive: router.pathname.includes("/mitteilungen"),
+      onClick: () => alert("In Bearbeitung"),
+    },
+  ];
 
-    const lowerButtons: NavigationButton[] = [
-        {
-            label: "Anmelden",
-            icon: <LoginOutlinedIcon />,
-            isActive: router.pathname === "/anmelden",
-            onClick: () => alert("In Bearbeitung"),
-        },
-        {
-            label: "Einstellungen",
-            icon: <SettingsOutlinedIcon />,
-            isActive: router.pathname === "/einstellungen",
-            onClick: () => alert("In Bearbeitung"),
-        },
-        {
-            label: "Seitenleite zuklappen",
-            icon: isOpen ? (
-                <KeyboardDoubleArrowLeftOutlinedIcon />
-            ) : (
-                <KeyboardDoubleArrowRightOutlinedIcon />
-            ),
-            onClick: () => setIsOpen((prevState) => !prevState),
-        },
-    ];
+  const lowerButtons: NavigationButton[] = [
+    {
+      label: "Anmelden",
+      icon: <LoginOutlinedIcon />,
+      isActive: router.pathname.includes("/anmelden"),
+      onClick: () => alert("In Bearbeitung"),
+    },
+    {
+      label: "Einstellungen",
+      icon: <SettingsOutlinedIcon />,
+      isActive: router.pathname.includes("/einstellungen"),
+      onClick: () => alert("In Bearbeitung"),
+    },
+    {
+      label: "Seitenleite zuklappen",
+      icon: isOpen ? (
+        <KeyboardDoubleArrowLeftOutlinedIcon />
+      ) : (
+        <KeyboardDoubleArrowRightOutlinedIcon />
+      ),
+      onClick: () => setIsOpen((prevState) => !prevState),
+    },
+  ];
 
-    return (
-        <SidebarContainer>
-            <ButtonListComponent
-                key={1}
-                buttons={upperButtons}
-                showLabel={isOpen}
-            />
-            <ButtonListComponent
-                key={2}
-                buttons={lowerButtons}
-                showLabel={isOpen}
-            />
-        </SidebarContainer>
-    );
+  return (
+    <SidebarContainer>
+      <ButtonListComponent key={1} buttons={upperButtons} showLabel={isOpen} />
+      <ButtonListComponent key={2} buttons={lowerButtons} showLabel={isOpen} />
+    </SidebarContainer>
+  );
 };
 type PropsButtonList = {
-    buttons: NavigationButton[];
-    showLabel: boolean;
+  buttons: NavigationButton[];
+  showLabel: boolean;
 };
 const ButtonListComponent: React.FC<PropsButtonList> = (
-    props: PropsButtonList,
+  props: PropsButtonList,
 ) => {
-    const { buttons, showLabel } = props;
+  const { buttons, showLabel } = props;
 
-    return (
-        <List>
-            {buttons.map((button, index) => (
-                <ListItem
-                    key={`${button.label}${index}`}
-                    onClick={button.onClick}
-                >
-                    <StyledListItemButton
-                        selected={button.isActive}
-                        color={button.isActive ? "primary" : "neutral"}
-                    >
-                        <ListItemDecorator>{button.icon}</ListItemDecorator>
-                        {showLabel ? button.label : null}
-                    </StyledListItemButton>
-                </ListItem>
-            ))}
-        </List>
-    );
+  return (
+    <List>
+      {buttons.map((button, index) => (
+        <ListItem key={`${button.label}${index}`} onClick={button.onClick}>
+          <StyledListItemButton
+            selected={button.isActive}
+            color={button.isActive ? "primary" : "neutral"}
+          >
+            <ListItemDecorator>{button.icon}</ListItemDecorator>
+            {showLabel ? button.label : null}
+          </StyledListItemButton>
+        </ListItem>
+      ))}
+    </List>
+  );
 };
 
 const SidebarContainer = styled(Box)`
-    display: grid;
-    gap: var(--gap-1);
-    grid-template-rows: 1fr max-content;
-    height: 100%;
-    padding: 0 var(--gap-1) var(--gap-1) var(--gap-1);
+  display: grid;
+  gap: var(--gap-1);
+  grid-template-rows: 1fr max-content;
+  height: 100%;
+  padding: 0 var(--gap-1) var(--gap-1) var(--gap-1);
 `;
 const StyledListItemButton = styled(ListItemButton)`
-    border-radius: var(--border-medium);
-    padding: var(--gap-1) var(--gap-1);
+  border-radius: var(--border-medium);
+  padding: var(--gap-1) var(--gap-1);
 `;

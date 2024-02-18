@@ -10,14 +10,18 @@ const HEIGHT_OF_BOOK_CARD_CONTAINER = "300px";
 
 type Props = {
     buch: Buch;
+    onClick?: () => void;
 };
 
 export const BookCardComponent: React.FC<Props> = (props) => {
-    const { buch } = props;
+    const { buch, onClick } = props;
 
     return (
-        <BookCardWrapper>
-            <BookCardContainer>
+        <BookCardWrapper
+            clickable={onClick ? "true" : "false"}
+            onClick={onClick}
+        >
+            <BookCardContainer clickable={onClick ? "true" : "false"}>
                 <CardContent>
                     <CustomBadgeComponent value={`${buch.preis} €`} />
                     <BuchTitle>{buch.titel}</BuchTitle>
@@ -33,18 +37,30 @@ export const BookCardComponent: React.FC<Props> = (props) => {
     );
 };
 
-const BookCardWrapper = styled(Box)`
+const BookCardWrapper = styled(Box)<{ clickable: "true" | "false" }>`
     display: grid;
     gap: var(--gap-2);
     justify-content: center;
     justify-items: center;
+    cursor: ${(props) => (props.clickable === "true" ? "pointer" : "unset")};
 `;
 
-const BookCardContainer = styled(Card)`
+const BookCardContainer = styled(Card)<{ clickable: "true" | "false" }>`
     height: ${HEIGHT_OF_BOOK_CARD_CONTAINER};
     width: ${WIDTH_OF_BOOK_CARD_CONTAINER};
     border-radius: 10px;
     padding-top: 35%;
+    border: ${(props) =>
+        props.clickable === "true" ? "2px solid transparent" : "unset"};
+
+    &:hover {
+        border: ${(props) =>
+            props.clickable === "true"
+                ? "2px solid var(--color-main)"
+                : "unset"};
+        box-shadow: ${(props) =>
+            props.clickable === "true" ? "0 0 20px grey" : "unset"};
+    }
 `;
 
 const CardContent = styled(Box)`

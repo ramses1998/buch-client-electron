@@ -3,80 +3,80 @@ import axios, { AxiosRequestConfig, AxiosResponse } from "axios";
 export type BuchArt = "DRUCKAUSGABE" | "KINDLE";
 
 export type Buch = {
-    id: number;
-    version: number;
-    isbn: string;
-    rating: number;
-    art: BuchArt;
-    preis: number;
-    rabatt: string;
-    lieferbar: boolean;
-    datum: Date;
-    homepage: string;
-    schlagwoerter: string[];
-    titel: string;
-    untertitel?: string;
+  id: number;
+  version: number;
+  isbn: string;
+  rating: number;
+  art: BuchArt;
+  preis: number;
+  rabatt: string;
+  lieferbar: boolean;
+  datum: Date;
+  homepage: string;
+  schlagwoerter: string[];
+  titel: string;
+  untertitel?: string;
 };
 
 export type BuchResponse = Omit<Buch, "datum" | "titel"> & {
-    datum: string;
-    titel: {
-        titel: string;
-        untertitel: string;
-    };
+  datum: string;
+  titel: {
+    titel: string;
+    untertitel: string;
+  };
 };
 
 export type BuchInputModell = Omit<BuchResponse, "id" | "version" | "datum"> & {
-    datum: Date;
+  datum: Date;
 };
 
 export type BuchUpdateModell = Omit<
-    BuchResponse,
-    "lieferbar" | "id" | "rabatt" | "titel"
+  BuchResponse,
+  "lieferbar" | "id" | "rabatt" | "titel"
 > & {
-    datum: Date;
-    lieferbar: string;
-    id: string;
-    rabatt: number;
+  datum: Date;
+  lieferbar: string;
+  id: string;
+  rabatt: number;
 };
 
 const lieferbarToBoolean = (lieferbar: string): boolean => {
-    if (lieferbar === "true") {
-        return true;
-    }
-    return false;
+  if (lieferbar === "true") {
+    return true;
+  }
+  return false;
 };
 
 const stringToDate = (datum: string): Date => {
-    const [day, month, year] = datum.split(".");
-    const formattedDate = `${year}-${month}-${day}`;
-    return new Date(formattedDate);
+  const [day, month, year] = datum.split(".");
+  const formattedDate = `${year}-${month}-${day}`;
+  return new Date(formattedDate);
 };
 
 export type BuchListResponse = {
-    data: {
-        buecher: BuchResponse[];
-    };
+  data: {
+    buecher: BuchResponse[];
+  };
 };
 export type BuchItemResponse = {
-    data: {
-        buch: BuchResponse;
-    };
+  data: {
+    buch: BuchResponse;
+  };
 };
 
 export type CreateBuchResponse = {
-    id: number;
+  id: number;
 };
 
 export type UpdateBuchResponse = {
-    version: number;
+  version: number;
 };
 
 export const getAlleBuecherApi = async (
-    baseRequestConfig: AxiosRequestConfig<string>,
+  baseRequestConfig: AxiosRequestConfig<string>,
 ): Promise<AxiosResponse<BuchListResponse>> => {
-    const body = JSON.stringify({
-        query: `query {
+  const body = JSON.stringify({
+    query: `query {
   buecher {
     id
     version
@@ -95,17 +95,17 @@ export const getAlleBuecherApi = async (
     }
   }
 }`,
-    });
-    const requestConfig = { ...baseRequestConfig, data: body };
-    return await axios.request(requestConfig);
+  });
+  const requestConfig = { ...baseRequestConfig, data: body };
+  return await axios.request(requestConfig);
 };
 
 export const getBuchByIdApi = async (
-    id: number,
-    baseRequestConfig: AxiosRequestConfig<string>,
+  id: number,
+  baseRequestConfig: AxiosRequestConfig<string>,
 ): Promise<AxiosResponse<BuchItemResponse>> => {
-    const body = JSON.stringify({
-        query: `query($id: ID!) {
+  const body = JSON.stringify({
+    query: `query($id: ID!) {
   buch(id: $id) {
     id
     version
@@ -124,18 +124,18 @@ export const getBuchByIdApi = async (
     }
   }
 }`,
-        variables: { id },
-    });
-    const requestConfig = { ...baseRequestConfig, data: body };
-    return await axios.request(requestConfig);
+    variables: { id },
+  });
+  const requestConfig = { ...baseRequestConfig, data: body };
+  return await axios.request(requestConfig);
 };
 
 export const createBuchApi = async (
-    buchInputModell: BuchInputModell,
-    baseRequestConfig: AxiosRequestConfig<string>,
+  buchInputModell: BuchInputModell,
+  baseRequestConfig: AxiosRequestConfig<string>,
 ): Promise<AxiosResponse> => {
-    const body = JSON.stringify({
-        query: `mutation {
+  const body = JSON.stringify({
+    query: `mutation {
   create(
     input: {
       isbn: "${buchInputModell.isbn}",
@@ -147,14 +147,14 @@ export const createBuchApi = async (
       datum: "${new Date(buchInputModell.datum).toISOString()}",
       homepage: "${buchInputModell.homepage}",
       schlagwoerter: [${
-          buchInputModell.schlagwoerter
-              ? formatKeywordsForRequest(buchInputModell.schlagwoerter)
-              : ""
+        buchInputModell.schlagwoerter
+          ? formatKeywordsForRequest(buchInputModell.schlagwoerter)
+          : ""
       }],
       titel: {
         titel: "${buchInputModell.titel.titel}",
         untertitel: "${
-            buchInputModell.untertitel ?? "Untertitel Create Mutation"
+          buchInputModell.untertitel ?? "Untertitel Create Mutation"
         }"
       },
       abbildungen: [{
@@ -166,18 +166,18 @@ export const createBuchApi = async (
       id
   }
 }`,
-    });
-    console.log(body);
-    const requestConfig = { ...baseRequestConfig, data: body };
-    return await axios.request(requestConfig);
+  });
+  console.log(body);
+  const requestConfig = { ...baseRequestConfig, data: body };
+  return await axios.request(requestConfig);
 };
 
 export const updateBuchApi = async (
-    buchUpdateModell: BuchUpdateModell,
-    baseRequestConfig: AxiosRequestConfig<string>,
+  buchUpdateModell: BuchUpdateModell,
+  baseRequestConfig: AxiosRequestConfig<string>,
 ): Promise<AxiosResponse> => {
-    const body = JSON.stringify({
-        query: `mutation {
+  const body = JSON.stringify({
+    query: `mutation {
   update(
     input: {
       id: ${buchUpdateModell.id},
@@ -191,31 +191,31 @@ export const updateBuchApi = async (
       datum: "${stringToDate(buchUpdateModell.datum).toISOString()}",
       homepage: "${buchUpdateModell.homepage}",
       schlagwoerter: [${formatKeywordsForRequest(
-          buchUpdateModell.schlagwoerter,
+        buchUpdateModell.schlagwoerter,
       )}],
     }
   ) {
       version
   }
 }`,
-    });
-    const requestConfig = { ...baseRequestConfig, data: body };
-    return await axios.request(requestConfig);
+  });
+  const requestConfig = { ...baseRequestConfig, data: body };
+  return await axios.request(requestConfig);
 };
 
 export const deleteBuchApi = async (
-    id: number,
-    baseRequestConfig: AxiosRequestConfig<string>,
+  id: number,
+  baseRequestConfig: AxiosRequestConfig<string>,
 ): Promise<AxiosResponse<void>> => {
-    const body = JSON.stringify({
-        query: `mutation {
+  const body = JSON.stringify({
+    query: `mutation {
         delete(id: "${id}")
         }`,
-    });
-    const requestConfig = { ...baseRequestConfig, data: body };
-    return await axios.request(requestConfig);
+  });
+  const requestConfig = { ...baseRequestConfig, data: body };
+  return await axios.request(requestConfig);
 };
 
 const formatKeywordsForRequest = (keywords: string[]): string => {
-    return keywords.map((s) => `"${s}"`).join(", ");
+  return keywords.map((s) => `"${s}"`).join(", ");
 };

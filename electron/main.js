@@ -3,10 +3,10 @@ const serve = require("electron-serve");
 const path = require("path");
 
 const appServe = app.isPackaged
-    ? serve({
+  ? serve({
       directory: path.join(__dirname, "../out"),
     })
-    : null;
+  : null;
 
 const createWindow = () => {
   const win = new BrowserWindow({
@@ -42,7 +42,10 @@ app.on("window-all-closed", () => {
 });
 
 // Zertifikat-Fehler ausschalten. Siehe: https://www.electronjs.org/docs/latest/api/app#event-certificate-error
-app.on('certificate-error', (event, webContents, url, error, certificate, callback) => {
-  event.preventDefault();
-  callback(true);
-})
+app.on(
+  "certificate-error",
+  (event, webContents, url, error, certificate, callback) => {
+    event.preventDefault();
+    callback(true);
+  },
+);

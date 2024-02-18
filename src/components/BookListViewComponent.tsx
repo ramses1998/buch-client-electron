@@ -8,51 +8,57 @@ import styled from "styled-components";
 import { Box, Stack, Typography } from "@mui/joy";
 
 type Props = {
-    buecher: Buch[];
+  buecher: Buch[];
 };
 
 export const BookListViewComponent: React.FC<Props> = (props) => {
-    const { buecher } = props;
-    const router = useRouter();
+  const { buecher } = props;
+  const router = useRouter();
 
-    return (
-        <Stack direction="column" spacing={"var(--gap-2)"}>
-            {buecher.map((buch) => (
-                <BookItemContainer
-                    key={buch.id}
-                    onClick={() => router.push(`/buecher/${buch.id}`)}
-                >
-                    <BookTitleAndPreviewInfo>
-                        <Typography component="p" level={"title-lg"}>
-                            {buch.titel}
-                        </Typography>
-                        <Typography component="p" level={"body-sm"}>
-                            {`${buch.isbn}  |  ${buch.art}  |  ${buch.homepage}`}
-                        </Typography>
-                    </BookTitleAndPreviewInfo>
-                    <Typography component="p" level={"title-lg"}>
-                        {`${buch.preis} €`}
-                    </Typography>
-                </BookItemContainer>
-            ))}
-        </Stack>
-    );
+  return (
+    <Stack direction="column" spacing={"var(--gap-2)"}>
+      {buecher.map((buch) => (
+        <BookItemContainer
+          key={buch.id}
+          onClick={() => router.push(`/buecher/${buch.id}`)}
+        >
+          <BookTitleAndPreviewInfo>
+            <Typography component="p" level={"title-lg"}>
+              {buch.titel}
+            </Typography>
+            <Typography component="p" level={"body-sm"}>
+              {`${buch.isbn}  |  ${buch.art}  |  ${buch.homepage}`}
+            </Typography>
+          </BookTitleAndPreviewInfo>
+          <Typography component="p" level={"title-lg"}>
+            {`${buch.preis} €`}
+          </Typography>
+        </BookItemContainer>
+      ))}
+    </Stack>
+  );
 };
 
 const BookItemContainer = styled(Box)`
-    display: grid;
-    grid-gap: var(--gap-2);
-    grid-template-columns: 1fr max-content;
-    align-content: center;
-    align-items: center;
-    background-color: white;
-    border-radius: var(--border-small);
-    box-shadow: 0 0 2px grey;
-    padding: var(--gap-2);
+  display: grid;
+  grid-gap: var(--gap-2);
+  grid-template-columns: 1fr max-content;
+  align-content: center;
+  align-items: center;
+  background-color: white;
+  border-radius: var(--border-small);
+  box-shadow: 0 0 2px grey;
+  padding: var(--gap-2);
+  cursor: pointer;
+  border: 2px solid transparent;
+  &:hover {
+    border: 2px solid var(--color-main);
+    box-shadow: 0 0 10px grey;
+  }
 `;
 const BookTitleAndPreviewInfo = styled(Box)`
-    display: grid;
-    grid-gap: 5px;
-    align-content: center;
-    align-items: center;
+  display: grid;
+  grid-gap: 5px;
+  align-content: center;
+  align-items: center;
 `;
