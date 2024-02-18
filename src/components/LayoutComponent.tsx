@@ -3,6 +3,7 @@ import { Box } from "@mui/joy";
 import styled from "styled-components";
 import { AppBarComponent } from "@/components/AppBarComponent";
 import { SidebarComponent } from "@/components/SidebarComponent";
+import { ApplicationContextProvider } from "@/context/ApplicationContextApi";
 
 type Props = PropsWithChildren;
 
@@ -10,17 +11,21 @@ export const LayoutComponent: React.FC<Props> = (props: PropsWithChildren) => {
     const { children } = props;
 
     return (
-        <ApplicationMainContainer>
-            <StickyContainer zindex={10000}>
-                <AppBarComponent />
-            </StickyContainer>
-            <SidebarAndMainContentContainer>
-                <StickyContainer>
-                    <SidebarComponent />
+        <ApplicationContextProvider>
+            <ApplicationMainContainer>
+                <StickyContainer zindex={10000}>
+                    <AppBarComponent />
                 </StickyContainer>
-                <MainBoxContainer component="main">{children}</MainBoxContainer>
-            </SidebarAndMainContentContainer>
-        </ApplicationMainContainer>
+                <SidebarAndMainContentContainer>
+                    <StickyContainer>
+                        <SidebarComponent />
+                    </StickyContainer>
+                    <MainBoxContainer component="main">
+                        {children}
+                    </MainBoxContainer>
+                </SidebarAndMainContentContainer>
+            </ApplicationMainContainer>
+        </ApplicationContextProvider>
     );
 };
 

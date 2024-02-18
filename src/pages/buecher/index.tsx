@@ -7,7 +7,7 @@ import styled from "styled-components";
 import { Box, Button, IconButton, ButtonGroup, Input, Stack } from "@mui/joy";
 import SearchIcon from "@mui/icons-material/Search";
 import useSWR from "swr";
-import { Buch, getAlleBuecherApi } from "@/api/buch";
+import { Buch } from "@/api/buch";
 import { LoadingComponent } from "@/components/shared/LoadingComponent";
 import Alert from "@mui/material/Alert";
 import {
@@ -19,13 +19,15 @@ import GridViewOutlinedIcon from "@mui/icons-material/GridViewOutlined";
 import ViewListOutlinedIcon from "@mui/icons-material/ViewListOutlined";
 import FormatListBulletedOutlinedIcon from "@mui/icons-material/FormatListBulletedOutlined";
 import { useSearchBooks } from "@/hooks/useSearchBooks";
+import { useApplicationContextApi } from "@/context/ApplicationContextApi";
 
 const BooksPage: React.FC = () => {
+    const appContext = useApplicationContextApi();
     const {
         data: buecher,
         isLoading,
         error,
-    } = useSWR<Buch[]>("getAll", getAlleBuecherApi);
+    } = useSWR<Buch[]>("getAll", appContext.getAlleBuecher);
 
     if (isLoading || buecher === undefined)
         return <LoadingComponent message="Bücher werden geladen..." />;

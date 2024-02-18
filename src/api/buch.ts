@@ -72,54 +72,105 @@ export type UpdateBuchResponse = {
     version: number;
 };
 
-export const getAlleBuecherApi = async (): Promise<Buch[]> => {
-    return await Promise.resolve(buecher);
+export const getAlleBuecherApi = async (
+    baseRequestConfig: AxiosRequestConfig<string>,
+): Promise<AxiosResponse<BuchListResponse>> => {
+    const body = JSON.stringify({
+        query: `query {
+  buecher {
+    id
+    version
+    isbn
+    rating
+    art
+    preis
+    rabatt(short: true)
+    lieferbar
+    datum
+    homepage
+    schlagwoerter
+    titel {
+      titel
+      untertitel
+    }
+  }
+}`,
+    });
+    const requestConfig = { ...baseRequestConfig, data: body };
+    return await axios.request(requestConfig);
 };
 
-export const getBuchByIdApi = async (id: number): Promise<Buch> => {
-    return Promise.resolve(buecher.find((b: Buch) => b.id === id) as Buch);
+export const getBuchByIdApi = async (
+    id: number,
+    baseRequestConfig: AxiosRequestConfig<string>,
+): Promise<AxiosResponse<BuchItemResponse>> => {
+    const body = JSON.stringify({
+        query: `query($id: ID!) {
+  buch(id: $id) {
+    id
+    version
+    isbn
+    rating
+    art
+    preis
+    rabatt(short: true)
+    lieferbar
+    datum
+    homepage
+    schlagwoerter
+    titel {
+      titel
+      untertitel
+    }
+  }
+}`,
+        variables: { id },
+    });
+    const requestConfig = { ...baseRequestConfig, data: body };
+    return await axios.request(requestConfig);
 };
 
-// export const createBuchApi = async (
-//     buchInputModell: BuchInputModell,
-// ): Promise<AxiosResponse> => {
-//     const body = JSON.stringify({
-//         query: `mutation {
-//   create(
-//     input: {
-//       isbn: "${buchInputModell.isbn}",
-//       rating: ${buchInputModell.rating},
-//       art: ${buchInputModell.art.toUpperCase()},
-//       preis: ${buchInputModell.preis},
-//       rabatt: ${buchInputModell ? Number(buchInputModell.rabatt) / 100 : 0},
-//       lieferbar: ${buchInputModell.lieferbar},
-//       datum: "${new Date(buchInputModell.datum).toISOString()}",
-//       homepage: "${buchInputModell.homepage}",
-//       schlagwoerter: [${
-//             buchInputModell.schlagwoerter
-//                 ? formatKeywordsForRequest(buchInputModell.schlagwoerter)
-//                 : ''
-//         }],
-//       titel: {
-//         titel: "${buchInputModell.titel.titel}",
-//         untertitel: "${
-//             buchInputModell.untertitel ?? 'Untertitel Create Mutation'
-//         }"
-//       },
-//       abbildungen: [{
-//         beschriftung: "Abb. 1",
-//         contentType: "img/png"
-//       }]
-//     }
-//   ) {
-//       id
-//   }
-// }`,
-//     });
-//     console.log(body);
-//     //const requestConfig = { ...baseRequestConfig, data: body };
-//     return await axios.request(requestConfig);
-// };
+export const createBuchApi = async (
+    buchInputModell: BuchInputModell,
+    baseRequestConfig: AxiosRequestConfig<string>,
+): Promise<AxiosResponse> => {
+    const body = JSON.stringify({
+        query: `mutation {
+  create(
+    input: {
+      isbn: "${buchInputModell.isbn}",
+      rating: ${buchInputModell.rating},
+      art: ${buchInputModell.art.toUpperCase()},
+      preis: ${buchInputModell.preis},
+      rabatt: ${buchInputModell ? Number(buchInputModell.rabatt) / 100 : 0},
+      lieferbar: ${buchInputModell.lieferbar},
+      datum: "${new Date(buchInputModell.datum).toISOString()}",
+      homepage: "${buchInputModell.homepage}",
+      schlagwoerter: [${
+          buchInputModell.schlagwoerter
+              ? formatKeywordsForRequest(buchInputModell.schlagwoerter)
+              : ""
+      }],
+      titel: {
+        titel: "${buchInputModell.titel.titel}",
+        untertitel: "${
+            buchInputModell.untertitel ?? "Untertitel Create Mutation"
+        }"
+      },
+      abbildungen: [{
+        beschriftung: "Abb. 1",
+        contentType: "img/png"
+      }]
+    }
+  ) {
+      id
+  }
+}`,
+    });
+    console.log(body);
+    const requestConfig = { ...baseRequestConfig, data: body };
+    return await axios.request(requestConfig);
+};
 
 export const updateBuchApi = async (
     buchUpdateModell: BuchUpdateModell,
@@ -168,141 +219,3 @@ export const deleteBuchApi = async (
 const formatKeywordsForRequest = (keywords: string[]): string => {
     return keywords.map((s) => `"${s}"`).join(", ");
 };
-
-const buecher: Buch[] = [
-    {
-        id: 3,
-        version: 3,
-        isbn: "978-1-23-456789-1",
-        rating: 4.2,
-        art: "KINDLE",
-        preis: 12.99,
-        rabatt: "10%",
-        lieferbar: true,
-        datum: new Date(),
-        homepage: "https://example.com/book3",
-        schlagwoerter: ["Science", "Physics"],
-        titel: "Einfürung in die Wirtschaftsinformatik",
-        untertitel: "Unlocking the Secrets of Space. Exploring Our Galaxy.",
-    },
-    {
-        id: 4,
-        version: 1,
-        isbn: "978-1-23-456789-2",
-        rating: 4.7,
-        art: "DRUCKAUSGABE",
-        preis: 9.99,
-        rabatt: "20%",
-        lieferbar: true,
-        datum: new Date(),
-        homepage: "https://example.com/ebook4",
-        schlagwoerter: ["Science", "Astronomy"],
-        titel: "The Milky Way Revealed",
-        untertitel: "Exploring Our Galaxy",
-    },
-    {
-        id: 5,
-        version: 2,
-        isbn: "978-1-23-456789-3",
-        rating: 3.5,
-        art: "KINDLE",
-        preis: 24.99,
-        rabatt: "0%",
-        lieferbar: false,
-        datum: new Date(),
-        homepage: "https://example.com/book5",
-        schlagwoerter: ["History", "Science"],
-        titel: "Voyages of Discovery",
-        untertitel: "Exploring the Earth's Past",
-    },
-    {
-        id: 6,
-        version: 4,
-        isbn: "978-1-23-456789-4",
-        rating: 4.1,
-        art: "KINDLE",
-        preis: 14.99,
-        rabatt: "15%",
-        lieferbar: true,
-        datum: new Date(),
-        homepage: "https://example.com/audiobook6",
-        schlagwoerter: ["Science", "Biology"],
-        titel: "The Secret Life of Plants",
-        untertitel: "Exploring the Hidden World of Nature",
-    },
-    {
-        id: 7,
-        version: 1,
-        isbn: "978-1-23-456789-5",
-        rating: 4.8,
-        art: "DRUCKAUSGABE",
-        preis: 29.99,
-        rabatt: "3%",
-        lieferbar: true,
-        datum: new Date(),
-        homepage: "https://example.com/book7",
-        schlagwoerter: ["Science", "Technology"],
-        titel: "The Future of AI",
-        untertitel: "Exploring the Rise of Artificial Intelligence",
-    },
-    {
-        id: 8,
-        version: 3,
-        isbn: "978-1-23-456789-6",
-        rating: 3.9,
-        art: "DRUCKAUSGABE",
-        preis: 17.99,
-        rabatt: "7%",
-        lieferbar: false,
-        datum: new Date(),
-        homepage: "https://example.com/book8",
-        schlagwoerter: ["History", "Art"],
-        titel: "Lost Civilizations",
-        untertitel: "Unearthing the Mysteries of the Past",
-    },
-    {
-        id: 9,
-        version: 3,
-        isbn: "978-1-23-456789-6",
-        rating: 3.9,
-        art: "DRUCKAUSGABE",
-        preis: 17.99,
-        rabatt: "7%",
-        lieferbar: false,
-        datum: new Date(),
-        homepage: "https://example.com/book8",
-        schlagwoerter: ["History", "Art"],
-        titel: "Lost Civilizations",
-        untertitel: "Unearthing the Mysteries of the Past",
-    },
-    {
-        id: 10,
-        version: 3,
-        isbn: "978-1-23-456789-6",
-        rating: 3.9,
-        art: "DRUCKAUSGABE",
-        preis: 17.99,
-        rabatt: "7%",
-        lieferbar: false,
-        datum: new Date(),
-        homepage: "https://example.com/book8",
-        schlagwoerter: ["History", "Art"],
-        titel: "Lost Civilizations",
-        untertitel: "Unearthing the Mysteries of the Past",
-    },
-    {
-        id: 11,
-        version: 3,
-        isbn: "978-1-23-456789-6",
-        rating: 3.9,
-        art: "DRUCKAUSGABE",
-        preis: 17.99,
-        rabatt: "7%",
-        lieferbar: false,
-        datum: new Date(),
-        homepage: "https://example.com/book8",
-        schlagwoerter: ["History", "Art"],
-        titel: "Lost Civilizations",
-        untertitel: "Unearthing the Mysteries of the Past",
-    },
-];

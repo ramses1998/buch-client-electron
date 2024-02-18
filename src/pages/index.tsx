@@ -5,7 +5,7 @@ import "@fontsource/inter";
 import React from "react";
 import { PageWrapperComponent } from "@/components/shared/PageWrapperComponent";
 import useSWR from "swr";
-import { Buch, getAlleBuecherApi } from "@/api/buch";
+import { Buch } from "@/api/buch";
 import { LoadingComponent } from "@/components/shared/LoadingComponent";
 import Alert from "@mui/material/Alert";
 import { Box, Button, Card, Stack, Typography } from "@mui/joy";
@@ -13,16 +13,18 @@ import styled from "styled-components";
 import { CustomBadgeComponent } from "@/components/shared/CustomBadgeComponent";
 import { BookCardComponent } from "@/components/shared/BookCardComponent";
 import { useRouter } from "next/router";
+import { useApplicationContextApi } from "@/context/ApplicationContextApi";
 
 const MAX_BOOKS_COUNT_FOR_OVERVIEW = 4;
 const MINIMUM_RATING_FOR_POPULAR_BOOK = 2.5;
 
 const Home = () => {
+    const appContext = useApplicationContextApi();
     const {
-        data: bucher,
+        data: buecher,
         isLoading,
         error,
-    } = useSWR<Buch[]>("getAll", getAlleBuecherApi);
+    } = useSWR<Buch[]>("getAll", appContext.getAlleBuecher);
     const router = useRouter();
 
     const resolveMostPopularBooks = (buecher: Buch[]): Buch[] => {
@@ -35,7 +37,7 @@ const Home = () => {
         return buecher.sort((a, b) => b.rating - a.rating);
     };
 
-    if (isLoading || bucher === undefined)
+    if (isLoading || buecher === undefined)
         return <LoadingComponent message="Bücher werden geladen..." />;
 
     if (error) {
@@ -50,7 +52,7 @@ const Home = () => {
         <PageWrapperComponent>
             <Stack direction="column" spacing={"var(--gap-7)"}>
                 <OverviewContainerWithItemList>
-                    {bucher
+                    {buecher
                         .slice(0, MAX_BOOKS_COUNT_FOR_OVERVIEW)
                         .map((buch, index) => (
                             <OverviewCardComponent
@@ -80,11 +82,11 @@ const Home = () => {
                         </Button>
                     </Stack>
                     <ListContainer>
-                        {sortBooksByRating(resolveMostPopularBooks(bucher)).map(
-                            (buch, index) => (
-                                <BookCardComponent key={index} buch={buch} />
-                            ),
-                        )}
+                        {sortBooksByRating(
+                            resolveMostPopularBooks(buecher),
+                        ).map((buch, index) => (
+                            <BookCardComponent key={index} buch={buch} />
+                        ))}
                     </ListContainer>
                 </Stack>
             </Stack>
@@ -108,12 +110,12 @@ const OverviewCardComponent: React.FC<PropsOverviewCard> = (
             onClick={() => router.push(`/buecher/${buch.id}`)}
         >
             <CardContent ismain={`${isMain}`}>
-                <CustomBadgeComponent value={buch.preis} />
+                <CustomBadgeComponent value={`${buch.preis} €`} />
                 <BuchTitle ismain={`${isMain}`} noWrap={!isMain}>
                     {buch.titel}
                 </BuchTitle>
                 {isMain ? <Typography>{buch.untertitel}</Typography> : null}
-                <Button size="lg" variant="solid">
+                <Button size="lg" variant="solid" sx={{ width: "170px" }}>
                     Buch einsehen
                 </Button>
             </CardContent>

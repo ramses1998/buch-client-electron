@@ -31,7 +31,7 @@ const BookTableComponent: React.FC<Props> = (props: Props) => {
             rating: <RatingComponent stars={buch.rating} />,
             schlagwoerter: (
                 <Stack direction="row" spacing={"var(--gap-1)"}>
-                    {buch.schlagwoerter.map((w) => (
+                    {buch.schlagwoerter?.map((w) => (
                         <CustomBadgeComponent key={w} value={w} />
                     ))}
                 </Stack>

@@ -3,28 +3,30 @@ import React, { ChangeEvent, useEffect, useState } from "react";
 import {
     Card,
     Input,
-    Stack,
-    Typography,
     List,
     ListItem,
     ListItemButton,
-    ListItemDecorator,
     ListItemContent,
+    ListItemDecorator,
+    Stack,
+    Typography,
 } from "@mui/joy";
-import { Buch, getAlleBuecherApi } from "@/api/buch";
+import { Buch } from "@/api/buch";
 import SearchIcon from "@mui/icons-material/Search";
 import useSWR from "swr";
 import AutoStoriesOutlinedIcon from "@mui/icons-material/AutoStoriesOutlined";
 import { useSearchBooks } from "@/hooks/useSearchBooks";
+import { useApplicationContextApi } from "@/context/ApplicationContextApi";
 
 const SearchInputComponent: React.FC = () => {
     const [inputValue, setInputValue] = useState<string>("");
     const [isSearchResultVisible, setIsSearchResultVisible] =
         useState<boolean>(false);
+    const appContext = useApplicationContextApi();
 
     const { data: buecher, isLoading } = useSWR<Buch[]>(
         "getAll",
-        getAlleBuecherApi,
+        appContext.getAlleBuecher,
     );
 
     const { searchResult } = useSearchBooks({
