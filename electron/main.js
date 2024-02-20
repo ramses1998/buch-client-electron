@@ -8,7 +8,7 @@ const appServe = app.isPackaged
     })
   : null;
 
-const createWindow = () => {
+const createWindow = async () => {
   const win = new BrowserWindow({
     width: 800,
     height: 600,
@@ -18,11 +18,10 @@ const createWindow = () => {
   });
 
   if (app.isPackaged) {
-    appServe(win).then(() => {
-      win.loadURL("app://-");
-    });
+    await appServe(win);
+    await win.loadURL("app://-");
   } else {
-    win.loadURL("http://localhost:3001");
+    await win.loadURL("http://localhost:3001");
     win.webContents.openDevTools();
     win.webContents.on("did-fail-load", (e, code, desc) => {
       win.webContents.reloadIgnoringCache();

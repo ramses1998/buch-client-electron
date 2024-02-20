@@ -4,6 +4,7 @@ import styled from "styled-components";
 import { Box, Typography } from "@mui/joy";
 import Head from "next/head";
 import { useRouter } from "next/router";
+import {useParams} from "next/navigation";
 
 type Props = PropsWithChildren & {
   title?: string;
@@ -12,16 +13,21 @@ type Props = PropsWithChildren & {
 
 export const PageWrapperComponent: React.FC<Props> = (props) => {
   const { title, subtitle, children } = props;
+  const { id } = useParams<{ id: string }>();
   const router = useRouter();
 
   const resolveWindowTitleFromPathName = (pathname: string): string => {
-    const charactersToExclude = ["/", "-", "\\"];
-    let result = pathname === "/" ? "Startseite" : pathname;
+    const charactersToExclude = ["/", "-", "\\", "[", "]"];
+    let result = pathname === "/" ? "Startseite" : pathname.slice(1);
 
     charactersToExclude.forEach((character) => {
       if (!result.includes(character)) return;
-      const cleanText = result.replace(character, " ");
-      result = cleanText.slice(1);
+
+      const cleanText = result
+          .replaceAll(character, " ")
+          .replace("id", id);
+
+      result = cleanText.slice(0);
     });
 
     return `${result.charAt(0).toUpperCase()}${result.slice(1)}`;

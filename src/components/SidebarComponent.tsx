@@ -78,7 +78,7 @@ export const SidebarComponent: React.FC = () => {
       onClick: () => alert("In Bearbeitung"),
     },
     {
-      label: "Seitenleite zuklappen",
+      label: "Seitenleiste zuklappen",
       icon: isOpen ? (
         <KeyboardDoubleArrowLeftOutlinedIcon />
       ) : (
