@@ -1,5 +1,13 @@
-import React, {ReactNode} from "react";
-import {Box, List, ListDivider, ListItem, ListItemDecorator, Stack, Typography} from "@mui/joy";
+import React, { ReactNode } from "react";
+import {
+    Box,
+    List,
+    ListDivider,
+    ListItem,
+    ListItemDecorator,
+    Stack,
+    Typography,
+} from "@mui/joy";
 
 type GroupItem = {
     icon: ReactNode;
@@ -18,7 +26,7 @@ type PropsDetailsList<T extends string> = {
 };
 
 //
-export const DetailsListComponent = <U extends string,>(
+export const DetailsListComponent = <U extends string>(
     props: PropsDetailsList<U>,
 ) => {
     const { groups } = props;

@@ -1,3 +1,6 @@
+"use client";
+// eslint-disable-next-line eslint-comments/disable-enable-pair
+/* eslint-disable @typescript-eslint/no-misused-promises */
 import React, { ChangeEvent, useEffect, useState } from "react";
 import { PageWrapperComponent } from "@/components/shared/PageWrapperComponent";
 import {

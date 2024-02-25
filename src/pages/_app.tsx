@@ -5,18 +5,18 @@ import { LayoutComponent } from "@/components/LayoutComponent";
 import React, { ComponentType } from "react";
 
 type Props = {
-  Component: ComponentType;
-  pageProps: any;
+    Component: ComponentType;
+    pageProps: any;
 };
 
 const App: React.FC<Props> = (props: Props) => {
-  const { Component, pageProps } = props;
+    const { Component, pageProps } = props;
 
-  return (
-    <LayoutComponent>
-      <Component {...pageProps} />
-    </LayoutComponent>
-  );
+    return (
+        <LayoutComponent>
+            <Component {...pageProps} />
+        </LayoutComponent>
+    );
 };
 
 export default App;

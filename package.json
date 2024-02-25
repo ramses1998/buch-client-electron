@@ -10,7 +10,7 @@
     "start": "next start",
     "electron:start": "electron .",
     "lint": "next lint",
-    "prettier": "prettier --cache --write --check \"**/*.+(js|jsx|ts|tsx)\""
+    "prettier": "prettier --write --check \"**/*.+(js|jsx|ts|tsx)\""
   },
   "dependencies": {
     "@emotion/react": "^11.11.3",

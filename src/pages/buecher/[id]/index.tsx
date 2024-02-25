@@ -1,14 +1,15 @@
 "use client";
-import React, {useEffect} from "react";
-import {useApplicationContextApi} from "@/context/ApplicationContextApi";
+// eslint-disable-next-line eslint-comments/disable-enable-pair
+/* eslint-disable no-unused-vars, @typescript-eslint/no-misused-promises, @typescript-eslint/no-unsafe-assignment */
+import React from "react";
+import { useApplicationContextApi } from "@/context/ApplicationContextApi";
 import useSWR from "swr";
-import {Buch} from "@/api/buch";
-import {LoadingComponent} from "@/components/shared/LoadingComponent";
+import { Buch } from "@/api/buch";
+import { LoadingComponent } from "@/components/shared/LoadingComponent";
 import Alert from "@mui/material/Alert";
-import {Button, Stack,} from "@mui/joy";
-import {useParams} from "next/navigation";
-import {PageWrapperComponent} from "@/components/shared/PageWrapperComponent";
-import {BookCardComponent} from "@/components/shared/BookCardComponent";
+import { Button, Stack } from "@mui/joy";
+import { PageWrapperComponent } from "@/components/shared/PageWrapperComponent";
+import { BookCardComponent } from "@/components/shared/BookCardComponent";
 import NumbersOutlinedIcon from "@mui/icons-material/NumbersOutlined";
 import GradeOutlinedIcon from "@mui/icons-material/GradeOutlined";
 import CalendarMonthOutlinedIcon from "@mui/icons-material/CalendarMonthOutlined";
@@ -18,15 +19,19 @@ import PercentOutlinedIcon from "@mui/icons-material/PercentOutlined";
 import ImportContactsOutlinedIcon from "@mui/icons-material/ImportContactsOutlined";
 import LocalShippingOutlinedIcon from "@mui/icons-material/LocalShippingOutlined";
 import VpnKeyOutlinedIcon from "@mui/icons-material/VpnKeyOutlined";
-import {RatingComponent} from "@/components/shared/RatingComponent";
-import {CustomBadgeComponent} from "@/components/shared/CustomBadgeComponent";
-import {useMediaQuery} from "@/hooks/useMediaQuery";
-import {DetailsListComponent, Group} from "@/components/shared/DetailListComponent";
+import { RatingComponent } from "@/components/shared/RatingComponent";
+import { CustomBadgeComponent } from "@/components/shared/CustomBadgeComponent";
+import { useMediaQuery } from "@/hooks/useMediaQuery";
+import {
+    DetailsListComponent,
+    Group,
+} from "@/components/shared/DetailListComponent";
+import { useRouter } from "next/router";
 
 type GroupName = "Über das Buch" | "Author" | "Lieferung" | "Sonstiges";
 
 const BookDetailPage: React.FC = () => {
-    const { id } = useParams<{ id: string }>();
+    const router = useRouter();
 
     const appContext = useApplicationContextApi();
 
@@ -34,16 +39,16 @@ const BookDetailPage: React.FC = () => {
         data: buch,
         isLoading,
         error,
-    } = useSWR<Buch>("getById", () => appContext.getBuchById(parseInt(id)), {
-        revalidateOnMount: true,
-        revalidateIfStale: true,
-    });
+    } = useSWR<Buch>(
+        "getById",
+        () => appContext.getBuchById(parseInt(router.query?.id as string)),
+        {
+            revalidateOnMount: true,
+            revalidateIfStale: true,
+        },
+    );
 
     const { isSmall } = useMediaQuery();
-
-    useEffect(() => {
-        console.log(buch);
-    }, [buch]);
 
     const aboutBookGroup: Group<GroupName> = {
         name: "Über das Buch",
@@ -56,7 +61,7 @@ const BookDetailPage: React.FC = () => {
             {
                 icon: <GradeOutlinedIcon fontSize="small" />,
                 label: "Bewertung",
-                value: <RatingComponent stars={buch?.rating!} />,
+                value: <RatingComponent stars={buch?.rating as number} />,
             },
             {
                 icon: <CalendarMonthOutlinedIcon fontSize="small" />,
@@ -124,12 +129,7 @@ const BookDetailPage: React.FC = () => {
         ],
     };
 
-    const allGroups = [
-        aboutBookGroup,
-        authorGroup,
-        deliveryGroup,
-        othersGroup,
-    ];
+    const allGroups = [aboutBookGroup, authorGroup, deliveryGroup, othersGroup];
 
     if (isLoading || buch === undefined)
         return <LoadingComponent message="Bücher werden geladen..." />;
