@@ -66,10 +66,10 @@ export const SidebarComponent: React.FC = () => {
 
   const lowerButtons: NavigationButton[] = [
     {
-      label: "Anmelden",
+      label: "An- & Abmelden",
       icon: <LoginOutlinedIcon />,
-      isActive: router.pathname.includes("/anmelden"),
-      onClick: () => alert("In Bearbeitung"),
+      isActive: router.pathname.includes("/login"),
+      onClick: () => router.push("/login"),
     },
     {
       label: "Einstellungen",
