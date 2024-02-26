@@ -1,10 +1,10 @@
 "use client";
 // eslint-disable-next-line eslint-comments/disable-enable-pair
-/* eslint-disable no-unused-vars, @typescript-eslint/no-misused-promises, @typescript-eslint/no-unsafe-assignment */
+/* eslint-disable no-unused-vars, @typescript-eslint/no-misused-promises, @typescript-eslint/no-unsafe-assignment, @typescript-eslint/no-floating-promises */
 import React from "react";
 import { useApplicationContextApi } from "@/context/ApplicationContextApi";
 import useSWR from "swr";
-import { Buch } from "@/api/buch";
+import { Buch } from "@/http/buch";
 import { LoadingComponent } from "@/components/shared/LoadingComponent";
 import Alert from "@mui/material/Alert";
 import { Button, Stack } from "@mui/joy";
@@ -39,13 +39,8 @@ const BookDetailPage: React.FC = () => {
         data: buch,
         isLoading,
         error,
-    } = useSWR<Buch>(
-        "getById",
-        () => appContext.getBuchById(parseInt(router.query?.id as string)),
-        {
-            revalidateOnMount: true,
-            revalidateIfStale: true,
-        },
+    } = useSWR<Buch>("getById", () =>
+        appContext.getBuchById(parseInt(router.query?.id as string)),
     );
 
     const { isSmall } = useMediaQuery();
@@ -131,6 +126,12 @@ const BookDetailPage: React.FC = () => {
 
     const allGroups = [aboutBookGroup, authorGroup, deliveryGroup, othersGroup];
 
+    const handleDelete = async () => {
+        if (!buch) return;
+        await appContext.deleteBuch(buch.id, buch.version as number);
+        router.push("/buecher");
+    };
+
     if (isLoading || buch === undefined)
         return <LoadingComponent message="Bücher werden geladen..." />;
 
@@ -151,8 +152,12 @@ const BookDetailPage: React.FC = () => {
                 <Stack spacing={"var(--gap-4)"}>
                     <BookCardComponent buch={buch} />
                     <Stack spacing={"var(--gap-1)"} justifyItems={"center"}>
-                        <Button>Bearbeiten</Button>
-                        <Button color="danger">Löschen</Button>
+                        <Button onClick={() => alert("In Entwicklung")}>
+                            Bearbeiten
+                        </Button>
+                        <Button color="danger" onClick={handleDelete}>
+                            Löschen
+                        </Button>
                     </Stack>
                 </Stack>
                 <Stack spacing={"var(--gap-3)"} sx={{ width: "100%" }}>

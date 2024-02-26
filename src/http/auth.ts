@@ -1,4 +1,5 @@
 import axios, { AxiosRequestConfig, AxiosResponse } from "axios";
+import { axiosClient } from "@/http/rest-client";
 
 // TODO: HTTPS einrichten
 // https://nextjs.org/docs/app/api-reference/next-cli#https-for-local-development
@@ -26,12 +27,31 @@ export const loginApi = async (
     urlencoded.append("password", loginDaten.password);
 
     const requestConfig: AxiosRequestConfig = {
-        method: "POST",
-        url: process.env.NEXT_PUBLIC_BACKEND_SERVER_LOGIN_URL!,
         headers: {
             "Content-Type": "application/x-www-form-urlencoded",
         },
-        data: urlencoded,
     };
-    return await axios.request<LoginResponse>(requestConfig);
+    return await axiosClient.post<LoginResponse>(
+        "/auth/login",
+        urlencoded,
+        requestConfig,
+    );
+};
+
+export const refreshTokenApi = async (
+    refreshToken: string,
+): Promise<AxiosResponse<LoginResponse>> => {
+    const body = {
+        refresh_token: refreshToken,
+    };
+    const requestConfig: AxiosRequestConfig = {
+        headers: {
+            "Content-Type": "application/json",
+        },
+    };
+    return await axiosClient.post<LoginResponse>(
+        "/auth/refresh",
+        JSON.stringify(body),
+        requestConfig,
+    );
 };

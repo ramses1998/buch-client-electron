@@ -1,6 +1,6 @@
 "use client";
 // eslint-disable-next-line eslint-comments/disable-enable-pair
-/* eslint-disable no-unused-vars,@typescript-eslint/ban-ts-comment */
+/* eslint-disable no-unused-vars,@typescript-eslint/ban-ts-comment, @typescript-eslint/no-floating-promises, react-hooks/exhaustive-deps */
 import React, {
     createContext,
     PropsWithChildren,
@@ -15,20 +15,27 @@ import axios, {
     InternalAxiosRequestConfig,
     RawAxiosResponseHeaders,
 } from "axios";
-import { loginApi, LoginDaten, LoginResponse } from "@/api/auth";
-import { GraphQLErrorItem, GraphqlErrorResponse } from "@/api/graphqlError";
+import {
+    loginApi,
+    LoginDaten,
+    LoginResponse,
+    refreshTokenApi,
+} from "@/http/auth";
+import { GraphQLErrorItem, GraphqlErrorResponse } from "@/http/graphqlError";
 import {
     Buch,
-    BuchInputModell,
+    BuchDto,
+    BuchInputModel,
     BuchResponse,
-    BuchUpdateModell,
+    BuchUpdateModel,
     createBuchApi,
     deleteBuchApi,
     getAlleBuecherApi,
     getBuchByIdApi,
     updateBuchApi,
-} from "@/api/buch";
+} from "@/http/buch";
 import { useRouter } from "next/router";
+import { axiosClient } from "@/http/rest-client";
 
 type ContextOutput = {
     isClient: boolean;
@@ -40,9 +47,9 @@ type ContextOutput = {
     ) => void;
     getBuchById: (id: number) => Promise<Buch>;
     getAlleBuecher: () => Promise<Buch[]>;
-    createBuch: (buchInputModell: BuchInputModell) => Promise<AxiosResponse>;
-    updateBuch: (buch: BuchUpdateModell) => Promise<void>;
-    deleteBuch: (id: number) => Promise<void>;
+    createBuch: (buchDto: BuchDto) => Promise<AxiosResponse>;
+    updateBuch: (buch: BuchUpdateModel) => Promise<void>;
+    deleteBuch: (id: number, version: number) => Promise<AxiosResponse<void>>;
 };
 
 // @ts-ignore
@@ -62,11 +69,43 @@ export const ApplicationContextProvider: React.FC<Props> = (props: Props) => {
 
     useEffect(() => {
         setIsClient(true);
+
+        axiosClient.interceptors.request.use(
+            (config) => {
+                const httpMethod = config.method?.toLowerCase();
+                if (
+                    httpMethod === "post" ||
+                    httpMethod === "put" ||
+                    httpMethod === "delete"
+                ) {
+                    const accessToken = localStorage.getItem("access_token");
+                    if (!accessToken) return config;
+
+                    // @ts-ignore
+                    config.headers = {
+                        ...config.headers,
+                        Authorization: `Bearer ${accessToken}`,
+                    };
+                    // if (hasTokenExpired()) router.push("/login");
+                }
+
+                return config;
+            },
+            (error) => Promise.reject(error),
+        );
     }, []);
 
     useEffect(() => {
-        if (hasTokenExpired()) setIsUserAuthenticated(false);
+        checkAuthentication();
     }, [router]);
+
+    const checkAuthentication = () => {
+        if (hasRefreshTokenExpired()) {
+            setIsUserAuthenticated(false);
+            return;
+        }
+        if (hasAccessTokenExpired()) refreshToken();
+    };
 
     const accessToken =
         typeof localStorage !== "undefined"
@@ -134,13 +173,34 @@ export const ApplicationContextProvider: React.FC<Props> = (props: Props) => {
         localStorage.removeItem("session_state");
     };
 
-    const hasTokenExpired = (): boolean => {
+    const hasAccessTokenExpired = (): boolean => {
         const currentDate = new Date();
         const expirationTimeStamp = localStorage.getItem("expires");
         return (
             !expirationTimeStamp ||
             currentDate.getTime() > new Date(expirationTimeStamp).getTime()
         );
+    };
+
+    const hasRefreshTokenExpired = (): boolean => {
+        const currentDate = new Date();
+        const expirationTimeStamp = localStorage.getItem("refresh_expires");
+        return (
+            !expirationTimeStamp ||
+            currentDate.getTime() > new Date(expirationTimeStamp).getTime()
+        );
+    };
+
+    const refreshToken = async () => {
+        const refreshToken = localStorage.getItem("refresh_token");
+        if (!refreshToken || hasRefreshTokenExpired()) {
+            await router.push("/login");
+            return;
+        }
+        const loginResponse = await refreshTokenApi(refreshToken);
+        console.log(loginResponse);
+        saveToken(loginResponse.data);
+        setIsUserAuthenticated(true);
     };
 
     const getBuchById = async (id: number): Promise<Buch> => {
@@ -155,20 +215,13 @@ export const ApplicationContextProvider: React.FC<Props> = (props: Props) => {
         );
     };
 
-    const createBuch = async (
-        buchInputModell: BuchInputModell,
-    ): Promise<AxiosResponse> => {
-        const createBuchResponse = await createBuchApi(
-            buchInputModell,
-            baseAxiosRequestConfig,
-        );
-        handleGraphQLRequestError(
-            createBuchResponse.data as unknown as GraphqlErrorResponse,
-        );
-        return createBuchResponse;
+    const createBuch = async (buchDto: BuchDto): Promise<AxiosResponse> => {
+        await refreshToken();
+        const buchInputModel = convertBuchDtoToBuchInputModell(buchDto);
+        return await createBuchApi(buchInputModel);
     };
 
-    const updateBuch = async (buch: BuchUpdateModell): Promise<void> => {
+    const updateBuch = async (buch: BuchUpdateModel): Promise<void> => {
         const updateBuchResponse = await updateBuchApi(
             buch,
             baseAxiosRequestConfig,
@@ -178,14 +231,11 @@ export const ApplicationContextProvider: React.FC<Props> = (props: Props) => {
         );
     };
 
-    const deleteBuch = async (id: number): Promise<void> => {
-        const deleteBuchResponse = await deleteBuchApi(
-            id,
-            baseAxiosRequestConfig,
-        );
-        handleGraphQLRequestError(
-            deleteBuchResponse.data as unknown as GraphqlErrorResponse,
-        );
+    const deleteBuch = async (
+        id: number,
+        version: number,
+    ): Promise<AxiosResponse<void>> => {
+        return await deleteBuchApi(id, version);
     };
 
     const handleGraphQLRequestError = (errorResponse: GraphqlErrorResponse) => {
@@ -239,13 +289,15 @@ export const ApplicationContextProvider: React.FC<Props> = (props: Props) => {
         axios.interceptors.request.use(requestInterceptor);
     };
 
+    // axios.interceptors.request.use(authInterceptor, undefined);
+
     return (
         <ApplicationContext.Provider
             value={{
                 isClient,
                 login,
                 logout,
-                isUserAuthenticated: isUserAuthenticated,
+                isUserAuthenticated,
                 initializeRequestInterceptor,
                 getBuchById,
                 getAlleBuecher,
@@ -274,6 +326,17 @@ const convertBuchResponseToBuch = (
         titel: buchResponse.titel.titel,
         rabatt: buchResponse.rabatt * 100,
         version: formattedEtag,
+    };
+};
+
+const convertBuchDtoToBuchInputModell = (buchDto: BuchDto): BuchInputModel => {
+    const { titel, untertitel, ...rest } = buchDto;
+    return {
+        ...rest,
+        titel: {
+            titel: titel,
+            untertitel: untertitel as string,
+        },
     };
 };
 

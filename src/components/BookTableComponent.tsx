@@ -5,7 +5,7 @@ import React, { PropsWithChildren } from "react";
 import Table from "@mui/joy/Table";
 import { Box, Theme, useTheme } from "@mui/joy";
 import Stack from "@mui/joy/Stack";
-import { Buch } from "@/api/buch";
+import { Buch } from "@/http/buch";
 import { useRouter } from "next/router";
 import { RatingComponent } from "@/components/shared/RatingComponent";
 import { CustomBadgeComponent } from "@/components/shared/CustomBadgeComponent";

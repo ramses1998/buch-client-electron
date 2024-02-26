@@ -19,7 +19,7 @@ import VisibilityOffOutlinedIcon from "@mui/icons-material/VisibilityOffOutlined
 import VisibilityOutlinedIcon from "@mui/icons-material/VisibilityOutlined";
 import styled from "styled-components";
 import { useApplicationContextApi } from "@/context/ApplicationContextApi";
-import { LoginDaten } from "@/api/auth";
+import { LoginDaten } from "@/http/auth";
 import Alert from "@mui/material/Alert";
 import {
     DetailsListComponent,

@@ -7,7 +7,7 @@ import styled from "styled-components";
 import { Box, Button, IconButton, ButtonGroup, Input, Stack } from "@mui/joy";
 import SearchIcon from "@mui/icons-material/Search";
 import useSWR from "swr";
-import { Buch } from "@/api/buch";
+import { Buch } from "@/http/buch";
 import { LoadingComponent } from "@/components/shared/LoadingComponent";
 import Alert from "@mui/material/Alert";
 import {

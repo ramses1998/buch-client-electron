@@ -5,7 +5,7 @@ import "@fontsource/inter";
 import React from "react";
 import { PageWrapperComponent } from "@/components/shared/PageWrapperComponent";
 import useSWR from "swr";
-import { Buch } from "@/api/buch";
+import { Buch } from "@/http/buch";
 import { LoadingComponent } from "@/components/shared/LoadingComponent";
 import Alert from "@mui/material/Alert";
 import { Box, Button, Card, Stack, Typography } from "@mui/joy";

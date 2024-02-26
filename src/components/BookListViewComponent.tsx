@@ -2,7 +2,7 @@
 // eslint-disable-next-line eslint-comments/disable-enable-pair
 /* eslint-disable @typescript-eslint/no-misused-promises */
 import React from "react";
-import { Buch } from "@/api/buch";
+import { Buch } from "@/http/buch";
 import { useRouter } from "next/router";
 import styled from "styled-components";
 import { Box, Stack, Typography } from "@mui/joy";

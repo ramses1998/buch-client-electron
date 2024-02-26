@@ -15,7 +15,8 @@ type GroupItem = {
     value: ReactNode;
 };
 
-// Generic T muss angegeben werden, um ein Objekt dieses Typen zu erstellen. Der generische Typ nimmt nur strings-Typen oder Union-Typen an
+// Generic T muss angegeben werden, um ein Objekt dieses Typen zu erstellen.
+// Der generische Typ nimmt nur strings-Typen oder Union-Typen an
 export type Group<T extends string> = {
     name: T;
     items: GroupItem[];

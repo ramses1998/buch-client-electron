@@ -1,5 +1,5 @@
 import React from "react";
-import { Buch } from "@/api/buch";
+import { Buch } from "@/http/buch";
 import { CustomBadgeComponent } from "@/components/shared/CustomBadgeComponent";
 import { Box, Card, Typography } from "@mui/joy";
 import styled from "styled-components";
