@@ -11,7 +11,6 @@ import { Buch } from "@/http/buch";
 import { LoadingComponent } from "@/components/shared/LoadingComponent";
 import Alert from "@mui/material/Alert";
 import AspectRatio from "@mui/joy/AspectRatio";
-import ArrowForward from "@mui/icons-material/ArrowForward";
 import VpnKeyOutlinedIcon from "@mui/icons-material/VpnKeyOutlined";
 import LocalShippingOutlinedIcon from "@mui/icons-material/LocalShippingOutlined";
 import PercentOutlinedIcon from "@mui/icons-material/PercentOutlined";
@@ -65,6 +64,11 @@ export const AnalysisPage: React.FC = () => {
         return buecher.filter((b) => b.rating >= 3).length;
     };
 
+    const getAnzahlKindelBuecher = (): number => {
+        if (!buecher) return 0;
+        return buecher.filter(b => b.art === "KINDLE").length;
+    }
+
     const keyValues: KeyValue[] = [
         {
             icon: <VpnKeyOutlinedIcon />,
@@ -87,12 +91,12 @@ export const AnalysisPage: React.FC = () => {
         {
             icon: <StarBorderPurple500OutlinedIcon />,
             title: `${getAnzahlBuecherMitGutemRating()} mit gutem Rating`,
-            description: "Bücher mit mehr als 3 Sternen als Bewertung.",
+            description: "Bücher mit 3 oder mehr Sternen als Bewertung.",
             onClick: () => router.push("/buecher"),
         },
         {
             icon: <AutoStoriesOutlinedIcon />,
-            title: `${getAnzahlLieferbareBuecher()} KINDLE Bücher`,
+            title: `${getAnzahlKindelBuecher()} KINDLE Bücher`,
             description: "Bücher, die runtergeladen werden können.",
             onClick: () => router.push("/buecher"),
         },
@@ -263,7 +267,7 @@ const KeyValueCardComponent: React.FC<PropsKeyValueCard> = (
                 }}
                 onClick={onClick}
             >
-                <ArrowForward />
+                <ArrowForwardIcon />
             </IconButton>
         </Card>
     );
