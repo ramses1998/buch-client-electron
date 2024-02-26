@@ -1,6 +1,6 @@
 "use client";
 // eslint-disable-next-line eslint-comments/disable-enable-pair
-/* eslint-disable no-unused-vars,@typescript-eslint/ban-ts-comment, @typescript-eslint/no-floating-promises, react-hooks/exhaustive-deps */
+/* eslint-disable no-unused-vars,@typescript-eslint/ban-ts-comment, @typescript-eslint/no-floating-promises, react-hooks/exhaustive-deps, @typescript-eslint/no-unused-vars */
 import React, {
     createContext,
     PropsWithChildren,
@@ -8,11 +8,10 @@ import React, {
     useEffect,
     useState,
 } from "react";
-import axios, {
+import {
     AxiosRequestConfig,
     AxiosResponse,
     AxiosResponseHeaders,
-    InternalAxiosRequestConfig,
     RawAxiosResponseHeaders,
 } from "axios";
 import {
@@ -21,7 +20,6 @@ import {
     LoginResponse,
     refreshTokenApi,
 } from "@/http/auth";
-import { GraphQLErrorItem, GraphqlErrorResponse } from "@/http/graphqlError";
 import {
     Buch,
     BuchDto,
@@ -38,17 +36,17 @@ import { useRouter } from "next/router";
 import { axiosClient } from "@/http/rest-client";
 
 type ContextOutput = {
-    isClient: boolean;
     login: (loginDaten: LoginDaten) => Promise<void>;
     logout: () => void;
     isUserAuthenticated: boolean;
-    initializeRequestInterceptor: (
-        announceTokenValidity: (isTokenValid: boolean) => void,
-    ) => void;
     getBuchById: (id: number) => Promise<Buch>;
     getAlleBuecher: () => Promise<Buch[]>;
     createBuch: (buchDto: BuchDto) => Promise<AxiosResponse>;
-    updateBuch: (buch: BuchUpdateModel) => Promise<void>;
+    updateBuch: (
+        id: number,
+        version: number,
+        buchUpdateModel: BuchUpdateModel,
+    ) => Promise<AxiosResponse<void>>;
     deleteBuch: (id: number, version: number) => Promise<AxiosResponse<void>>;
 };
 
@@ -63,13 +61,10 @@ type Props = PropsWithChildren;
 export const ApplicationContextProvider: React.FC<Props> = (props: Props) => {
     const { children } = props;
     const router = useRouter();
-    const [isClient, setIsClient] = useState(false);
     const [isUserAuthenticated, setIsUserAuthenticated] =
         useState<boolean>(false);
 
     useEffect(() => {
-        setIsClient(true);
-
         axiosClient.interceptors.request.use(
             (config) => {
                 const httpMethod = config.method?.toLowerCase();
@@ -105,20 +100,6 @@ export const ApplicationContextProvider: React.FC<Props> = (props: Props) => {
             return;
         }
         if (hasAccessTokenExpired()) refreshToken();
-    };
-
-    const accessToken =
-        typeof localStorage !== "undefined"
-            ? localStorage.getItem("auth_token")
-            : undefined;
-
-    const baseAxiosRequestConfig: AxiosRequestConfig<string> = {
-        method: "post",
-        url: process.env.NEXT_PUBLIC_BACKEND_SERVER_URL as string,
-        headers: {
-            "Content-Type": "application/json",
-            Authorization: `Bearer ${accessToken}`,
-        },
     };
 
     const login = async (loginDaten: LoginDaten) => {
@@ -217,18 +198,16 @@ export const ApplicationContextProvider: React.FC<Props> = (props: Props) => {
 
     const createBuch = async (buchDto: BuchDto): Promise<AxiosResponse> => {
         await refreshToken();
-        const buchInputModel = convertBuchDtoToBuchInputModell(buchDto);
+        const buchInputModel = convertBuchDtoToBuchInputModel(buchDto);
         return await createBuchApi(buchInputModel);
     };
 
-    const updateBuch = async (buch: BuchUpdateModel): Promise<void> => {
-        const updateBuchResponse = await updateBuchApi(
-            buch,
-            baseAxiosRequestConfig,
-        );
-        handleGraphQLRequestError(
-            updateBuchResponse.data as unknown as GraphqlErrorResponse,
-        );
+    const updateBuch = async (
+        id: number,
+        version: number,
+        buchUpdateModel: BuchUpdateModel,
+    ): Promise<AxiosResponse<void>> => {
+        return await updateBuchApi(id, version, buchUpdateModel);
     };
 
     const deleteBuch = async (
@@ -238,67 +217,25 @@ export const ApplicationContextProvider: React.FC<Props> = (props: Props) => {
         return await deleteBuchApi(id, version);
     };
 
-    const handleGraphQLRequestError = (errorResponse: GraphqlErrorResponse) => {
-        const errors: GraphQLErrorItem[] | undefined = errorResponse.errors;
-        if (errors === undefined) return;
-        const errorMessage: string = errors[0].message;
-        if (errorMessage === undefined) {
-            const extensionErrorMessage = errors[0].extensions?.stacktrace[0];
-            console.error(extensionErrorMessage);
-            throw new Error(extensionErrorMessage);
-        }
-        console.error(errorMessage);
-        throw new Error(errorMessage);
-    };
-
-    const tokenExistsAndIsValid = (): boolean => {
-        const authenticationToken =
-            typeof localStorage !== "undefined"
-                ? localStorage.getItem("auth_token")
-                : undefined;
-
-        switch (authenticationToken) {
-            case undefined:
-                return false;
-            case "undefined":
-                return false;
-            case null:
-                return false;
-            case "null":
-                return false;
-            case "":
-                return false;
-            default:
-                return true;
-        }
-    };
-
-    const initializeRequestInterceptor = (
-        announceTokenValidity: (isTokenValid: boolean) => void,
-    ) => {
-        const requestInterceptor = (config: InternalAxiosRequestConfig) => {
-            if (tokenExistsAndIsValid()) {
-                announceTokenValidity(true);
-            }
-            if (!tokenExistsAndIsValid()) {
-                announceTokenValidity(false);
-            }
-            return config;
-        };
-
-        axios.interceptors.request.use(requestInterceptor);
-    };
-
-    // axios.interceptors.request.use(authInterceptor, undefined);
+    // const handleGraphQLRequestError = (errorResponse: GraphqlErrorResponse) => {
+    //     const errors: GraphQLErrorItem[] | undefined = errorResponse.errors;
+    //     if (errors === undefined) return;
+    //     const errorMessage: string = errors[0].message;
+    //     if (errorMessage === undefined) {
+    //         const extensionErrorMessage = errors[0].extensions?.stacktrace[0];
+    //         console.error(extensionErrorMessage);
+    //         throw new Error(extensionErrorMessage);
+    //     }
+    //     console.error(errorMessage);
+    //     throw new Error(errorMessage);
+    // };
 
     return (
         <ApplicationContext.Provider
             value={{
-                isClient,
                 login,
                 logout,
                 isUserAuthenticated,
-                initializeRequestInterceptor,
                 getBuchById,
                 getAlleBuecher,
                 createBuch,
@@ -324,12 +261,13 @@ const convertBuchResponseToBuch = (
         id: extractIdFromUrl(buchResponse._links.self.href),
         datum: new Date(buchResponse.datum),
         titel: buchResponse.titel.titel,
-        rabatt: buchResponse.rabatt * 100,
+        untertitel: buchResponse.titel.untertitel,
+        rabatt: buchResponse.rabatt,
         version: formattedEtag,
     };
 };
 
-const convertBuchDtoToBuchInputModell = (buchDto: BuchDto): BuchInputModel => {
+const convertBuchDtoToBuchInputModel = (buchDto: BuchDto): BuchInputModel => {
     const { titel, untertitel, ...rest } = buchDto;
     return {
         ...rest,
@@ -337,6 +275,23 @@ const convertBuchDtoToBuchInputModell = (buchDto: BuchDto): BuchInputModel => {
             titel: titel,
             untertitel: untertitel as string,
         },
+    };
+};
+
+export const convertBuchDtoToBuchUpdateModel = (
+    buchDto: BuchDto,
+): BuchUpdateModel => {
+    const { version, titel, untertitel, ...rest } = buchDto;
+    return {
+        ...rest,
+    };
+};
+
+export const convertBuchToBuchDto = (buch: Buch): BuchDto => {
+    const { id, datum, ...rest } = buch;
+    return {
+        ...rest,
+        datum: datum.toISOString(),
     };
 };
 

@@ -4,20 +4,22 @@ import React, { ChangeEvent, useEffect, useState } from "react";
 import FormControl from "@mui/joy/FormControl";
 import FormLabel from "@mui/joy/FormLabel";
 import { BuchArt, BuchDto } from "@/http/buch";
-import { Button, Input, Stack } from "@mui/joy";
+import { Button, Input, Stack, Typography } from "@mui/joy";
 import { InputTypeMap } from "@mui/joy/Input/InputProps";
 import NumbersOutlinedIcon from "@mui/icons-material/NumbersOutlined";
+import TitleIcon from "@mui/icons-material/Title";
+import TocIcon from "@mui/icons-material/Toc";
 import StarBorderOutlinedIcon from "@mui/icons-material/StarBorderOutlined";
 import AutoStoriesOutlinedIcon from "@mui/icons-material/AutoStoriesOutlined";
 import EuroOutlinedIcon from "@mui/icons-material/EuroOutlined";
 import PercentOutlinedIcon from "@mui/icons-material/PercentOutlined";
-import LocalShippingOutlinedIcon from "@mui/icons-material/LocalShippingOutlined";
 import CalendarMonthOutlinedIcon from "@mui/icons-material/CalendarMonthOutlined";
 import LanguageOutlinedIcon from "@mui/icons-material/LanguageOutlined";
+import DoNotDisturbAltIcon from "@mui/icons-material/DoNotDisturbAlt";
 import Select from "@mui/joy/Select";
 import Option from "@mui/joy/Option";
 
-const INITIAL_BUCH_INPUT_MODELL: BuchDto = {
+const INITIAL_BUCH_INPUT_MODEL: BuchDto = {
     isbn: "",
     rating: 0,
     art: "DRUCKAUSGABE",
@@ -39,19 +41,21 @@ type InputField = InputTypeMap["props"] & {
 };
 
 type Props = {
-    buchInputModel?: BuchDto;
+    buchDto?: BuchDto | undefined;
     onSubmit: (buchDto: BuchDto) => void;
 };
 
 export const BuchFormularComponent: React.FC<Props> = (props: Props) => {
-    const { buchInputModel, onSubmit } = props;
+    const { buchDto, onSubmit } = props;
+
     const [bookToSubmit, setBookToSubmit] = useState<BuchDto>(
-        INITIAL_BUCH_INPUT_MODELL,
+        INITIAL_BUCH_INPUT_MODEL,
     );
 
     useEffect(() => {
-        console.log(bookToSubmit);
-    }, [bookToSubmit]);
+        if (!buchDto) return;
+        setBookToSubmit(buchDto);
+    }, [buchDto]);
 
     const handleInputElementChange = (
         event: ChangeEvent<HTMLInputElement>,
@@ -109,17 +113,19 @@ export const BuchFormularComponent: React.FC<Props> = (props: Props) => {
             name: "titel",
             value: bookToSubmit.titel,
             onChange: (e) => handleInputElementChange(e, "string"),
-            startDecorator: <LanguageOutlinedIcon fontSize="small" />,
+            startDecorator: <TitleIcon fontSize="small" />,
             placeholder: "Titel",
             required: true,
+            disabled: buchDto !== undefined,
         },
         {
             name: "untertitel",
             value: bookToSubmit.untertitel,
             onChange: (e) => handleInputElementChange(e, "string"),
-            startDecorator: <LanguageOutlinedIcon fontSize="small" />,
+            startDecorator: <TocIcon fontSize="small" />,
             placeholder: "Untertitel",
             required: true,
+            disabled: buchDto !== undefined,
         },
         {
             name: "rating",
@@ -202,6 +208,7 @@ export const BuchFormularComponent: React.FC<Props> = (props: Props) => {
                             <Select
                                 defaultValue={input.value}
                                 size="lg"
+                                startDecorator={input.startDecorator}
                                 onChange={(e, value) =>
                                     handleSelectElementChange(
                                         e,
@@ -223,7 +230,27 @@ export const BuchFormularComponent: React.FC<Props> = (props: Props) => {
                 return (
                     <FormControl key={input.name}>
                         <FormLabel>{input.placeholder}</FormLabel>
-                        <Input {...input} placeholder="" size="lg" />
+                        <Input
+                            {...input}
+                            placeholder=""
+                            size="lg"
+                            variant={input.disabled ? "solid" : "outlined"}
+                            endDecorator={
+                                input.disabled ? (
+                                    <Stack
+                                        direction="row"
+                                        spacing="var(--gap-1)"
+                                        alignItems="center"
+                                        alignContent="center"
+                                    >
+                                        <Typography level="body-sm">
+                                            Nicht änderbar
+                                        </Typography>
+                                        <DoNotDisturbAltIcon color="error" />
+                                    </Stack>
+                                ) : null
+                            }
+                        />
                         {/*<FormHelperText>This is a helper text.</FormHelperText>*/}
                     </FormControl>
                 );

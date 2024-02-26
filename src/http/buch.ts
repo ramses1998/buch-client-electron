@@ -1,4 +1,4 @@
-import axios, { AxiosRequestConfig, AxiosResponse } from "axios";
+import { AxiosRequestConfig, AxiosResponse } from "axios";
 import { axiosClient } from "@/http/rest-client";
 
 export type BuchArt = "DRUCKAUSGABE" | "KINDLE";
@@ -57,13 +57,10 @@ export type BuchInputModel = Omit<Buch, "id" | "datum" | "titel"> & {
 };
 
 export type BuchUpdateModel = Omit<
-    BuchResponse,
-    "lieferbar" | "id" | "rabatt" | "titel"
+    Buch,
+    "id" | "version" | "titel" | "datum" | "untertitel"
 > & {
-    datum: Date;
-    lieferbar: string;
-    id: string;
-    rabatt: number;
+    datum: string;
 };
 
 export type BuchListResponse = {
@@ -107,11 +104,18 @@ export const createBuchApi = async (
 };
 
 export const updateBuchApi = async (
+    id: number,
+    version: number,
     buchUpdateModel: BuchUpdateModel,
-    baseRequestConfig: AxiosRequestConfig<string>,
 ): Promise<AxiosResponse> => {
-    const requestConfig = { ...baseRequestConfig, data: {} };
-    return await axios.request(requestConfig);
+    const requestConfig: AxiosRequestConfig = {
+        headers: {
+            "If-Match": `"${version}"`,
+            "Content-Type": "application/json",
+        },
+    };
+    const serializedBody = JSON.stringify(buchUpdateModel);
+    return await axiosClient.put(`/rest/${id}`, serializedBody, requestConfig);
 };
 
 export const deleteBuchApi = async (

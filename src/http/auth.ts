@@ -1,4 +1,4 @@
-import axios, { AxiosRequestConfig, AxiosResponse } from "axios";
+import { AxiosRequestConfig, AxiosResponse } from "axios";
 import { axiosClient } from "@/http/rest-client";
 
 // TODO: HTTPS einrichten

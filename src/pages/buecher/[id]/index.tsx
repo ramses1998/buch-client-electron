@@ -92,7 +92,7 @@ const BookDetailPage: React.FC = () => {
             {
                 icon: <PercentOutlinedIcon fontSize="small" />,
                 label: "Rabatt",
-                value: `${buch?.rabatt.toFixed(2)} %`,
+                value: `${Number(buch?.rabatt.toFixed(2)) * 100} %`,
             },
             {
                 icon: <ImportContactsOutlinedIcon fontSize="small" />,
@@ -133,7 +133,7 @@ const BookDetailPage: React.FC = () => {
     };
 
     if (isLoading || buch === undefined)
-        return <LoadingComponent message="Bücher werden geladen..." />;
+        return <LoadingComponent message="Das Buch wird geladen..." />;
 
     if (error) {
         return (
@@ -152,7 +152,11 @@ const BookDetailPage: React.FC = () => {
                 <Stack spacing={"var(--gap-4)"}>
                     <BookCardComponent buch={buch} />
                     <Stack spacing={"var(--gap-1)"} justifyItems={"center"}>
-                        <Button onClick={() => alert("In Entwicklung")}>
+                        <Button
+                            onClick={() =>
+                                router.push(`/buecher/update/${buch.id}`)
+                            }
+                        >
                             Bearbeiten
                         </Button>
                         <Button color="danger" onClick={handleDelete}>
