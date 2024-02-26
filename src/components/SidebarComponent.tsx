@@ -54,7 +54,7 @@ export const SidebarComponent: React.FC = () => {
             label: "Analysen",
             icon: <BarChartOutlinedIcon />,
             isActive: router.pathname.includes("/analysen"),
-            onClick: () => alert("In Bearbeitung"),
+            onClick: () => router.push("/analysen"),
         },
         {
             label: "Mitteilungen",

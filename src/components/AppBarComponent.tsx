@@ -38,10 +38,11 @@ export const AppBarComponent: React.FC = () => {
                 </Typography>
             ) : null}
             <SearchInputContainer>
-                <ButtonGroup>
+                <ButtonGroup size="sm">
                     <Button
                         color="primary"
                         variant="plain"
+                        size={"sm"}
                         startDecorator={<ArrowBackOutlinedIcon />}
                         disabled={isBrowserHistoryEmpty}
                         onClick={() => router.back()}

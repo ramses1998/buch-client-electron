@@ -50,7 +50,7 @@ const SidebarAndMainContentContainer = styled(Box)`
 
 const MainBoxContainer = styled(Box)`
     padding: var(--gap-5) var(--gap-5) var(--gap-8) var(--gap-5);
-    border-radius: var(--gap-2) 0 0 0;
+    border-radius: var(--gap-1) 0 0 0;
     background: rgba(187, 187, 187, 0.3);
     overflow: auto;
     width: 100%;
