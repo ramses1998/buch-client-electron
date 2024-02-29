@@ -51,7 +51,7 @@ export const PageWrapperComponent: React.FC<Props> = (props) => {
                 {title || title ? (
                     <TitleAndSubtitleContainer>
                         <Typography level="h3">{title}</Typography>
-                        <Typography level="title-lg">{subtitle}</Typography>
+                        <Typography level="title-sm">{subtitle}</Typography>
                     </TitleAndSubtitleContainer>
                 ) : null}
                 <Box>{children}</Box>

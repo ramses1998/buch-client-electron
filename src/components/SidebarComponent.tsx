@@ -12,24 +12,34 @@ import SettingsOutlinedIcon from "@mui/icons-material/SettingsOutlined";
 import KeyboardDoubleArrowLeftOutlinedIcon from "@mui/icons-material/KeyboardDoubleArrowLeftOutlined";
 import KeyboardDoubleArrowRightOutlinedIcon from "@mui/icons-material/KeyboardDoubleArrowRightOutlined";
 import styled from "styled-components";
-import { Box } from "@mui/joy";
+import { Box, Chip } from "@mui/joy";
 import List from "@mui/joy/List";
 import ListItem from "@mui/joy/ListItem";
 import ListItemDecorator from "@mui/joy/ListItemDecorator";
 import ListItemButton from "@mui/joy/ListItemButton";
 import { useRouter } from "next/router";
+import { useMitteilungContext } from "@/context/NotificationContextApi";
 
 const INITIAL_SIDEBAR_STATE = true;
 
 type NavigationButton = {
     label: string;
     icon: ReactNode;
-    isActive?: boolean;
+    isActive?: boolean | undefined;
+    endAction?: ReactNode | undefined;
     onClick: () => void;
 };
 export const SidebarComponent: React.FC = () => {
     const [isOpen, setIsOpen] = useState<boolean>(INITIAL_SIDEBAR_STATE);
     const router = useRouter();
+    const mitteilungContext = useMitteilungContext();
+
+    const notificationEndIcon: ReactNode | undefined =
+        mitteilungContext.mitteilungen.filter((m) => !m.seen).length > 0 ? (
+            <Chip variant="solid" color="primary" size="sm">
+                {mitteilungContext.mitteilungen.filter((m) => !m.seen).length}
+            </Chip>
+        ) : undefined;
 
     const upperButtons: NavigationButton[] = [
         {
@@ -60,7 +70,8 @@ export const SidebarComponent: React.FC = () => {
             label: "Mitteilungen",
             icon: <NotificationsOutlinedIcon />,
             isActive: router.pathname.includes("/mitteilungen"),
-            onClick: () => alert("In Bearbeitung"),
+            endAction: notificationEndIcon,
+            onClick: () => router.push("/mitteilungen"),
         },
     ];
 
@@ -118,6 +129,7 @@ const ButtonListComponent: React.FC<PropsButtonList> = (
                 <ListItem
                     key={`${button.label}${index}`}
                     onClick={button.onClick}
+                    endAction={button.endAction}
                 >
                     <StyledListItemButton
                         selected={button.isActive}

@@ -27,6 +27,11 @@ import {
     Group,
 } from "@/components/shared/DetailListComponent";
 import { useRouter } from "next/router";
+import {
+    Mitteilung,
+    useMitteilungContext,
+} from "@/context/NotificationContextApi";
+import { v4 as uuid } from "uuid";
 
 type GroupName = "Über das Buch" | "Author" | "Lieferung" | "Sonstiges";
 
@@ -43,7 +48,19 @@ const BookDetailPage: React.FC = () => {
         appContext.getBuchById(parseInt(router.query?.id as string)),
     );
 
+    const mitteilungContext = useMitteilungContext();
     const { isSmall } = useMediaQuery();
+
+    const mitteilungAusloesen = () => {
+        const neuMitteilung: Mitteilung = {
+            id: uuid(),
+            title: `Das Buch "${buch?.titel}" wurde erfolgreich gelöscht`,
+            description: `Du hast das Buch ${buch?.titel} gelöscht`,
+            seen: false,
+            creationTimeStamp: new Date().toISOString(),
+        };
+        mitteilungContext.triggerMitteilung(neuMitteilung);
+    };
 
     const aboutBookGroup: Group<GroupName> = {
         name: "Über das Buch",
@@ -129,6 +146,7 @@ const BookDetailPage: React.FC = () => {
     const handleDelete = async () => {
         if (!buch) return;
         await appContext.deleteBuch(buch.id, buch.version as number);
+        mitteilungAusloesen();
         router.push("/buecher");
     };
 
