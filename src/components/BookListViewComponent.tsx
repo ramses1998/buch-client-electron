@@ -6,6 +6,7 @@ import { Buch } from "@/http/buch";
 import { useRouter } from "next/router";
 import styled from "styled-components";
 import { Box, Stack, Typography } from "@mui/joy";
+import { RatingComponent } from "@/components/shared/RatingComponent";
 
 type Props = {
     buecher: Buch[];
@@ -26,8 +27,13 @@ export const BookListViewComponent: React.FC<Props> = (props) => {
                         <Typography component="p" level={"title-lg"}>
                             {buch.titel}
                         </Typography>
-                        <Typography component="p" level={"body-sm"}>
-                            {`${buch.isbn}  |  ${buch.art}  |  ${buch.homepage}`}
+                        <Typography
+                            component="div"
+                            level={"body-sm"}
+                            sx={{ display: "flex" }}
+                        >
+                            {`${buch.isbn}  |  ${buch.art}  |  ${buch.homepage}  |  `}{" "}
+                            <RatingComponent stars={buch.rating} />
                         </Typography>
                     </BookTitleAndPreviewInfo>
                     <Typography component="p" level={"title-lg"}>

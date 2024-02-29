@@ -86,7 +86,7 @@ export const SidebarComponent: React.FC = () => {
             label: "Einstellungen",
             icon: <SettingsOutlinedIcon />,
             isActive: router.pathname.includes("/einstellungen"),
-            onClick: () => alert("In Bearbeitung"),
+            onClick: () => router.push("/einstellungen"),
         },
         {
             label: "Seitenleiste zuklappen",
