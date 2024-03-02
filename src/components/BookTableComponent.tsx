@@ -3,12 +3,12 @@
 "use client";
 import React, { PropsWithChildren } from "react";
 import Table from "@mui/joy/Table";
-import { Box, Theme, useTheme } from "@mui/joy";
+import { Box, Theme, Typography, useTheme } from "@mui/joy";
 import Stack from "@mui/joy/Stack";
 import { Buch } from "@/http/buch";
 import { useRouter } from "next/router";
 import { RatingComponent } from "@/components/shared/RatingComponent";
-import { CustomBadgeComponent } from "@/components/shared/CustomBadgeComponent";
+import { CustomChipComponent } from "@/components/shared/CustomChipComponent";
 import AutoStoriesOutlinedIcon from "@mui/icons-material/AutoStoriesOutlined";
 import styled from "styled-components";
 import { useMediaQuery } from "@/hooks/useMediaQuery";
@@ -28,11 +28,21 @@ const BookTableComponent: React.FC<Props> = (props: Props) => {
         return buecher.map((buch) => ({
             ...buch,
             preis: `${buch.preis} €`,
-            rating: <RatingComponent stars={buch.rating} />,
+            rating: (
+                <Box
+                    sx={{
+                        display: "grid",
+                        justifyItems: "start",
+                        justifyContent: "start",
+                    }}
+                >
+                    <RatingComponent stars={buch.rating} />
+                </Box>
+            ),
             schlagwoerter: (
                 <Stack direction="row" spacing={"var(--gap-1)"}>
                     {buch.schlagwoerter?.map((w) => (
-                        <CustomBadgeComponent key={w} value={w} />
+                        <CustomChipComponent key={w} value={w} />
                     ))}
                 </Stack>
             ),
@@ -56,11 +66,25 @@ const BookTableComponent: React.FC<Props> = (props: Props) => {
                     {isLarge && (
                         <TableHeadCellForBookIconComponent component="th" />
                     )}
-                    <Box component="th">Titel</Box>
-                    {isLarge && <Box component="th">Isbn</Box>}
-                    {isLarge && <Box component="th">Art</Box>}
-                    <Box component="th">Bewertung</Box>
-                    <Box component="th">Preis</Box>
+                    <Box component="th" sx={{ width: "15%" }}>
+                        Titel
+                    </Box>
+                    {isLarge && (
+                        <Box component="th" sx={{ width: "15%" }}>
+                            Isbn
+                        </Box>
+                    )}
+                    {isLarge && (
+                        <Box component="th" sx={{ width: "10%" }}>
+                            Art
+                        </Box>
+                    )}
+                    <Box component="th" sx={{ width: "15%" }}>
+                        Bewertung
+                    </Box>
+                    <Box component="th" sx={{ width: "10%" }}>
+                        Preis
+                    </Box>
                     {isLarge && <Box component="th">Schlagwoerter</Box>}
                 </TableHeadRowComponent>
             </TableHeadComponent>

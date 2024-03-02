@@ -4,7 +4,16 @@ import React, { ChangeEvent, useEffect, useState } from "react";
 import FormControl from "@mui/joy/FormControl";
 import FormLabel from "@mui/joy/FormLabel";
 import { BuchArt, BuchDto } from "@/http/buch";
-import { Button, Input, Stack, Typography } from "@mui/joy";
+import {
+    Box,
+    Button,
+    Input,
+    Stack,
+    Typography,
+    Sheet,
+    Radio,
+    FormHelperText,
+} from "@mui/joy";
 import { InputTypeMap } from "@mui/joy/Input/InputProps";
 import NumbersOutlinedIcon from "@mui/icons-material/NumbersOutlined";
 import TitleIcon from "@mui/icons-material/Title";
@@ -18,6 +27,11 @@ import LanguageOutlinedIcon from "@mui/icons-material/LanguageOutlined";
 import DoNotDisturbAltIcon from "@mui/icons-material/DoNotDisturbAlt";
 import Select from "@mui/joy/Select";
 import Option from "@mui/joy/Option";
+import LocalShippingOutlinedIcon from "@mui/icons-material/LocalShippingOutlined";
+import VpnKeyOutlinedIcon from "@mui/icons-material/VpnKeyOutlined";
+import DeleteForever from "@mui/icons-material/DeleteForever";
+import { CustomChipComponent } from "@/components/shared/CustomChipComponent";
+import { v4 as uuid } from "uuid";
 
 const INITIAL_BUCH_INPUT_MODEL: BuchDto = {
     isbn: "",
@@ -36,8 +50,15 @@ const INITIAL_BUCH_INPUT_MODEL: BuchDto = {
 type InputDataType = "string" | "number" | "boolean";
 
 type InputField = InputTypeMap["props"] & {
-    isDropdown?: boolean;
+    isDropdown?: boolean | undefined;
     options?: string[];
+    isDynamicList?: boolean | undefined;
+};
+
+type SchlagwortInput = {
+    id: string;
+    value: string;
+    hint?: string | undefined;
 };
 
 type Props = {
@@ -49,8 +70,12 @@ export const BuchFormularComponent: React.FC<Props> = (props: Props) => {
     const { buchDto, onSubmit } = props;
 
     const [bookToSubmit, setBookToSubmit] = useState<BuchDto>(
-        INITIAL_BUCH_INPUT_MODEL,
+        buchDto ?? INITIAL_BUCH_INPUT_MODEL,
     );
+
+    const [schlagwortInputList, setSchlagwortInputList] = useState<
+        SchlagwortInput[]
+    >([]);
 
     useEffect(() => {
         if (!buchDto) return;
@@ -98,6 +123,117 @@ export const BuchFormularComponent: React.FC<Props> = (props: Props) => {
             ...prevState,
             [propertyName]: value,
         }));
+    };
+
+    const handleLieferbarChange = () => {
+        setBookToSubmit((prevState) => ({
+            ...prevState,
+            lieferbar: !prevState.lieferbar,
+        }));
+    };
+
+    const deleteSchlagwort = (wort: string) => {
+        setBookToSubmit((prevState) => ({
+            ...prevState,
+            schlagwoerter: prevState.schlagwoerter.filter((w) => w !== wort),
+        }));
+    };
+
+    const addSchlagwortInput = () => {
+        const schlagwort: SchlagwortInput = {
+            id: uuid(),
+            value: "",
+        };
+        setSchlagwortInputList((prevState) => [...prevState, schlagwort]);
+    };
+
+    const removeSchlagwortInput = (id: string) => {
+        setSchlagwortInputList((prevState) =>
+            prevState.filter((w) => w.id !== id),
+        );
+    };
+
+    const handleSchlagwortInputChange = (
+        event: ChangeEvent<HTMLInputElement>,
+        id: string,
+    ) => {
+        event?.preventDefault();
+        setSchlagwortInputList((prevState) => {
+            return prevState.map((w) => {
+                if (w.id === id) {
+                    return {
+                        ...w,
+                        value: event.target.value,
+                    };
+                }
+                return w;
+            });
+        });
+    };
+
+    const isSchlagwortValid = (schlagwortId: string): boolean => {
+        const schlagwort = schlagwortInputList.find(
+            (w) => w.id === schlagwortId,
+        ) as SchlagwortInput;
+
+        if (
+            bookToSubmit.schlagwoerter
+                .map((s) => s.toLowerCase())
+                .includes(schlagwort.value.toLowerCase())
+        ) {
+            setSchlagwortInputList((prevState) =>
+                prevState.map((s) => {
+                    if (s.id !== schlagwortId) return s;
+                    return {
+                        ...s,
+                        hint: "Dieses Schlagwort existiert bereits!",
+                    };
+                }),
+            );
+            return false;
+        }
+
+        if (schlagwort && schlagwort.value && schlagwort.value.length > 0)
+            return true;
+
+        setSchlagwortInputList((prevState) =>
+            prevState.map((s) => {
+                if (s.id !== schlagwortId) return s;
+                return {
+                    ...s,
+                    hint: "Dieses Feld darf nicht leer sein!",
+                };
+            }),
+        );
+        return false;
+    };
+
+    const addSchlagwortToBuchDto = (schlagwortId: string) => {
+        if (!isSchlagwortValid(schlagwortId)) return;
+
+        const { value: wort } = schlagwortInputList.find(
+            (s) => s.id === schlagwortId,
+        ) as SchlagwortInput;
+
+        setBookToSubmit((prevState) => ({
+            ...prevState,
+            schlagwoerter: [...prevState.schlagwoerter, wort],
+        }));
+
+        // Remove Input of word after it has been added to the BuchDto model
+        setSchlagwortInputList((prevState) =>
+            prevState.filter((s) => s.id !== schlagwortId),
+        );
+    };
+
+    const formatDateForInputField = (dateString: string): string => {
+        const currentDate = new Date(dateString);
+
+        const year = currentDate.getFullYear();
+        const month = String(currentDate.getMonth() + 1).padStart(2, "0");
+        const day = String(currentDate.getDate()).padStart(2, "0");
+
+        return `${year}-${month}-${day}`;
     };
 
     const inputFields: InputField[] = [
@@ -163,22 +299,33 @@ export const BuchFormularComponent: React.FC<Props> = (props: Props) => {
             placeholder: "Rabatt",
             required: true,
         },
-        // {
-        //     name: "lieferbar",
-        //     //value: bookToSubmit.lieferbar,
-        //     onChange: (e) => handleInputElementChange(e, "boolean"),
-        //     startDecorator: <LocalShippingOutlinedIcon fontSize="small" />,
-        //     placeholder: "Ist das Buch lieferbar",
-        //     required: true,
-        // },
+        {
+            name: "lieferbar",
+            value: bookToSubmit.lieferbar ? 1 : 0,
+            type: "checkbox",
+            onClick: handleLieferbarChange,
+            startDecorator: <LocalShippingOutlinedIcon fontSize="small" />,
+            placeholder: "Ist das Buch lieferbar ?",
+            required: true,
+        },
         {
             name: "datum",
-            value: bookToSubmit.datum,
+            value: formatDateForInputField(bookToSubmit.datum),
             type: "date",
             onChange: (e) => handleInputElementChange(e, "string"),
             startDecorator: <CalendarMonthOutlinedIcon fontSize="small" />,
             placeholder: "Erscheinungsdatum",
             required: true,
+        },
+        {
+            name: "schlagwoerter",
+            // value: bookToSubmit.schlagwoerter,
+            // onChange: () => {},
+            startDecorator: <VpnKeyOutlinedIcon fontSize="small" />,
+            placeholder: "Schlagwörter",
+            required: true,
+            isDynamicList: true,
+            options: bookToSubmit.schlagwoerter,
         },
         {
             name: "homepage",
@@ -188,14 +335,6 @@ export const BuchFormularComponent: React.FC<Props> = (props: Props) => {
             placeholder: "Homepage",
             required: true,
         },
-        // {
-        //     name: "schlagwoerter",
-        //     value: bookToSubmit.schlagwoerter,
-        //     onChange: (e) => handleInputElementChange(e, "array"),
-        //     startDecorator: <LanguageOutlinedIcon fontSize="small" />,
-        //     placeholder: "Schlagwoerter",
-        //     required: true,
-        // },
     ];
 
     return (
@@ -206,8 +345,8 @@ export const BuchFormularComponent: React.FC<Props> = (props: Props) => {
                         <FormControl key={input.name}>
                             <FormLabel>{input.placeholder}</FormLabel>
                             <Select
-                                defaultValue={input.value}
                                 size="lg"
+                                value={input.value}
                                 startDecorator={input.startDecorator}
                                 onChange={(e, value) =>
                                     handleSelectElementChange(
@@ -225,6 +364,125 @@ export const BuchFormularComponent: React.FC<Props> = (props: Props) => {
                             </Select>
                             {/*<FormHelperText>This is a helper text.</FormHelperText>*/}
                         </FormControl>
+                    );
+                }
+                if (input.type === "checkbox") {
+                    return (
+                        <Stack key={input.name} spacing={"var(--gap-1)"}>
+                            <Typography level="title-sm">
+                                {input.placeholder}
+                            </Typography>
+                            <Stack
+                                direction="row"
+                                spacing={"var(--gap-2)"}
+                                sx={{
+                                    "& > div": {
+                                        p: 2,
+                                        borderRadius: "md",
+                                        display: "flex",
+                                    },
+                                }}
+                            >
+                                <Sheet variant="outlined" key={1}>
+                                    <Radio
+                                        checked={input.value === 1}
+                                        label="Lieferbar"
+                                        overlay
+                                        onClick={input.onClick}
+                                    />
+                                </Sheet>
+                                <Sheet variant="outlined" key={2}>
+                                    <Radio
+                                        checked={input.value !== 1}
+                                        label="Nicht lieferbar"
+                                        overlay
+                                        onClick={input.onClick}
+                                    />
+                                </Sheet>
+                            </Stack>
+                        </Stack>
+                    );
+                }
+                if (input.isDynamicList && input.options) {
+                    return (
+                        <Stack key={input.name} spacing={"var(--gap-1)"}>
+                            <Typography level="title-sm">
+                                {input.placeholder}
+                            </Typography>
+                            <Sheet
+                                variant="outlined"
+                                sx={{
+                                    display: "flex",
+                                    gap: "var(--gap-1)",
+                                    flexWrap: "wrap",
+                                    p: 2,
+                                    borderRadius: "md",
+                                }}
+                            >
+                                {input.options.map((k, index) => (
+                                    <CustomChipComponent
+                                        key={index}
+                                        value={k}
+                                        onClick={() => deleteSchlagwort(k)}
+                                        endDecorator={
+                                            <DeleteForever
+                                                color="warning"
+                                                fontSize="small"
+                                            />
+                                        }
+                                    />
+                                ))}
+                            </Sheet>
+                            {schlagwortInputList.map((s) => (
+                                <Stack
+                                    key={s.id}
+                                    direction="row"
+                                    spacing="var(--gap-1)"
+                                    sx={{
+                                        alignItems: "flex-start",
+                                        alignContent: "flex-start",
+                                    }}
+                                >
+                                    <FormControl>
+                                        <Input
+                                            placeholder="Schlagwort eingeben"
+                                            value={s.value}
+                                            onChange={(e) =>
+                                                handleSchlagwortInputChange(
+                                                    e,
+                                                    s.id,
+                                                )
+                                            }
+                                        />
+                                        <FormHelperText
+                                            sx={{ color: "var(--color-error)" }}
+                                        >
+                                            {s.hint}
+                                        </FormHelperText>
+                                    </FormControl>
+                                    <Button
+                                        onClick={() =>
+                                            addSchlagwortToBuchDto(s.id)
+                                        }
+                                    >
+                                        Hinzufügen
+                                    </Button>
+                                    <Button
+                                        color="danger"
+                                        onClick={() =>
+                                            removeSchlagwortInput(s.id)
+                                        }
+                                    >
+                                        Abbrechen
+                                    </Button>
+                                </Stack>
+                            ))}
+                            <Box>
+                                <Button onClick={addSchlagwortInput}>
+                                    Neues Schlagwort
+                                </Button>
+                            </Box>
+                        </Stack>
                     );
                 }
                 return (
@@ -255,7 +513,11 @@ export const BuchFormularComponent: React.FC<Props> = (props: Props) => {
                     </FormControl>
                 );
             })}
-            <Button onClick={() => onSubmit(bookToSubmit)}>Speichern</Button>
+            <Box>
+                <Button onClick={() => onSubmit(bookToSubmit)}>
+                    Speichern
+                </Button>
+            </Box>
         </Stack>
     );
 };

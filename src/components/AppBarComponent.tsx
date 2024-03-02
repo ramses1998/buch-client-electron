@@ -4,7 +4,6 @@ import styled from "styled-components";
 import { Box, Button, ButtonGroup, Sheet, Typography } from "@mui/joy";
 import dynamic from "next/dynamic";
 import ArrowBackOutlinedIcon from "@mui/icons-material/ArrowBackOutlined";
-import { useMediaQuery } from "@/hooks/useMediaQuery";
 import { useRouter } from "next/router";
 
 // So kann der Hydration-Fehler vermieden werden.
@@ -16,7 +15,6 @@ const SearchInputComponent = dynamic(
 const MAX_WIDTH_OF_SEARCH_INPUT_FIELD = "700px";
 
 export const AppBarComponent: React.FC = () => {
-    const { isSmall } = useMediaQuery();
     const router = useRouter();
 
     const [isBrowserHistoryEmpty, setIsBrowserHistoryEmpty] =
@@ -32,11 +30,9 @@ export const AppBarComponent: React.FC = () => {
 
     return (
         <NavigationBarContainer>
-            {!isSmall ? (
-                <Typography component="p" level="title-md">
-                    {process.env.NEXT_PUBLIC_APPLICATION_NAME!}
-                </Typography>
-            ) : null}
+            <Typography component="p" level="title-md">
+                {process.env.NEXT_PUBLIC_APPLICATION_NAME!}
+            </Typography>
             <SearchInputContainer>
                 <ButtonGroup size="sm">
                     <Button

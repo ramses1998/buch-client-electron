@@ -1,6 +1,6 @@
 import React from "react";
 import { Buch } from "@/http/buch";
-import { CustomBadgeComponent } from "@/components/shared/CustomBadgeComponent";
+import { CustomChipComponent } from "@/components/shared/CustomChipComponent";
 import { Box, Card, Typography } from "@mui/joy";
 import styled from "styled-components";
 import { RatingComponent } from "@/components/shared/RatingComponent";
@@ -23,7 +23,7 @@ export const BookCardComponent: React.FC<Props> = (props) => {
         >
             <BookCardContainer clickable={onClick ? "true" : "false"}>
                 <CardContent>
-                    <CustomBadgeComponent value={`${buch.preis} €`} />
+                    <CustomChipComponent value={`${buch.preis.toFixed(2)} €`} />
                     <BuchTitle>{buch.titel}</BuchTitle>
                 </CardContent>
             </BookCardContainer>

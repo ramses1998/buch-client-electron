@@ -1,10 +1,9 @@
+"use client";
 import React, { PropsWithChildren } from "react";
 import { Box } from "@mui/joy";
 import styled from "styled-components";
 import { AppBarComponent } from "@/components/AppBarComponent";
 import { SidebarComponent } from "@/components/SidebarComponent";
-import { ApplicationContextProvider } from "@/context/ApplicationContextApi";
-import { MitteilungContextProvider } from "@/context/NotificationContextApi";
 
 type Props = PropsWithChildren;
 
@@ -12,23 +11,17 @@ export const LayoutComponent: React.FC<Props> = (props: PropsWithChildren) => {
     const { children } = props;
 
     return (
-        <ApplicationContextProvider>
-            <MitteilungContextProvider>
-                <ApplicationMainContainer>
-                    <StickyContainer zindex={10000}>
-                        <AppBarComponent />
-                    </StickyContainer>
-                    <SidebarAndMainContentContainer>
-                        <StickyContainer>
-                            <SidebarComponent />
-                        </StickyContainer>
-                        <MainBoxContainer component="main">
-                            {children}
-                        </MainBoxContainer>
-                    </SidebarAndMainContentContainer>
-                </ApplicationMainContainer>
-            </MitteilungContextProvider>
-        </ApplicationContextProvider>
+        <ApplicationMainContainer>
+            <StickyContainer zindex={10000}>
+                <AppBarComponent />
+            </StickyContainer>
+            <SidebarAndMainContentContainer>
+                <StickyContainer>
+                    <SidebarComponent />
+                </StickyContainer>
+                <MainBoxContainer component="main">{children}</MainBoxContainer>
+            </SidebarAndMainContentContainer>
+        </ApplicationMainContainer>
     );
 };
 

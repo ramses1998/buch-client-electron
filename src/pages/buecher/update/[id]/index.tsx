@@ -19,6 +19,7 @@ import {
     useMitteilungContext,
 } from "@/context/NotificationContextApi";
 import { v4 as uuid } from "uuid";
+import { WrapperBuchFormularComponent } from "@/components/shared/WrapperBuchFormularComponent";
 
 const BookUpdatePage: React.FC = () => {
     const mitteilungContext = useMitteilungContext();
@@ -41,6 +42,7 @@ const BookUpdatePage: React.FC = () => {
             buchUpdateModel,
         );
         mitteilungAusloesen();
+        await router.push("/buecher");
     };
 
     const mitteilungAusloesen = () => {
@@ -67,10 +69,12 @@ const BookUpdatePage: React.FC = () => {
 
     return (
         <PageWrapperComponent title="Buch ändern">
-            <BuchFormularComponent
-                buchDto={convertBuchToBuchDto(buch)}
-                onSubmit={handleSubmit}
-            />
+            <WrapperBuchFormularComponent>
+                <BuchFormularComponent
+                    buchDto={convertBuchToBuchDto(buch)}
+                    onSubmit={handleSubmit}
+                />
+            </WrapperBuchFormularComponent>
         </PageWrapperComponent>
     );
 };

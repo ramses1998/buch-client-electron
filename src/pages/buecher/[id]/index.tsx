@@ -7,7 +7,7 @@ import useSWR from "swr";
 import { Buch } from "@/http/buch";
 import { LoadingComponent } from "@/components/shared/LoadingComponent";
 import Alert from "@mui/material/Alert";
-import { Button, Stack } from "@mui/joy";
+import { Button, Sheet, Stack, ModalClose } from "@mui/joy";
 import { PageWrapperComponent } from "@/components/shared/PageWrapperComponent";
 import { BookCardComponent } from "@/components/shared/BookCardComponent";
 import NumbersOutlinedIcon from "@mui/icons-material/NumbersOutlined";
@@ -20,7 +20,7 @@ import ImportContactsOutlinedIcon from "@mui/icons-material/ImportContactsOutlin
 import LocalShippingOutlinedIcon from "@mui/icons-material/LocalShippingOutlined";
 import VpnKeyOutlinedIcon from "@mui/icons-material/VpnKeyOutlined";
 import { RatingComponent } from "@/components/shared/RatingComponent";
-import { CustomBadgeComponent } from "@/components/shared/CustomBadgeComponent";
+import { CustomChipComponent } from "@/components/shared/CustomChipComponent";
 import { useMediaQuery } from "@/hooks/useMediaQuery";
 import {
     DetailsListComponent,
@@ -32,6 +32,15 @@ import {
     useMitteilungContext,
 } from "@/context/NotificationContextApi";
 import { v4 as uuid } from "uuid";
+import Divider from "@mui/joy/Divider";
+import DialogTitle from "@mui/joy/DialogTitle";
+import DialogContent from "@mui/joy/DialogContent";
+import DialogActions from "@mui/joy/DialogActions";
+import Modal from "@mui/joy/Modal";
+import ModalDialog from "@mui/joy/ModalDialog";
+import MoreVertIcon from "@mui/icons-material/MoreVert";
+
+const NUMBER_OF_KEYWORDS_BEFORE_TEXT_ELIPSIS = 2;
 
 type GroupName = "Über das Buch" | "Author" | "Lieferung" | "Sonstiges";
 
@@ -104,12 +113,12 @@ const BookDetailPage: React.FC = () => {
             {
                 icon: <EuroOutlinedIcon fontSize="small" />,
                 label: "Preis",
-                value: `${buch?.preis} €`,
+                value: `${(buch?.preis as number)?.toFixed(2)} €`,
             },
             {
                 icon: <PercentOutlinedIcon fontSize="small" />,
                 label: "Rabatt",
-                value: `${Number(buch?.rabatt.toFixed(2)) * 100} %`,
+                value: `${((buch?.rabatt as number) * 100)?.toFixed(1)} %`,
             },
             {
                 icon: <ImportContactsOutlinedIcon fontSize="small" />,
@@ -132,9 +141,31 @@ const BookDetailPage: React.FC = () => {
                 label: "Schlagwörter",
                 value: (
                     <Stack direction="row" spacing={"var(--gap-1)"}>
-                        {buch?.schlagwoerter?.map((w) => (
-                            <CustomBadgeComponent key={w} value={w} />
-                        ))}
+                        {buch &&
+                        buch.schlagwoerter.length >
+                            NUMBER_OF_KEYWORDS_BEFORE_TEXT_ELIPSIS ? (
+                            <>
+                                {buch.schlagwoerter
+                                    .slice(
+                                        0,
+                                        NUMBER_OF_KEYWORDS_BEFORE_TEXT_ELIPSIS,
+                                    )
+                                    .map((w) => (
+                                        <CustomChipComponent
+                                            key={w}
+                                            value={w}
+                                        />
+                                    ))}
+                                <ModalSchlagwoerterComponent
+                                    buchId={buch.id}
+                                    schlagwoerter={buch.schlagwoerter}
+                                />
+                            </>
+                        ) : (
+                            buch?.schlagwoerter?.map((w) => (
+                                <CustomChipComponent key={w} value={w} />
+                            ))
+                        )}
                     </Stack>
                 ),
             },
@@ -187,6 +218,76 @@ const BookDetailPage: React.FC = () => {
                 </Stack>
             </Stack>
         </PageWrapperComponent>
+    );
+};
+
+type PropsModalSchlagwoerter = {
+    schlagwoerter: string[];
+    buchId: number;
+};
+const ModalSchlagwoerterComponent: React.FC<PropsModalSchlagwoerter> = (
+    props: PropsModalSchlagwoerter,
+) => {
+    const [open, setOpen] = React.useState<boolean>(false);
+    const { schlagwoerter, buchId } = props;
+    const router = useRouter();
+
+    return (
+        <React.Fragment>
+            <Button
+                variant="plain"
+                color="primary"
+                endDecorator={<MoreVertIcon />}
+                onClick={() => setOpen(true)}
+            >
+                {`und ${schlagwoerter.length - NUMBER_OF_KEYWORDS_BEFORE_TEXT_ELIPSIS} weitere`}
+            </Button>
+            <Modal open={open} onClose={() => setOpen(false)}>
+                <ModalDialog variant="outlined" role="alertdialog">
+                    <ModalClose />
+                    <DialogTitle>
+                        <VpnKeyOutlinedIcon />
+                        Alle Schlagwörter
+                    </DialogTitle>
+                    <Divider />
+                    <DialogContent>
+                        <Sheet
+                            variant="outlined"
+                            sx={{
+                                display: "flex",
+                                gap: "var(--gap-1)",
+                                flexWrap: "wrap",
+                                p: 2,
+                                borderRadius: "md",
+                                maxWidth: "600px",
+                            }}
+                        >
+                            {schlagwoerter.map((s, index) => (
+                                <CustomChipComponent key={index} value={s} />
+                            ))}
+                        </Sheet>
+                    </DialogContent>
+                    <DialogActions>
+                        <Button
+                            variant="solid"
+                            color="primary"
+                            onClick={() =>
+                                router.push(`/buecher/update/${buchId}`)
+                            }
+                        >
+                            Schlagwörter hinzufügen
+                        </Button>
+                        <Button
+                            variant="plain"
+                            color="neutral"
+                            onClick={() => setOpen(false)}
+                        >
+                            Schließen
+                        </Button>
+                    </DialogActions>
+                </ModalDialog>
+            </Modal>
+        </React.Fragment>
     );
 };
 

@@ -10,6 +10,7 @@ import {
     useMitteilungContext,
 } from "@/context/NotificationContextApi";
 import { v4 as uuid } from "uuid";
+import { WrapperBuchFormularComponent } from "@/components/shared/WrapperBuchFormularComponent";
 
 const AnlegenPage: React.FC = () => {
     const appContext = useApplicationContextApi();
@@ -32,7 +33,9 @@ const AnlegenPage: React.FC = () => {
 
     return (
         <PageWrapperComponent title="Buch anlegen">
-            <BuchFormularComponent onSubmit={handleSubmit} />
+            <WrapperBuchFormularComponent>
+                <BuchFormularComponent onSubmit={handleSubmit} />
+            </WrapperBuchFormularComponent>
         </PageWrapperComponent>
     );
 };

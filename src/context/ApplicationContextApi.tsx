@@ -179,7 +179,6 @@ export const ApplicationContextProvider: React.FC<Props> = (props: Props) => {
             return;
         }
         const loginResponse = await refreshTokenApi(refreshToken);
-        console.log(loginResponse);
         saveToken(loginResponse.data);
         setIsUserAuthenticated(true);
     };

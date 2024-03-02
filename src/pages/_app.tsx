@@ -3,6 +3,8 @@
 import "@/styles/globals.css";
 import { LayoutComponent } from "@/components/LayoutComponent";
 import React, { ComponentType } from "react";
+import { ApplicationContextProvider } from "@/context/ApplicationContextApi";
+import { MitteilungContextProvider } from "@/context/NotificationContextApi";
 
 type Props = {
     Component: ComponentType;
@@ -13,9 +15,13 @@ const App: React.FC<Props> = (props: Props) => {
     const { Component, pageProps } = props;
 
     return (
-        <LayoutComponent>
-            <Component {...pageProps} />
-        </LayoutComponent>
+        <ApplicationContextProvider>
+            <MitteilungContextProvider>
+                <LayoutComponent>
+                    <Component {...pageProps} />
+                </LayoutComponent>
+            </MitteilungContextProvider>
+        </ApplicationContextProvider>
     );
 };
 

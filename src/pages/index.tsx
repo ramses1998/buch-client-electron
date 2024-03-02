@@ -2,7 +2,7 @@
 // eslint-disable-next-line eslint-comments/disable-enable-pair
 /* eslint-disable @typescript-eslint/no-misused-promises, @typescript-eslint/no-unsafe-assignment */
 import "@fontsource/inter";
-import React from "react";
+import React, { useEffect, useState, useRef } from "react";
 import { PageWrapperComponent } from "@/components/shared/PageWrapperComponent";
 import useSWR from "swr";
 import { Buch } from "@/http/buch";
@@ -10,21 +10,28 @@ import { LoadingComponent } from "@/components/shared/LoadingComponent";
 import Alert from "@mui/material/Alert";
 import { Box, Button, Card, Stack, Typography } from "@mui/joy";
 import styled from "styled-components";
-import { CustomBadgeComponent } from "@/components/shared/CustomBadgeComponent";
+import { CustomChipComponent } from "@/components/shared/CustomChipComponent";
 import { BookCardComponent } from "@/components/shared/BookCardComponent";
 import { useRouter } from "next/router";
 import { useApplicationContextApi } from "@/context/ApplicationContextApi";
+import { RatingComponent } from "@/components/shared/RatingComponent";
+import Divider from "@mui/joy/Divider";
+import StopCircleOutlinedIcon from "@mui/icons-material/StopCircleOutlined";
+import PlayCircleFilledWhiteOutlinedIcon from "@mui/icons-material/PlayCircleFilledWhiteOutlined";
+import { v4 as uuid } from "uuid";
 
 const MAX_BOOKS_COUNT_FOR_OVERVIEW = 4;
 const MINIMUM_RATING_FOR_POPULAR_BOOK = 2;
+const OVERVIEW_CARD_ANIMATION_DURATION = 3;
+const MILISECOND_FACTOR = 1000;
 
 const Home = () => {
     const appContext = useApplicationContextApi();
-    const {
-        data: buecher,
-        isLoading,
-        error,
-    } = useSWR<Buch[]>("getAll", appContext.getAlleBuecher);
+    const { data, isLoading, error } = useSWR<Buch[]>(
+        "getAll",
+        appContext.getAlleBuecher,
+    );
+
     const router = useRouter();
 
     const resolveMostPopularBooks = (buecher: Buch[]): Buch[] => {
@@ -33,11 +40,52 @@ const Home = () => {
         );
     };
 
+    const [buecher, setBuecher] = useState<Buch[] | undefined>(undefined);
+
+    useEffect(() => {
+        const buecherForStateUpdate = data?.slice(
+            0,
+            MAX_BOOKS_COUNT_FOR_OVERVIEW,
+        );
+        setBuecher(buecherForStateUpdate);
+    }, [data]);
+
     const sortBooksByRating = (buecher: Buch[]): Buch[] => {
         return buecher.sort((a, b) => b.rating - a.rating);
     };
 
-    if (isLoading || buecher === undefined)
+    const [isAnimating, setIsAnimating] = useState<boolean>(true);
+    const animationDuration =
+        OVERVIEW_CARD_ANIMATION_DURATION * MILISECOND_FACTOR;
+    const overviewContainerRef = useRef<HTMLDivElement | null>(null);
+
+    useEffect(() => {
+        toggleAnimation();
+    }, []);
+
+    useEffect(() => {
+        if (!buecher) return;
+
+        // eslint-disable-next-line no-undef
+        let intervalId: NodeJS.Timeout | undefined = undefined;
+
+        if (isAnimating) {
+            intervalId = setInterval(() => {
+                setBuecher((prevState) => {
+                    if (!prevState) return;
+                    const [erstesBuch, ...rest] = prevState;
+                    return [...rest, erstesBuch];
+                });
+            }, animationDuration);
+        }
+        return () => clearInterval(intervalId);
+    }, [isAnimating, data, buecher, animationDuration]);
+
+    const toggleAnimation = () => {
+        setIsAnimating((prevAnimating) => !prevAnimating);
+    };
+
+    if (isLoading || data === undefined || buecher === undefined)
         return <LoadingComponent message="Bücher werden geladen..." />;
 
     if (error) {
@@ -49,19 +97,39 @@ const Home = () => {
     }
 
     return (
-        <PageWrapperComponent>
+        <PageWrapperComponent title="Startseite">
             <Stack direction="column" spacing={"var(--gap-7)"}>
-                <OverviewContainerWithItemList>
-                    {buecher
-                        .slice(0, MAX_BOOKS_COUNT_FOR_OVERVIEW)
-                        .map((buch, index) => (
+                <Box>
+                    <OverviewContainerWithItemList
+                        ref={overviewContainerRef}
+                        animating={`${isAnimating}`}
+                    >
+                        {buecher.map((buch, index) => (
                             <OverviewCardComponent
-                                key={`${index}${buch.titel}`}
+                                key={uuid()}
                                 buch={buch}
                                 isMain={index === 0}
+                                animating={isAnimating}
                             />
                         ))}
-                </OverviewContainerWithItemList>
+                    </OverviewContainerWithItemList>
+                    <Button
+                        variant="plain"
+                        color="primary"
+                        onClick={toggleAnimation}
+                        startDecorator={
+                            isAnimating ? (
+                                <StopCircleOutlinedIcon />
+                            ) : (
+                                <PlayCircleFilledWhiteOutlinedIcon />
+                            )
+                        }
+                    >
+                        {isAnimating
+                            ? "Animation stoppen"
+                            : "Animation starten"}
+                    </Button>
+                </Box>
                 <Stack
                     direction="column"
                     spacing={"var(--gap-3)"}
@@ -82,17 +150,17 @@ const Home = () => {
                         </Button>
                     </Stack>
                     <ListContainer>
-                        {sortBooksByRating(
-                            resolveMostPopularBooks(buecher),
-                        ).map((buch, index) => (
-                            <BookCardComponent
-                                key={index}
-                                buch={buch}
-                                onClick={() =>
-                                    router.push(`/buecher/${buch.id}`)
-                                }
-                            />
-                        ))}
+                        {sortBooksByRating(resolveMostPopularBooks(data)).map(
+                            (buch, index) => (
+                                <BookCardComponent
+                                    key={index}
+                                    buch={buch}
+                                    onClick={() =>
+                                        router.push(`/buecher/${buch.id}`)
+                                    }
+                                />
+                            ),
+                        )}
                     </ListContainer>
                 </Stack>
             </Stack>
@@ -103,11 +171,11 @@ const Home = () => {
 type PropsOverviewCard = {
     buch: Buch;
     isMain: boolean;
+    animating: boolean;
 };
-const OverviewCardComponent: React.FC<PropsOverviewCard> = (
-    props: PropsOverviewCard,
-) => {
-    const { buch, isMain } = props;
+// eslint-disable-next-line react/display-name
+const OverviewCardComponent = (props: PropsOverviewCard) => {
+    const { buch, isMain, animating } = props;
     const router = useRouter();
 
     const description =
@@ -116,17 +184,38 @@ const OverviewCardComponent: React.FC<PropsOverviewCard> = (
             : "Genießen Sie die praktische Tragbarkeit und den sofortigen Zugriff auf Tausende von Titeln.";
 
     return (
-        <CardContainer ismain={`${isMain}`}>
+        <CardContainer ismain={`${isMain}`} animating={`${animating}`}>
             <CardContent ismain={`${isMain}`}>
-                <CustomBadgeComponent value={`${buch.preis} €`} />
-                <BuchTitle ismain={`${isMain}`} noWrap={!isMain}>
-                    {buch.titel}
-                </BuchTitle>
+                <CustomChipComponent value={`${buch.preis.toFixed(2)} €`} />
+                <TitleUndInfoContainer>
+                    <BuchTitle ismain={`${isMain}`} noWrap={!isMain}>
+                        {buch.titel}
+                    </BuchTitle>
+                    <Stack
+                        direction="row"
+                        sx={{ justifySelf: "start" }}
+                        spacing="var(--gap-1)"
+                    >
+                        <RatingComponent stars={buch.rating} />
+                        {isMain ? (
+                            <>
+                                <Divider orientation="vertical" />
+                                <Typography level="title-sm">
+                                    {`${buch.lieferbar ? "Lieferbar" : "Nicht lieferbar"}`}
+                                </Typography>
+                                <Divider orientation="vertical" />
+                                <Typography level="title-sm">
+                                    {`${(buch.rabatt * 100).toFixed(1)} % Rabatt`}
+                                </Typography>
+                            </>
+                        ) : null}
+                    </Stack>
+                </TitleUndInfoContainer>
                 {isMain ? (
                     <Typography level="title-md">{description}</Typography>
                 ) : null}
                 <Button
-                    size="lg"
+                    size="sm"
                     variant="solid"
                     sx={{ width: "170px" }}
                     onClick={() => router.push(`/buecher/${buch.id}`)}
@@ -138,20 +227,45 @@ const OverviewCardComponent: React.FC<PropsOverviewCard> = (
     );
 };
 
-const OverviewContainerWithItemList = styled(Box)`
+const OverviewContainerWithItemList = styled(Card)<{
+    animating: "true" | "false";
+}>`
     display: grid;
     grid-gap: var(--gap-2);
-    grid-template-columns: minmax(500px, 1fr) repeat(3, minmax(250px, 300px));
+    grid-template-columns: minmax(500px, 1fr) repeat(
+            ${MAX_BOOKS_COUNT_FOR_OVERVIEW - 1},
+            minmax(250px, 300px)
+        );
     background: transparent;
-    overflow-x: auto;
-    padding: var(--gap-1) 2px;
+    padding: var(--gap-1) 30px 0 2px;
+    border: none;
+    overflow-y: hidden;
+    overflow-x: hidden;
+    height: 480px;
 `;
 
-const CardContainer = styled(Card)<{ ismain: "true" | "false" }>`
-    height: ${(props) => (props.ismain === "true" ? "450px" : "unset")};
+const CardContainer = styled(Card)<{
+    ismain: "true" | "false";
+    animating: "true" | "false";
+}>`
+    height: 450px;
     border-radius: var(--gap-1);
     padding: var(--gap-10) var(--gap-3) var(--gap-3) var(--gap-3);
     box-shadow: 0 0 5px grey;
+    animation: ${(props) =>
+        props.ismain === "false" && props.animating === "true"
+            ? `backwardSlide ${OVERVIEW_CARD_ANIMATION_DURATION}s cubic-bezier(0.1, 0.7, 1, 0.1)`
+            : "unset"};
+    animation-iteration-count: infinite;
+
+    @keyframes backwardSlide {
+        from {
+            transform: translateX(10%);
+        }
+        to {
+            transform: translateX(0);
+        }
+    }
 `;
 
 const CardContent = styled(Box)<{ ismain: "true" | "false" }>`
@@ -160,6 +274,12 @@ const CardContent = styled(Box)<{ ismain: "true" | "false" }>`
     justify-items: start;
     grid-gap: var(--gap-2);
     max-width: ${(props) => (props.ismain === "true" ? "90%" : "unset")};
+`;
+
+const TitleUndInfoContainer = styled(Stack)`
+    display: grid;
+    grid-gap: var(--gap-1);
+    width: 90%;
 `;
 
 const BuchTitle = styled(Typography)<{ ismain: "true" | "false" }>`

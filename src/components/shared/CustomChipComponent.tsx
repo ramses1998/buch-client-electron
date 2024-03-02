@@ -2,19 +2,19 @@
 // eslint-disable-next-line eslint-comments/disable-enable-pair
 /* eslint-disable @typescript-eslint/restrict-template-expressions */
 import React, { ReactNode } from "react";
-import { Chip, Theme, useTheme } from "@mui/joy";
+import { Chip, ChipTypeMap, Theme, useTheme } from "@mui/joy";
 import styled from "styled-components";
 
-type Props = {
+type Props = ChipTypeMap["props"] & {
     value: ReactNode;
 };
 
-export const CustomBadgeComponent: React.FC<Props> = (props) => {
-    const { value } = props;
+export const CustomChipComponent: React.FC<Props> = (props) => {
+    const { value, ...rest } = props;
     const theme = useTheme();
 
     return (
-        <StyledChip variant="outlined" color="primary" theme={theme}>
+        <StyledChip {...rest} variant="outlined" color="primary" theme={theme}>
             {value}
         </StyledChip>
     );
