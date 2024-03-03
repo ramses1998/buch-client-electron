@@ -3,7 +3,7 @@
 import React from "react";
 import { PageWrapperComponent } from "@/components/shared/PageWrapperComponent";
 import { BuchFormularComponent } from "@/components/shared/BuchFormularComponent";
-import { BuchDto } from "@/http/buch";
+import { BuchDto } from "@/api/buch";
 import { useApplicationContextApi } from "@/context/ApplicationContextApi";
 import {
     Mitteilung,

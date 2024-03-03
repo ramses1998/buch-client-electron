@@ -18,8 +18,7 @@ import VpnKeyOutlinedIcon from "@mui/icons-material/VpnKeyOutlined";
 import VisibilityOffOutlinedIcon from "@mui/icons-material/VisibilityOffOutlined";
 import VisibilityOutlinedIcon from "@mui/icons-material/VisibilityOutlined";
 import styled from "styled-components";
-import { useApplicationContextApi } from "@/context/ApplicationContextApi";
-import { LoginDaten } from "@/http/auth";
+import { LoginDaten } from "@/api/auth";
 import Alert from "@mui/material/Alert";
 import {
     DetailsListComponent,
@@ -27,10 +26,12 @@ import {
 } from "@/components/shared/DetailListComponent";
 import NumbersOutlinedIcon from "@mui/icons-material/NumbersOutlined";
 import LockClockOutlinedIcon from "@mui/icons-material/LockClockOutlined";
+import { useAuthContext } from "@/context/AuthContextApi";
+import { UNIX_TIME_TO_JAVASCRIPT_TIME_FACTOR } from "@/context/ApplicationContextApi";
 
 type GroupName = "Benutzer Info" | "Konto";
 const LoginPage: React.FC = () => {
-    const appContext = useApplicationContextApi();
+    const authContext = useAuthContext();
 
     const [showPassword, setShowPassword] = useState<boolean>(false);
     const [error, setError] = useState<Error | undefined>(undefined);
@@ -41,30 +42,33 @@ const LoginPage: React.FC = () => {
     const [accessTokenExpiryDate, setAccessTokenExpiryDate] = useState<
         Date | undefined
     >(undefined);
-
-    useEffect(() => {
-        const sessionStateFromLocalStorage =
-            localStorage.getItem("session_state");
-        const expiryDateFromLocalStorage = localStorage.getItem("expires");
-
-        if (!sessionStateFromLocalStorage || !expiryDateFromLocalStorage) {
-            console.log(
-                "Weder 'session_state' noch 'expires' aus LocalStorage konnte gelesen werden!",
-            );
-            return;
-        }
-
-        setSessionState(sessionStateFromLocalStorage);
-
-        const expiryDate = new Date(expiryDateFromLocalStorage);
-
-        setAccessTokenExpiryDate(expiryDate);
-    }, [appContext.isUserAuthenticated]);
-
     const [loginDaten, setLoginDaten] = useState<LoginDaten>({
         username: "",
         password: "",
     });
+
+    useEffect(() => {
+        setError(undefined);
+    }, [loginDaten]);
+
+    useEffect(() => {
+        if (!authContext.auth) return;
+        const sessionState = authContext.auth.session_state;
+        const authExpiryIn = authContext.auth.expires_in;
+
+        if (!sessionState || !authExpiryIn) {
+            console.log("Session_state und expires konnten gelesen werden!");
+            return;
+        }
+        setSessionState(sessionState);
+        const currentDate = new Date();
+        const expiryDate = new Date(
+            currentDate.getTime() +
+                authExpiryIn * UNIX_TIME_TO_JAVASCRIPT_TIME_FACTOR,
+        );
+
+        setAccessTokenExpiryDate(expiryDate);
+    }, [authContext.auth]);
 
     const handleChange = (event: ChangeEvent<HTMLInputElement>) => {
         event.preventDefault();
@@ -78,7 +82,7 @@ const LoginPage: React.FC = () => {
         setIsLoading(true);
         setError(undefined);
         try {
-            await appContext.login(loginDaten);
+            await authContext.login(loginDaten);
         } catch (err) {
             console.error(err);
             setError(
@@ -108,7 +112,7 @@ const LoginPage: React.FC = () => {
                 {
                     icon: <LockClockOutlinedIcon fontSize="small" />,
                     label: "Anmeldung läuft ab am",
-                    value: accessTokenExpiryDate?.toLocaleDateString([], {
+                    value: accessTokenExpiryDate?.toLocaleDateString("de-DE", {
                         day: "2-digit",
                         month: "2-digit",
                         year: "numeric",
@@ -135,10 +139,10 @@ const LoginPage: React.FC = () => {
     return (
         <PageWrapperComponent>
             <FieldListWrapper>
-                {appContext.isUserAuthenticated ? (
+                {authContext.auth ? (
                     <UserInfoComponent
                         userInfoGroups={userInfoGroups}
-                        handleLogout={appContext.logout}
+                        handleLogout={authContext.logout}
                     />
                 ) : (
                     <FieldListContainer>

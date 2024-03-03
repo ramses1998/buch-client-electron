@@ -11,7 +11,7 @@ import {
     Stack,
     Typography,
 } from "@mui/joy";
-import { Buch } from "@/http/buch";
+import { Buch } from "@/api/buch";
 import SearchIcon from "@mui/icons-material/Search";
 import useSWR from "swr";
 import AutoStoriesOutlinedIcon from "@mui/icons-material/AutoStoriesOutlined";

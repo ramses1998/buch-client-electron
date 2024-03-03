@@ -1,7 +1,7 @@
 // eslint-disable-next-line eslint-comments/disable-enable-pair
 /* eslint-disable @typescript-eslint/no-misused-promises */
 import React from "react";
-import { Buch } from "@/http/buch";
+import { Buch } from "@/api/buch";
 import styled from "styled-components";
 import { Box } from "@mui/joy";
 import { BookCardComponent } from "@/components/shared/BookCardComponent";

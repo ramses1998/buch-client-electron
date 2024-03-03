@@ -1,4 +1,4 @@
-import { Buch } from "@/http/buch";
+import { Buch } from "@/api/buch";
 import { useEffect, useState } from "react";
 
 type Input = {

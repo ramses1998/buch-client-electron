@@ -2,7 +2,7 @@
 /* eslint-disable no-unused-vars, @typescript-eslint/no-misused-promises, @typescript-eslint/no-unsafe-assignment, @typescript-eslint/no-floating-promises */
 "use client";
 import React from "react";
-import { Buch, BuchDto } from "@/http/buch";
+import { Buch, BuchDto } from "@/api/buch";
 import { PageWrapperComponent } from "@/components/shared/PageWrapperComponent";
 import { BuchFormularComponent } from "@/components/shared/BuchFormularComponent";
 import {

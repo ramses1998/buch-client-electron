@@ -4,7 +4,7 @@
 import React from "react";
 import { useApplicationContextApi } from "@/context/ApplicationContextApi";
 import useSWR from "swr";
-import { Buch } from "@/http/buch";
+import { Buch } from "@/api/buch";
 import { LoadingComponent } from "@/components/shared/LoadingComponent";
 import Alert from "@mui/material/Alert";
 import { Button, Sheet, Stack, ModalClose } from "@mui/joy";

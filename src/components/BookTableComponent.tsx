@@ -5,7 +5,7 @@ import React, { PropsWithChildren } from "react";
 import Table from "@mui/joy/Table";
 import { Box, Theme, Typography, useTheme } from "@mui/joy";
 import Stack from "@mui/joy/Stack";
-import { Buch } from "@/http/buch";
+import { Buch } from "@/api/buch";
 import { useRouter } from "next/router";
 import { RatingComponent } from "@/components/shared/RatingComponent";
 import { CustomChipComponent } from "@/components/shared/CustomChipComponent";

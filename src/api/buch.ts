@@ -1,5 +1,5 @@
 import { AxiosRequestConfig, AxiosResponse } from "axios";
-import { axiosClient } from "@/http/rest-client";
+import { axiosClient } from "@/api/rest-client";
 
 export type BuchArt = "DRUCKAUSGABE" | "KINDLE";
 

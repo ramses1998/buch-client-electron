@@ -1,5 +1,5 @@
 import React from "react";
-import { Buch } from "@/http/buch";
+import { Buch } from "@/api/buch";
 import { CustomChipComponent } from "@/components/shared/CustomChipComponent";
 import { Box, Card, Typography } from "@mui/joy";
 import styled from "styled-components";

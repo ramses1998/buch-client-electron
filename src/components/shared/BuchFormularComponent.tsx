@@ -3,7 +3,7 @@
 import React, { ChangeEvent, useEffect, useState } from "react";
 import FormControl from "@mui/joy/FormControl";
 import FormLabel from "@mui/joy/FormLabel";
-import { BuchArt, BuchDto } from "@/http/buch";
+import { BuchArt, BuchDto } from "@/api/buch";
 import {
     Box,
     Button,

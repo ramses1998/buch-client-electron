@@ -7,7 +7,7 @@ import IconButton from "@mui/joy/IconButton";
 import ArrowForwardIcon from "@mui/icons-material/ArrowForward";
 import { useApplicationContextApi } from "@/context/ApplicationContextApi";
 import useSWR from "swr";
-import { Buch } from "@/http/buch";
+import { Buch } from "@/api/buch";
 import { LoadingComponent } from "@/components/shared/LoadingComponent";
 import Alert from "@mui/material/Alert";
 import AspectRatio from "@mui/joy/AspectRatio";
@@ -17,6 +17,18 @@ import PercentOutlinedIcon from "@mui/icons-material/PercentOutlined";
 import StarBorderPurple500OutlinedIcon from "@mui/icons-material/StarBorderPurple500Outlined";
 import AutoStoriesOutlinedIcon from "@mui/icons-material/AutoStoriesOutlined";
 import { useRouter } from "next/router";
+import {
+    BarChart,
+    Bar,
+    Area,
+    AreaChart,
+    XAxis,
+    YAxis,
+    CartesianGrid,
+    Tooltip,
+    ResponsiveContainer,
+} from "recharts";
+import Divider from "@mui/joy/Divider";
 
 type KeyValue = {
     icon: ReactNode;
@@ -66,8 +78,8 @@ export const AnalysisPage: React.FC = () => {
 
     const getAnzahlKindelBuecher = (): number => {
         if (!buecher) return 0;
-        return buecher.filter(b => b.art === "KINDLE").length;
-    }
+        return buecher.filter((b) => b.art === "KINDLE").length;
+    };
 
     const keyValues: KeyValue[] = [
         {
@@ -132,6 +144,7 @@ export const AnalysisPage: React.FC = () => {
                     display: "grid",
                     gridTemplateColumns: "repeat(5, 1fr)",
                     gap: "var(--gap-5)",
+                    my: "var(--gap-5)",
                     "@media screen and (max-width: 1500px)": {
                         gridTemplateColumns: "repeat(3, 1fr)",
                     },
@@ -147,6 +160,10 @@ export const AnalysisPage: React.FC = () => {
                     <KeyValueCardComponent key={key.title} {...key} />
                 ))}
             </Box>
+            <Typography level="h3">Preise</Typography>
+            <Stack sx={{ my: "var(--gap-5)" }}>
+                <PreisChartComponent buecher={buecher} />
+            </Stack>
         </PageWrapperComponent>
     );
 };
@@ -270,6 +287,79 @@ const KeyValueCardComponent: React.FC<PropsKeyValueCard> = (
                 <ArrowForwardIcon />
             </IconButton>
         </Card>
+    );
+};
+
+type PropsPreisChart = {
+    buecher: Buch[];
+};
+const PreisChartComponent: React.FC<PropsPreisChart> = (
+    props: PropsPreisChart,
+) => {
+    const { buecher } = props;
+
+    return (
+        <Sheet
+            sx={{
+                width: "100%",
+                borderRadius: "md",
+                p: "var(--gap-5) var(--gap-3)",
+                boxShadow: "0 0 6px grey",
+            }}
+        >
+            <Typography level="title-lg" sx={{ mb: "var(--gap-2)" }}>
+                Einheit in €
+            </Typography>
+            <ResponsiveContainer width={"100%"} height={250}>
+                <AreaChart
+                    width={730}
+                    height={250}
+                    data={buecher}
+                    margin={{ top: 10, right: 30, left: 0, bottom: 0 }}
+                >
+                    <defs>
+                        <linearGradient
+                            id="colorUv"
+                            x1="0"
+                            y1="0"
+                            x2="0"
+                            y2="1"
+                        >
+                            <stop
+                                offset="5%"
+                                stopColor="var(--color-main)"
+                                stopOpacity={0.15}
+                            />
+                            <stop
+                                offset="95%"
+                                stopColor="var(--color-main)"
+                                stopOpacity={0}
+                            />
+                        </linearGradient>
+                    </defs>
+                    <XAxis dataKey="titel" />
+                    <YAxis />
+                    <CartesianGrid strokeDasharray="3 3" />
+                    <Tooltip />
+                    <Area
+                        type="monotone"
+                        dataKey="preis"
+                        stroke="var(--color-main)"
+                        fillOpacity={1}
+                        fill="url(#colorUv)"
+                        dot={{ stroke: "var(--color-main)", strokeWidth: 3 }}
+                        strokeWidth={2}
+                    />
+                    <Area
+                        type="monotone"
+                        dataKey="titel"
+                        stroke="var(--color-warn)"
+                        fillOpacity={1}
+                        fill="var(--color-warn)"
+                    />
+                </AreaChart>
+            </ResponsiveContainer>
+        </Sheet>
     );
 };
 
