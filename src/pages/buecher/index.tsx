@@ -168,6 +168,11 @@ const FilterContainer = styled(Box)`
     grid-template-columns: max-content 1fr;
     align-content: center;
     align-items: center;
+
+    @media screen and (max-width: 900px) {
+        grid-template-columns: 1fr;
+        grid-gap: var(--gap-2);
+    }    
 `;
 
 export default BooksPage;

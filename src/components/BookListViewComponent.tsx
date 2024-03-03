@@ -7,6 +7,8 @@ import { useRouter } from "next/router";
 import styled from "styled-components";
 import { Box, Stack, Typography } from "@mui/joy";
 import { RatingComponent } from "@/components/shared/RatingComponent";
+import Divider from "@mui/joy/Divider";
+import {SxProps} from "@mui/joy/styles/types";
 
 type Props = {
     buecher: Buch[];
@@ -15,6 +17,15 @@ type Props = {
 export const BookListViewComponent: React.FC<Props> = (props) => {
     const { buecher } = props;
     const router = useRouter();
+
+    const hideOnSmallScreen: SxProps = {
+        display: {
+            lg: "block",
+            md: "none",
+            sm: "none",
+            xs: "none",
+        }
+    }
 
     return (
         <Stack direction="column" spacing={"var(--gap-2)"}>
@@ -27,14 +38,27 @@ export const BookListViewComponent: React.FC<Props> = (props) => {
                         <Typography component="p" level={"title-lg"}>
                             {buch.titel}
                         </Typography>
-                        <Typography
-                            component="div"
-                            level={"body-sm"}
-                            sx={{ display: "flex" }}
-                        >
-                            {`${buch.isbn}  |  ${buch.art}  |  ${buch.homepage}  |  `}{" "}
+                        <Stack direction="row" spacing={"var(--gap-1)"}>
+                            <Typography level={"body-sm"} component="p">
+                                {buch.isbn}
+                            </Typography>
+                            <Divider orientation="vertical" />
                             <RatingComponent stars={buch.rating} />
-                        </Typography>
+                            <Divider orientation="vertical" sx={hideOnSmallScreen} />
+                            <Typography level={"body-sm"} component="p" sx={hideOnSmallScreen}>
+                                {buch.art}
+                            </Typography>
+                            <Divider orientation="vertical" sx={hideOnSmallScreen} />
+                            <Typography level={"body-sm"} component="p" sx={hideOnSmallScreen}>
+                                {buch.homepage}
+                            </Typography>
+                            <Divider orientation="vertical" sx={hideOnSmallScreen} />
+                            <Typography level={"body-sm"} component="p" sx={hideOnSmallScreen}>
+                                {buch.lieferbar
+                                    ? "Lieferbar"
+                                    : "Nicht lieferbar"}
+                            </Typography>
+                        </Stack>
                     </BookTitleAndPreviewInfo>
                     <Typography component="p" level={"title-lg"}>
                         {`${buch.preis} €`}

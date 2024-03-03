@@ -48,16 +48,12 @@ const LoginPage: React.FC = () => {
     });
 
     useEffect(() => {
-        setError(undefined);
-    }, [loginDaten]);
-
-    useEffect(() => {
         if (!authContext.auth) return;
         const sessionState = authContext.auth.session_state;
         const authExpiryIn = authContext.auth.expires_in;
 
         if (!sessionState || !authExpiryIn) {
-            console.log("Session_state und expires konnten gelesen werden!");
+            console.error("Session_state und expires konnten gelesen werden!");
             return;
         }
         setSessionState(sessionState);
@@ -83,6 +79,7 @@ const LoginPage: React.FC = () => {
         setError(undefined);
         try {
             await authContext.login(loginDaten);
+            setLoginDaten({ username: "", password: "" });
         } catch (err) {
             console.error(err);
             setError(

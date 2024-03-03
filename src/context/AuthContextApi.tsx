@@ -13,7 +13,8 @@ import React, {
 } from "react";
 import { useRouter } from "next/router";
 import { axiosClient } from "@/api/rest-client";
-import {UNIX_TIME_TO_JAVASCRIPT_TIME_FACTOR} from "@/context/ApplicationContextApi";
+import { UNIX_TIME_TO_JAVASCRIPT_TIME_FACTOR } from "@/context/ApplicationContextApi";
+import { AxiosRequestConfig } from "axios";
 
 type Output = {
     auth: AuthResponse | undefined;
@@ -22,7 +23,7 @@ type Output = {
     refresh: () => Promise<void>;
 };
 
-// @ts-ignore
+// @ts-expect-error
 const AuthContext = createContext<Output>({});
 
 export const useAuthContext = () => {
@@ -62,17 +63,28 @@ export const AuthContextProvider: React.FC<Props> = (props: Props) => {
         const responseInterceptor = axiosClient.interceptors.response.use(
             (response) => response,
             async (error) => {
+
                 const request = error?.config;
                 const response = error?.response;
+
                 if (response?.status === 401 && !request?.sent) {
+
                     request.sent = true;
+
+                    if (!auth || hasRefreshTokenExpired()) {
+                        await router.push("/login");
+                        return Promise.reject(error);
+                    }
+
                     await refresh();
                     request.headers = {
                         ...request.headers,
-                        Authorization: `Bearer ${auth!.access_token}`,
+                        Authorization: `Bearer ${auth.access_token}`,
                     };
+
                     return axiosClient(request);
                 }
+
                 return Promise.reject(error);
             },
         );
@@ -86,7 +98,7 @@ export const AuthContextProvider: React.FC<Props> = (props: Props) => {
 
     const login = async (loginDaten: LoginDaten): Promise<void> => {
         const loginResponse = await loginApi(loginDaten);
-        setAuth(loginResponse.data);
+        setAuth(loginResponse.status !== 200 ? undefined : loginResponse.data);
     };
 
     const logout = async (): Promise<void> => {
@@ -94,12 +106,11 @@ export const AuthContextProvider: React.FC<Props> = (props: Props) => {
     };
 
     const refresh = async (): Promise<void> => {
-        if (!auth || hasRefreshTokenExpired()) {
-            await router.push("/login");
-            return;
-        }
+        if (!auth) return;
         const refreshResponse = await refreshTokenApi(auth.refresh_token);
-        setAuth(refreshResponse.data);
+        setAuth(
+            refreshResponse.status !== 200 ? undefined : refreshResponse.data,
+        );
     };
 
     const hasRefreshTokenExpired = (): boolean => {
@@ -107,7 +118,7 @@ export const AuthContextProvider: React.FC<Props> = (props: Props) => {
         const currentDate = new Date();
         const expirationTimeStamp = new Date(
             currentDate.getTime() +
-            auth.refresh_expires_in * UNIX_TIME_TO_JAVASCRIPT_TIME_FACTOR,
+                auth.refresh_expires_in * UNIX_TIME_TO_JAVASCRIPT_TIME_FACTOR,
         );
         return (
             !expirationTimeStamp ||

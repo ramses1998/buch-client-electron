@@ -7,7 +7,6 @@ import { Box } from "@mui/joy";
 import { BookCardComponent } from "@/components/shared/BookCardComponent";
 import BookTableComponent from "@/components/BookTableComponent";
 import { BookListViewComponent } from "@/components/BookListViewComponent";
-import { useMediaQuery } from "@/hooks/useMediaQuery";
 import { useRouter } from "next/router";
 
 export type BookListViewType = "CARD" | "TABLE" | "LIST";
@@ -39,11 +38,10 @@ const BookListCardViewComponent: React.FC<PropsBookListCardView> = (
     props: PropsBookListCardView,
 ) => {
     const { buecher } = props;
-    const { isSmall } = useMediaQuery();
     const router = useRouter();
 
     return (
-        <BookCardListContainer issmall={`${isSmall}`}>
+        <BookCardListContainer>
             {buecher.map((buch) => (
                 <BookCardComponent
                     key={buch.id}
@@ -55,11 +53,24 @@ const BookListCardViewComponent: React.FC<PropsBookListCardView> = (
     );
 };
 
-const BookCardListContainer = styled(Box)<{ issmall: "true" | "false" }>`
+const BookCardListContainer = styled(Box)`
     display: grid;
     gap: calc(var(--gap-3) + 7px);
-    grid-template-columns: repeat(
-        ${(props) => (props.issmall === "true" ? 2 : 6)},
-        1fr
-    );
+    grid-template-columns: repeat(6, 1fr);
+
+    @media screen and (max-width: 1700px) {
+        grid-template-columns: repeat(4, 1fr);
+    }
+
+    @media screen and (max-width: 1500px) {
+        grid-template-columns: repeat(3, 1fr);
+    }
+
+    @media screen and (max-width: 1000px) {
+        grid-template-columns: repeat(2, 1fr);
+    }
+
+    @media screen and (max-width: 600px) {
+        grid-template-columns: repeat(1, 1fr);
+    }
 `;
