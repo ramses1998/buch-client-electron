@@ -6,8 +6,14 @@ import {
 } from "@/components/shared/DetailListComponent";
 import MonitorIcon from "@mui/icons-material/Monitor";
 import NewReleasesIcon from "@mui/icons-material/NewReleases";
+import FormatColorFillOutlinedIcon from '@mui/icons-material/FormatColorFillOutlined';
+import ConstructionOutlinedIcon from '@mui/icons-material/ConstructionOutlined';
+import HttpOutlinedIcon from '@mui/icons-material/HttpOutlined';
+import HttpsOutlinedIcon from '@mui/icons-material/HttpsOutlined';
+import MoreHorizOutlinedIcon from '@mui/icons-material/MoreHorizOutlined';
 
-type GroupName = "Über das System";
+
+type GroupName = "Über das System" | "Über die Software";
 const EinstellungenPage: React.FC = () => {
     const einstellungsGroup: Group<GroupName>[] = [
         {
@@ -22,6 +28,36 @@ const EinstellungenPage: React.FC = () => {
                     icon: <NewReleasesIcon fontSize="small" />,
                     label: "Version",
                     value: "22H2",
+                },
+            ],
+        },
+        {
+            name: "Über die Software",
+            items: [
+                {
+                    icon: <ConstructionOutlinedIcon fontSize="small" />,
+                    label: "React-Framework",
+                    value: "Next.js",
+                },
+                {
+                    icon: <FormatColorFillOutlinedIcon fontSize="small" />,
+                    label: "CSS-Framework",
+                    value: "Material UI & Joy UI (alle von Google)",
+                },
+                {
+                    icon: <HttpOutlinedIcon fontSize="small" />,
+                    label: "HTTP-Client",
+                    value: "Axios",
+                },
+                {
+                    icon: <HttpsOutlinedIcon fontSize="small" />,
+                    label: "Sicherheit und Benutzerverwaltung",
+                    value: "KeyCloak",
+                },
+                {
+                    icon: <MoreHorizOutlinedIcon fontSize="small" />,
+                    label: "Sonstige Werkzeuge",
+                    value: "Electron, Prettier, ESlint, SWR, Styled Components",
                 },
             ],
         },
