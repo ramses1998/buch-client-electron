@@ -1,6 +1,6 @@
 // eslint-disable-next-line eslint-comments/disable-enable-pair
 /* eslint-disable no-unused-vars */
-import React, { ChangeEvent, useEffect, useState } from "react";
+import React, { ChangeEvent, useEffect, useMemo, useState } from "react";
 import FormControl from "@mui/joy/FormControl";
 import FormLabel from "@mui/joy/FormLabel";
 import { BuchArt, BuchDto } from "@/api/buch";
@@ -32,6 +32,8 @@ import VpnKeyOutlinedIcon from "@mui/icons-material/VpnKeyOutlined";
 import DeleteForever from "@mui/icons-material/DeleteForever";
 import { CustomChipComponent } from "@/components/shared/CustomChipComponent";
 import { v4 as uuid } from "uuid";
+import { regexValidator } from "@/context/ApplicationContextApi";
+import InfoOutlinedIcon from "@mui/icons-material/InfoOutlined";
 
 const INITIAL_BUCH_INPUT_MODEL: BuchDto = {
     isbn: "",
@@ -77,10 +79,10 @@ export const BuchFormularComponent: React.FC<Props> = (props: Props) => {
         SchlagwortInput[]
     >([]);
 
-    useEffect(() => {
-        if (!buchDto) return;
-        setBookToSubmit(buchDto);
-    }, [buchDto]);
+    // useEffect(() => {
+    //     if (!buchDto) return;
+    //     setBookToSubmit(buchDto);
+    // }, [buchDto]);
 
     const handleInputElementChange = (
         event: ChangeEvent<HTMLInputElement>,
@@ -236,14 +238,22 @@ export const BuchFormularComponent: React.FC<Props> = (props: Props) => {
         return `${year}-${month}-${day}`;
     };
 
+    const isFormValid = (): boolean => {
+        return inputFields
+            .filter((f) => f.required)
+            .map((f) => f.error)
+            .every((v) => !v);
+    };
+
     const inputFields: InputField[] = [
         {
             name: "isbn",
-            value: bookToSubmit.isbn,
+            value: bookToSubmit.isbn === "" ? undefined : bookToSubmit.isbn,
             onChange: (e) => handleInputElementChange(e, "string"),
             startDecorator: <NumbersOutlinedIcon fontSize="small" />,
             placeholder: "ISBN",
             required: true,
+            error: !regexValidator.isbn.test(bookToSubmit.isbn),
         },
         {
             name: "titel",
@@ -253,6 +263,7 @@ export const BuchFormularComponent: React.FC<Props> = (props: Props) => {
             placeholder: "Titel",
             required: true,
             disabled: buchDto !== undefined,
+            error: !regexValidator.titel.test(bookToSubmit.titel),
         },
         {
             name: "untertitel",
@@ -262,15 +273,27 @@ export const BuchFormularComponent: React.FC<Props> = (props: Props) => {
             placeholder: "Untertitel",
             required: true,
             disabled: buchDto !== undefined,
+            error: !regexValidator.untertitel.test(
+                bookToSubmit.untertitel as string,
+            ),
         },
         {
             name: "rating",
-            value: bookToSubmit.rating,
+            value: bookToSubmit.rating === 0 ? undefined : bookToSubmit.rating,
             type: "number",
             onChange: (e) => handleInputElementChange(e, "number"),
             startDecorator: <StarBorderOutlinedIcon fontSize="small" />,
             placeholder: "Bewertung",
             required: true,
+            slotProps: {
+                input: {
+                    min: 0,
+                    max: 5,
+                },
+            },
+            error: !regexValidator.rating.test(
+                bookToSubmit.rating as unknown as string,
+            ),
         },
         {
             name: "art",
@@ -280,24 +303,43 @@ export const BuchFormularComponent: React.FC<Props> = (props: Props) => {
             required: true,
             isDropdown: true,
             options: ["DRUCKAUSGABE", "KINDLE"],
+            error: false,
         },
         {
             name: "preis",
-            value: bookToSubmit.preis,
+            value: bookToSubmit.preis === 0 ? undefined : bookToSubmit.preis,
             type: "number",
             onChange: (e) => handleInputElementChange(e, "number"),
             startDecorator: <EuroOutlinedIcon fontSize="small" />,
             placeholder: "Preis",
             required: true,
+            slotProps: {
+                input: {
+                    min: 0,
+                    max: 10000,
+                },
+            },
+            error: !regexValidator.preis.test(
+                bookToSubmit.preis as unknown as string,
+            ),
         },
         {
             name: "rabatt",
-            value: bookToSubmit.rabatt,
+            value: bookToSubmit.rabatt === 0 ? undefined : bookToSubmit.rabatt,
             type: "number",
             onChange: (e) => handleInputElementChange(e, "number"),
             startDecorator: <PercentOutlinedIcon fontSize="small" />,
             placeholder: "Rabatt",
             required: true,
+            slotProps: {
+                input: {
+                    min: 0,
+                    max: 1,
+                },
+            },
+            error: !regexValidator.rabatt.test(
+                bookToSubmit.rabatt as unknown as string,
+            ),
         },
         {
             name: "lieferbar",
@@ -307,15 +349,20 @@ export const BuchFormularComponent: React.FC<Props> = (props: Props) => {
             startDecorator: <LocalShippingOutlinedIcon fontSize="small" />,
             placeholder: "Ist das Buch lieferbar ?",
             required: true,
+            error: false,
         },
         {
             name: "datum",
-            value: formatDateForInputField(bookToSubmit.datum),
+            value:
+                bookToSubmit.datum === ""
+                    ? undefined
+                    : formatDateForInputField(bookToSubmit.datum),
             type: "date",
             onChange: (e) => handleInputElementChange(e, "string"),
             startDecorator: <CalendarMonthOutlinedIcon fontSize="small" />,
             placeholder: "Erscheinungsdatum",
             required: true,
+            error: false,
         },
         {
             name: "schlagwoerter",
@@ -326,6 +373,7 @@ export const BuchFormularComponent: React.FC<Props> = (props: Props) => {
             required: true,
             isDynamicList: true,
             options: bookToSubmit.schlagwoerter,
+            error: false,
         },
         {
             name: "homepage",
@@ -334,6 +382,9 @@ export const BuchFormularComponent: React.FC<Props> = (props: Props) => {
             startDecorator: <LanguageOutlinedIcon fontSize="small" />,
             placeholder: "Homepage",
             required: true,
+            error: !regexValidator.homepage.test(
+                bookToSubmit.homepage as unknown as string,
+            ),
         },
     ];
 
@@ -486,8 +537,16 @@ export const BuchFormularComponent: React.FC<Props> = (props: Props) => {
                     );
                 }
                 return (
-                    <FormControl key={input.name}>
-                        <FormLabel>{input.placeholder}</FormLabel>
+                    <FormControl key={input.name} error={input.error}>
+                        <FormLabel
+                            sx={{
+                                color: input.error
+                                    ? "var(--color-error)"
+                                    : "unset",
+                            }}
+                        >
+                            {input.placeholder}
+                        </FormLabel>
                         <Input
                             {...input}
                             placeholder=""
@@ -509,12 +568,20 @@ export const BuchFormularComponent: React.FC<Props> = (props: Props) => {
                                 ) : null
                             }
                         />
-                        {/*<FormHelperText>This is a helper text.</FormHelperText>*/}
+                        {input.error ? (
+                            <FormHelperText>
+                                <InfoOutlinedIcon fontSize="small" />
+                                Dieser Wert ist ungültig
+                            </FormHelperText>
+                        ) : null}
                     </FormControl>
                 );
             })}
             <Box>
-                <Button onClick={() => onSubmit(bookToSubmit)}>
+                <Button
+                    disabled={!isFormValid()}
+                    onClick={() => onSubmit(bookToSubmit)}
+                >
                     Speichern
                 </Button>
             </Box>

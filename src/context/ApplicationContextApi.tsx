@@ -143,3 +143,15 @@ const extractIdFromUrl = (url: string): number => {
     const slashSeperatedChars = url.split("/");
     return parseInt(slashSeperatedChars[slashSeperatedChars.length - 1]);
 };
+
+export const regexValidator = {
+    isbn: /^(?:ISBN(?:-13)?:? )?(?=\d{13}$|(?=(?:\d+[- ]){4})[- \d]{17}$)97[89][- ]?\d{1,5}[- ]?(?:\d+[- ]\d+|\d{2,})[- ]?\d$/,
+    titel: /^.{0,40}$/,
+    untertitel: /^.{0,40}$/,
+    rating: /^[0-5]$/,
+    // preis: /^(?:\d{1,4}|10000)$/,
+    preis: /^\d+(\.\d{1,2})?$/,
+    rabatt: /^(0|\d+\.\d{0,3})?$/,
+    // homepage: /^(http|https):\/\/(?:www\.)?([a-zA-Z\d\-.]+\.[a-z]{2,6})(?:\/\S*)?$/,
+    homepage: /^https?:\/\/(?:www\.)?[-a-zA-Z0-9@:%._\+~#=]{1,256}\.[a-zA-Z0-9()]{1,6}\b(?:[-a-zA-Z0-9()@:%_\+.~#?&\/=]*)$/,
+};

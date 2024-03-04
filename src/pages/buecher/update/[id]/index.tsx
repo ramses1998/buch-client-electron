@@ -1,7 +1,7 @@
 // eslint-disable-next-line eslint-comments/disable-enable-pair
 /* eslint-disable no-unused-vars, @typescript-eslint/no-misused-promises, @typescript-eslint/no-unsafe-assignment, @typescript-eslint/no-floating-promises */
 "use client";
-import React from "react";
+import React, { useState } from "react";
 import { Buch, BuchDto } from "@/api/buch";
 import { PageWrapperComponent } from "@/components/shared/PageWrapperComponent";
 import { BuchFormularComponent } from "@/components/shared/BuchFormularComponent";
@@ -20,6 +20,7 @@ import {
 } from "@/context/NotificationContextApi";
 import { v4 as uuid } from "uuid";
 import { WrapperBuchFormularComponent } from "@/components/shared/WrapperBuchFormularComponent";
+import { LoadingPopUpComponent } from "@/components/shared/LoadingPopUpComponent";
 
 const BookUpdatePage: React.FC = () => {
     const mitteilungContext = useMitteilungContext();
@@ -28,21 +29,38 @@ const BookUpdatePage: React.FC = () => {
 
     const {
         data: buch,
-        isLoading,
-        error,
+        isLoading: isBuchLoading,
+        error: buchError,
     } = useSWR<Buch>("getById", () =>
         appContext.getBuchById(parseInt(router.query?.id as string)),
     );
+
+    const [isUpdateLoading, setIsUpdateLoading] = useState<boolean>(false);
+    const [updateError, setUpdateError] = useState<Error | undefined>(
+        undefined,
+    );
+
     const handleSubmit = async (buchDto: BuchDto) => {
         if (!buch) return;
         const buchUpdateModel = convertBuchDtoToBuchUpdateModel(buchDto);
-        await appContext.updateBuch(
-            buch.id,
-            buch.version as number,
-            buchUpdateModel,
-        );
-        mitteilungAusloesen();
-        await router.push("/buecher");
+
+        setIsUpdateLoading(true);
+        setUpdateError(undefined);
+
+        try {
+            await appContext.updateBuch(
+                buch.id,
+                buch.version as number,
+                buchUpdateModel,
+            );
+            mitteilungAusloesen();
+            await router.push(`/buecher/${buch.id}`);
+        } catch (err) {
+            console.error(err);
+            setUpdateError(err as Error);
+        } finally {
+            setIsUpdateLoading(false);
+        }
     };
 
     const mitteilungAusloesen = () => {
@@ -56,13 +74,13 @@ const BookUpdatePage: React.FC = () => {
         mitteilungContext.triggerMitteilung(neuMitteilung);
     };
 
-    if (isLoading || buch === undefined)
+    if (isBuchLoading || buch === undefined)
         return <LoadingComponent message="Das Buch wird geladen..." />;
 
-    if (error) {
+    if (buchError) {
         return (
             <Alert severity="error">
-                Ein Fehler ist aufgetreten: {(error as Error).toString()}
+                Ein Fehler ist aufgetreten: {(buchError as Error).toString()}
             </Alert>
         );
     }
@@ -70,11 +88,24 @@ const BookUpdatePage: React.FC = () => {
     return (
         <PageWrapperComponent title="Buch ändern">
             <WrapperBuchFormularComponent>
-                <BuchFormularComponent
-                    buchDto={convertBuchToBuchDto(buch)}
-                    onSubmit={handleSubmit}
-                />
+                <div>
+                    <BuchFormularComponent
+                        buchDto={convertBuchToBuchDto(buch)}
+                        onSubmit={handleSubmit}
+                    />
+                    {updateError ? (
+                        <Alert sx={{ my: "var(--gap-2)" }} severity="error">
+                            {`Ein Fehler ist aufgetreten: ${updateError.message}`}
+                        </Alert>
+                    ) : null}
+                </div>
             </WrapperBuchFormularComponent>
+            {isUpdateLoading ? (
+                <LoadingPopUpComponent
+                    isLoading={isUpdateLoading}
+                    message={"Das Buch wird aktualisiert..."}
+                />
+            ) : null}
         </PageWrapperComponent>
     );
 };

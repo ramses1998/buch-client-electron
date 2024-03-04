@@ -1,13 +1,13 @@
 "use client";
 // eslint-disable-next-line eslint-comments/disable-enable-pair
 /* eslint-disable no-unused-vars, @typescript-eslint/no-misused-promises, @typescript-eslint/no-unsafe-assignment, @typescript-eslint/no-floating-promises */
-import React from "react";
+import React, {useState} from "react";
 import { useApplicationContextApi } from "@/context/ApplicationContextApi";
 import useSWR from "swr";
 import { Buch } from "@/api/buch";
 import { LoadingComponent } from "@/components/shared/LoadingComponent";
 import Alert from "@mui/material/Alert";
-import { Button, Sheet, Stack, ModalClose } from "@mui/joy";
+import { Button, ModalClose, Sheet, Stack } from "@mui/joy";
 import { PageWrapperComponent } from "@/components/shared/PageWrapperComponent";
 import { BookCardComponent } from "@/components/shared/BookCardComponent";
 import NumbersOutlinedIcon from "@mui/icons-material/NumbersOutlined";
@@ -38,7 +38,7 @@ import DialogContent from "@mui/joy/DialogContent";
 import DialogActions from "@mui/joy/DialogActions";
 import Modal from "@mui/joy/Modal";
 import ModalDialog from "@mui/joy/ModalDialog";
-import MoreVertIcon from "@mui/icons-material/MoreVert";
+import {LoadingPopUpComponent} from "@/components/shared/LoadingPopUpComponent";
 
 const NUMBER_OF_KEYWORDS_BEFORE_TEXT_ELIPSIS = 2;
 
@@ -55,6 +55,11 @@ const BookDetailPage: React.FC = () => {
         error,
     } = useSWR<Buch>("getById", () =>
         appContext.getBuchById(parseInt(router.query?.id as string)),
+    );
+
+    const [isDeleteLoading, setIsDeleteLoading] = useState<boolean>(false);
+    const [deleteError, setDeleteError] = useState<Error | undefined>(
+        undefined,
     );
 
     const mitteilungContext = useMitteilungContext();
@@ -176,9 +181,17 @@ const BookDetailPage: React.FC = () => {
 
     const handleDelete = async () => {
         if (!buch) return;
-        await appContext.deleteBuch(buch.id, buch.version as number);
-        mitteilungAusloesen();
-        router.push("/buecher");
+
+        try {
+            await appContext.deleteBuch(buch.id, buch.version as number);
+            mitteilungAusloesen();
+            await router.push("/buecher");
+        } catch (err) {
+            console.error(err);
+            setDeleteError(err as Error);
+        } finally {
+            setIsDeleteLoading(false);
+        }
     };
 
     if (isLoading || buch === undefined)
@@ -214,9 +227,20 @@ const BookDetailPage: React.FC = () => {
                     </Stack>
                 </Stack>
                 <Stack spacing={"var(--gap-3)"} sx={{ width: "100%" }}>
+                    {deleteError ? (
+                        <Alert sx={{ mb: "var(--gap-2)" }} severity="error">
+                            {`Ein Fehler ist aufgetreten: ${deleteError.message}`}
+                        </Alert>
+                    ) : null}
                     <DetailsListComponent groups={allGroups} />
                 </Stack>
             </Stack>
+            {isDeleteLoading ? (
+                <LoadingPopUpComponent
+                    isLoading={isDeleteLoading}
+                    message={"Das Buch wird gelöscht..."}
+                />
+            ) : null}
         </PageWrapperComponent>
     );
 };
@@ -237,7 +261,6 @@ const ModalSchlagwoerterComponent: React.FC<PropsModalSchlagwoerter> = (
             <Button
                 variant="plain"
                 color="primary"
-                endDecorator={<MoreVertIcon />}
                 onClick={() => setOpen(true)}
             >
                 {`und ${schlagwoerter.length - NUMBER_OF_KEYWORDS_BEFORE_TEXT_ELIPSIS} weitere`}

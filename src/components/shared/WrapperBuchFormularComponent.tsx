@@ -1,6 +1,7 @@
 import React, { PropsWithChildren } from "react";
 import { Box, Card, Divider, Sheet, Stack, Typography } from "@mui/joy";
 import WarningAmberIcon from "@mui/icons-material/WarningAmber";
+import {useMediaQuery} from "@/hooks/useMediaQuery";
 
 type InformationItem = {
     title: string;
@@ -11,6 +12,7 @@ type Props = PropsWithChildren;
 
 export const WrapperBuchFormularComponent: React.FC<Props> = (props: Props) => {
     const { children } = props;
+    const { isSmall } = useMediaQuery();
 
     const informationList: InformationItem[] = [
         {
@@ -51,7 +53,7 @@ export const WrapperBuchFormularComponent: React.FC<Props> = (props: Props) => {
         <Box
             sx={{
                 display: "grid",
-                gridTemplateColumns: "5fr 2fr",
+                gridTemplateColumns: isSmall ? "1fr" : "5fr 2fr",
                 gridGap: "var(--gap-4)",
                 alignItems: "start",
                 alignContent: "start",
