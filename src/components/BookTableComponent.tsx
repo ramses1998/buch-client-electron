@@ -3,7 +3,7 @@
 "use client";
 import React, { PropsWithChildren } from "react";
 import Table from "@mui/joy/Table";
-import { Box, Theme, Typography, useTheme } from "@mui/joy";
+import { Box, Theme, useTheme } from "@mui/joy";
 import Stack from "@mui/joy/Stack";
 import { Buch } from "@/api/buch";
 import { useRouter } from "next/router";

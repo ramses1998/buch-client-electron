@@ -1,3 +1,5 @@
+// eslint-disable-next-line eslint-comments/disable-enable-pair
+/* eslint-disable @typescript-eslint/no-unsafe-assignment, @typescript-eslint/no-misused-promises */
 import React, { ReactNode } from "react";
 import { PageWrapperComponent } from "@/components/shared/PageWrapperComponent";
 import Button from "@mui/joy/Button";
@@ -18,8 +20,6 @@ import StarBorderPurple500OutlinedIcon from "@mui/icons-material/StarBorderPurpl
 import AutoStoriesOutlinedIcon from "@mui/icons-material/AutoStoriesOutlined";
 import { useRouter } from "next/router";
 import {
-    BarChart,
-    Bar,
     Area,
     AreaChart,
     XAxis,
@@ -28,7 +28,6 @@ import {
     Tooltip,
     ResponsiveContainer,
 } from "recharts";
-import Divider from "@mui/joy/Divider";
 
 type KeyValue = {
     icon: ReactNode;

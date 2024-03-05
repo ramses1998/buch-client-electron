@@ -5,7 +5,7 @@ import { LayoutComponent } from "@/components/LayoutComponent";
 import React, { ComponentType } from "react";
 import { ApplicationContextProvider } from "@/context/ApplicationContextApi";
 import { MitteilungContextProvider } from "@/context/NotificationContextApi";
-import {AuthContextProvider} from "@/context/AuthContextApi";
+import { AuthContextProvider } from "@/context/AuthContextApi";
 
 type Props = {
     Component: ComponentType;

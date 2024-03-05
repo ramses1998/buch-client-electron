@@ -1,6 +1,6 @@
 // eslint-disable-next-line eslint-comments/disable-enable-pair
 /* eslint-disable @typescript-eslint/no-misused-promises */
-import React, {useState} from "react";
+import React, { useState } from "react";
 import { PageWrapperComponent } from "@/components/shared/PageWrapperComponent";
 import { BuchFormularComponent } from "@/components/shared/BuchFormularComponent";
 import { BuchDto } from "@/api/buch";
@@ -11,9 +11,9 @@ import {
 } from "@/context/NotificationContextApi";
 import { v4 as uuid } from "uuid";
 import { WrapperBuchFormularComponent } from "@/components/shared/WrapperBuchFormularComponent";
-import {useRouter} from "next/router";
-import {LoadingPopUpComponent} from "@/components/shared/LoadingPopUpComponent";
-import {Box} from "@mui/joy";
+import { useRouter } from "next/router";
+import { LoadingPopUpComponent } from "@/components/shared/LoadingPopUpComponent";
+import { Box } from "@mui/joy";
 import Alert from "@mui/material/Alert";
 
 const AnlegenPage: React.FC = () => {
@@ -40,7 +40,7 @@ const AnlegenPage: React.FC = () => {
     const handleSubmit = async (buchDto: BuchDto) => {
         setIsCreateLoading(true);
         setCreateError(undefined);
-        
+
         try {
             await appContext.createBuch(buchDto);
             mitteilungAusloesen(buchDto);

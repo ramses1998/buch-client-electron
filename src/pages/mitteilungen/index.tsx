@@ -1,5 +1,5 @@
 // eslint-disable-next-line eslint-comments/disable-enable-pair
-/* eslint-disable no-unused-vars, @typescript-eslint/ban-ts-comment */
+/* eslint-disable no-unused-vars, @typescript-eslint/ban-ts-comment, react-hooks/exhaustive-deps */
 import React, { useEffect } from "react";
 import { PageWrapperComponent } from "@/components/shared/PageWrapperComponent";
 import {

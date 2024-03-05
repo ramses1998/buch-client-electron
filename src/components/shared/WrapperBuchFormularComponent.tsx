@@ -1,7 +1,7 @@
 import React, { PropsWithChildren } from "react";
 import { Box, Card, Divider, Sheet, Stack, Typography } from "@mui/joy";
 import WarningAmberIcon from "@mui/icons-material/WarningAmber";
-import {useMediaQuery} from "@/hooks/useMediaQuery";
+import { useMediaQuery } from "@/hooks/useMediaQuery";
 
 type InformationItem = {
     title: string;

@@ -153,5 +153,6 @@ export const regexValidator = {
     preis: /^\d+(\.\d{1,2})?$/,
     rabatt: /^(0|\d+\.\d{0,3})?$/,
     // homepage: /^(http|https):\/\/(?:www\.)?([a-zA-Z\d\-.]+\.[a-z]{2,6})(?:\/\S*)?$/,
-    homepage: /^https?:\/\/(?:www\.)?[-a-zA-Z0-9@:%._\+~#=]{1,256}\.[a-zA-Z0-9()]{1,6}\b(?:[-a-zA-Z0-9()@:%_\+.~#?&\/=]*)$/,
+    homepage:
+        /^https?:\/\/(?:www\.)?[-\w@:%.+~#=]{1,256}\.[a-zA-Z\d()]{1,6}\b[-\w()@:%+.~#?&/=]*$/,
 };

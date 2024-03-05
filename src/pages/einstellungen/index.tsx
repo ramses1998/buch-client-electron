@@ -6,12 +6,11 @@ import {
 } from "@/components/shared/DetailListComponent";
 import MonitorIcon from "@mui/icons-material/Monitor";
 import NewReleasesIcon from "@mui/icons-material/NewReleases";
-import FormatColorFillOutlinedIcon from '@mui/icons-material/FormatColorFillOutlined';
-import ConstructionOutlinedIcon from '@mui/icons-material/ConstructionOutlined';
-import HttpOutlinedIcon from '@mui/icons-material/HttpOutlined';
-import HttpsOutlinedIcon from '@mui/icons-material/HttpsOutlined';
-import MoreHorizOutlinedIcon from '@mui/icons-material/MoreHorizOutlined';
-
+import FormatColorFillOutlinedIcon from "@mui/icons-material/FormatColorFillOutlined";
+import ConstructionOutlinedIcon from "@mui/icons-material/ConstructionOutlined";
+import HttpOutlinedIcon from "@mui/icons-material/HttpOutlined";
+import HttpsOutlinedIcon from "@mui/icons-material/HttpsOutlined";
+import MoreHorizOutlinedIcon from "@mui/icons-material/MoreHorizOutlined";
 
 type GroupName = "Über das System" | "Über die Software";
 const EinstellungenPage: React.FC = () => {

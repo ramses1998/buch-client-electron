@@ -1,3 +1,5 @@
+// eslint-disable-next-line eslint-comments/disable-enable-pair
+/* eslint-disable no-unused-vars, @typescript-eslint/ban-ts-comment, @typescript-eslint/no-unsafe-assignment, @typescript-eslint/no-unsafe-member-access, @typescript-eslint/no-unsafe-argument, react-hooks/exhaustive-deps */
 import {
     AuthResponse,
     loginApi,
@@ -14,12 +16,11 @@ import React, {
 import { useRouter } from "next/router";
 import { axiosClient } from "@/api/rest-client";
 import { UNIX_TIME_TO_JAVASCRIPT_TIME_FACTOR } from "@/context/ApplicationContextApi";
-import { AxiosRequestConfig } from "axios";
 
 type Output = {
     auth: AuthResponse | undefined;
     login: (loginDaten: LoginDaten) => Promise<void>;
-    logout: () => Promise<void>;
+    logout: () => void;
     refresh: () => Promise<void>;
 };
 
@@ -38,6 +39,20 @@ export const AuthContextProvider: React.FC<Props> = (props: Props) => {
     const router = useRouter();
 
     useEffect(() => {
+        const hasRefreshTokenExpired = (): boolean => {
+            if (!auth) return true;
+            const currentDate = new Date();
+            const expirationTimeStamp = new Date(
+                currentDate.getTime() +
+                    auth.refresh_expires_in *
+                        UNIX_TIME_TO_JAVASCRIPT_TIME_FACTOR,
+            );
+            return (
+                !expirationTimeStamp ||
+                currentDate.getTime() > new Date(expirationTimeStamp).getTime()
+            );
+        };
+
         const requestInterceptor = axiosClient.interceptors.request.use(
             (requestConfig) => {
                 const httpMethod = requestConfig.method?.toLowerCase();
@@ -49,7 +64,7 @@ export const AuthContextProvider: React.FC<Props> = (props: Props) => {
                     httpMethod === "put" ||
                     httpMethod === "delete"
                 ) {
-                    // @ts-ignore
+                    // @ts-expect-error
                     requestConfig.headers = {
                         ...requestConfig.headers,
                         Authorization: `Bearer ${auth!.access_token}`,
@@ -63,12 +78,10 @@ export const AuthContextProvider: React.FC<Props> = (props: Props) => {
         const responseInterceptor = axiosClient.interceptors.response.use(
             (response) => response,
             async (error) => {
-
                 const request = error?.config;
                 const response = error?.response;
 
                 if (response?.status === 401 && !request?.sent) {
-
                     request.sent = true;
 
                     if (!auth || hasRefreshTokenExpired()) {
@@ -101,7 +114,7 @@ export const AuthContextProvider: React.FC<Props> = (props: Props) => {
         setAuth(loginResponse.status !== 200 ? undefined : loginResponse.data);
     };
 
-    const logout = async (): Promise<void> => {
+    const logout = () => {
         setAuth(undefined);
     };
 
@@ -110,19 +123,6 @@ export const AuthContextProvider: React.FC<Props> = (props: Props) => {
         const refreshResponse = await refreshTokenApi(auth.refresh_token);
         setAuth(
             refreshResponse.status !== 200 ? undefined : refreshResponse.data,
-        );
-    };
-
-    const hasRefreshTokenExpired = (): boolean => {
-        if (!auth) return true;
-        const currentDate = new Date();
-        const expirationTimeStamp = new Date(
-            currentDate.getTime() +
-                auth.refresh_expires_in * UNIX_TIME_TO_JAVASCRIPT_TIME_FACTOR,
-        );
-        return (
-            !expirationTimeStamp ||
-            currentDate.getTime() > new Date(expirationTimeStamp).getTime()
         );
     };
 

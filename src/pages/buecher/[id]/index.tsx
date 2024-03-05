@@ -1,7 +1,7 @@
 "use client";
 // eslint-disable-next-line eslint-comments/disable-enable-pair
 /* eslint-disable no-unused-vars, @typescript-eslint/no-misused-promises, @typescript-eslint/no-unsafe-assignment, @typescript-eslint/no-floating-promises */
-import React, {useState} from "react";
+import React, { useState } from "react";
 import { useApplicationContextApi } from "@/context/ApplicationContextApi";
 import useSWR from "swr";
 import { Buch } from "@/api/buch";
@@ -38,7 +38,7 @@ import DialogContent from "@mui/joy/DialogContent";
 import DialogActions from "@mui/joy/DialogActions";
 import Modal from "@mui/joy/Modal";
 import ModalDialog from "@mui/joy/ModalDialog";
-import {LoadingPopUpComponent} from "@/components/shared/LoadingPopUpComponent";
+import { LoadingPopUpComponent } from "@/components/shared/LoadingPopUpComponent";
 
 const NUMBER_OF_KEYWORDS_BEFORE_TEXT_ELIPSIS = 2;
 
