@@ -1,8 +1,11 @@
 This is a [Next.js](https://nextjs.org/) project bootstrapped with [`create-next-app`](https://github.com/vercel/next.js/tree/canary/packages/create-next-app).
 
-## Getting Started
+## Desktop-Anwendung mit Electron, NEXT.js und Material UI
 
-First, run the development server:
+## Inhalt
+
+- [Installation](#installation)
+- [Konfiguration](#konfiguration)
 
 ```bash
 npm run dev

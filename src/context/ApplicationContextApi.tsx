@@ -149,10 +149,8 @@ export const regexValidator = {
     titel: /^.{0,40}$/,
     untertitel: /^.{0,40}$/,
     rating: /^[0-5]$/,
-    // preis: /^(?:\d{1,4}|10000)$/,
     preis: /^\d+(\.\d{1,2})?$/,
     rabatt: /^(0|\d+\.\d{0,3})?$/,
-    // homepage: /^(http|https):\/\/(?:www\.)?([a-zA-Z\d\-.]+\.[a-z]{2,6})(?:\/\S*)?$/,
     homepage:
         /^https?:\/\/(?:www\.)?[-\w@:%.+~#=]{1,256}\.[a-zA-Z\d()]{1,6}\b[-\w()@:%+.~#?&/=]*$/,
 };

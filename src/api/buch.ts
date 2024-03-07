@@ -69,14 +69,6 @@ export type BuchListResponse = {
     };
 };
 
-export type CreateBuchResponse = {
-    id: number;
-};
-
-export type UpdateBuchResponse = {
-    version: number;
-};
-
 export const getAlleBuecherApi = async (): Promise<
     AxiosResponse<BuchListResponse>
 > => {

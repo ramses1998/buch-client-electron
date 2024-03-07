@@ -16,7 +16,7 @@ type GroupItem = {
 };
 
 // Generic T muss angegeben werden, um ein Objekt dieses Typen zu erstellen.
-// Der generische Typ nimmt nur strings-Typen oder Union-Typen an
+// Der generische Typ nimmt nur strings-Typen oder String-Union-Typen an
 export type Group<T extends string> = {
     name: T;
     items: GroupItem[];
@@ -26,7 +26,6 @@ type PropsDetailsList<T extends string> = {
     groups: Group<T>[];
 };
 
-//
 export const DetailsListComponent = <U extends string>(
     props: PropsDetailsList<U>,
 ) => {

@@ -227,8 +227,8 @@ const OverviewCardComponent: React.FC<PropsOverviewCard> = (
             </Box>
             <Box
                 component="img"
-                alt=""
-                src="https://storage.googleapis.com/cms-storage-bucket/72521e62275b24d3c37d.png"
+                alt="banner-partial-background"
+                src="/banner-partial-background.png"
                 sx={{ position: "absolute", height: "100%", top: 0, right: 0 }}
             />
             <Typography

@@ -1,6 +1,7 @@
 const { app, BrowserWindow } = require("electron");
 const serve = require("electron-serve");
 const path = require("path");
+const os = require('os');
 
 
 const appServe = serve({
@@ -22,36 +23,38 @@ const createWindow = async () => {
     },
   });
 
-  win.webContents.session.webRequest.onBeforeSendHeaders(
-      (details, callback) => {
-        callback({ requestHeaders: { Origin: '*', ...details.requestHeaders } });
-      },
-  );
+  // win.webContents.session.webRequest.onBeforeSendHeaders(
+  //     (details, callback) => {
+  //       callback({ requestHeaders: { Origin: '*', ...details.requestHeaders } });
+  //     },
+  // );
+  //
+  // win.webContents.session.webRequest.onHeadersReceived((details, callback) => {
+  //   callback({
+  //     responseHeaders: {
+  //       'Access-Control-Allow-Origin': ['*'],
+  //       ...details.responseHeaders,
+  //     },
+  //   });
+  // });
 
-  win.webContents.session.webRequest.onHeadersReceived((details, callback) => {
-    callback({
-      responseHeaders: {
-        'Access-Control-Allow-Origin': ['*'],
-        ...details.responseHeaders,
-      },
-    });
-  });
+    //
+    // await appServe(win);
+    // await win.loadURL("app://-");
 
-
+  if (app.isPackaged) {
     await appServe(win);
     await win.loadURL("app://-");
+  } else {
+    await win.loadURL("http://localhost:3001");
+    win.webContents.openDevTools();
+    win.webContents.on("did-fail-load", (e, code, desc) => {
+      win.webContents.reloadIgnoringCache();
+    });
+  }
 
-  // if (app.isPackaged) {
-  //   await appServe(win);
-  //   await win.loadURL("app://-");
-  // } else {
-  //   await win.loadURL("http://localhost:3001");
-  //   win.webContents.openDevTools();
-  //   win.webContents.on("did-fail-load", (e, code, desc) => {
-  //     win.webContents.reloadIgnoringCache();
-  //   });
-  // }
 };
+
 
 app.on("ready", () => {
   createWindow();

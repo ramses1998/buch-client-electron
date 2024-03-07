@@ -79,11 +79,6 @@ export const BuchFormularComponent: React.FC<Props> = (props: Props) => {
         SchlagwortInput[]
     >([]);
 
-    // useEffect(() => {
-    //     if (!buchDto) return;
-    //     setBookToSubmit(buchDto);
-    // }, [buchDto]);
-
     const handleInputElementChange = (
         event: ChangeEvent<HTMLInputElement>,
         dataType: InputDataType,
@@ -222,7 +217,6 @@ export const BuchFormularComponent: React.FC<Props> = (props: Props) => {
             schlagwoerter: [...prevState.schlagwoerter, wort],
         }));
 
-        // Remove Input of word after it has been added to the BuchDto model
         setSchlagwortInputList((prevState) =>
             prevState.filter((s) => s.id !== schlagwortId),
         );
@@ -366,8 +360,6 @@ export const BuchFormularComponent: React.FC<Props> = (props: Props) => {
         },
         {
             name: "schlagwoerter",
-            // value: bookToSubmit.schlagwoerter,
-            // onChange: () => {},
             startDecorator: <VpnKeyOutlinedIcon fontSize="small" />,
             placeholder: "Schlagwörter",
             required: true,
@@ -382,9 +374,7 @@ export const BuchFormularComponent: React.FC<Props> = (props: Props) => {
             startDecorator: <LanguageOutlinedIcon fontSize="small" />,
             placeholder: "Homepage",
             required: true,
-            error: !regexValidator.homepage.test(
-                bookToSubmit.homepage as unknown as string,
-            ),
+            error: !regexValidator.homepage.test(bookToSubmit.homepage),
         },
     ];
 
@@ -413,7 +403,6 @@ export const BuchFormularComponent: React.FC<Props> = (props: Props) => {
                                     </Option>
                                 ))}
                             </Select>
-                            {/*<FormHelperText>This is a helper text.</FormHelperText>*/}
                         </FormControl>
                     );
                 }

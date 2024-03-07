@@ -23,24 +23,22 @@ import { v4 as uuid } from "uuid";
 const MAX_BOOKS_COUNT_FOR_OVERVIEW = 4;
 const MINIMUM_RATING_FOR_POPULAR_BOOK = 2;
 const OVERVIEW_CARD_ANIMATION_DURATION = 3;
-const MILISECOND_FACTOR = 1000;
+const MILLISECOND_FACTOR = 1000;
 
-const Home = () => {
+const Home: React.FC = () => {
+
     const appContext = useApplicationContextApi();
+    const [buecher, setBuecher] = useState<Buch[] | undefined>(undefined);
+    const [isAnimating, setIsAnimating] = useState<boolean>(true);
+    const router = useRouter();
+
     const { data, isLoading, error } = useSWR<Buch[]>(
         "getAll",
         appContext.getAlleBuecher,
     );
 
-    const router = useRouter();
-
-    const resolveMostPopularBooks = (buecher: Buch[]): Buch[] => {
-        return buecher.filter(
-            (b) => b.rating >= MINIMUM_RATING_FOR_POPULAR_BOOK,
-        );
-    };
-
-    const [buecher, setBuecher] = useState<Buch[] | undefined>(undefined);
+    const animationDuration =
+        OVERVIEW_CARD_ANIMATION_DURATION * MILLISECOND_FACTOR;
 
     useEffect(() => {
         const buecherForStateUpdate = data?.slice(
@@ -49,19 +47,6 @@ const Home = () => {
         );
         setBuecher(buecherForStateUpdate);
     }, [data]);
-
-    const sortBooksByRating = (buecher: Buch[]): Buch[] => {
-        return buecher.sort((a, b) => b.rating - a.rating);
-    };
-
-    const [isAnimating, setIsAnimating] = useState<boolean>(true);
-    const animationDuration =
-        OVERVIEW_CARD_ANIMATION_DURATION * MILISECOND_FACTOR;
-    const overviewContainerRef = useRef<HTMLDivElement | null>(null);
-
-    useEffect(() => {
-        toggleAnimation();
-    }, []);
 
     useEffect(() => {
         if (!buecher) return;
@@ -79,10 +64,17 @@ const Home = () => {
             }, animationDuration);
         }
         return () => clearInterval(intervalId);
+
     }, [isAnimating, data, buecher, animationDuration]);
 
-    const toggleAnimation = () => {
-        setIsAnimating((prevAnimating) => !prevAnimating);
+    const resolveMostPopularBooks = (buecher: Buch[]): Buch[] => {
+        return buecher.filter(
+            (b) => b.rating >= MINIMUM_RATING_FOR_POPULAR_BOOK,
+        );
+    };
+
+    const sortBooksByRating = (buecher: Buch[]): Buch[] => {
+        return buecher.sort((a, b) => b.rating - a.rating);
     };
 
     if (isLoading || data === undefined || buecher === undefined)
@@ -100,10 +92,7 @@ const Home = () => {
         <PageWrapperComponent title="Startseite">
             <Stack direction="column" spacing={"var(--gap-7)"}>
                 <Box>
-                    <OverviewContainerWithItemList
-                        ref={overviewContainerRef}
-                        animating={`${isAnimating}`}
-                    >
+                    <OverviewContainerWithItemList>
                         {buecher.map((buch, index) => (
                             <OverviewCardComponent
                                 key={uuid()}
@@ -116,7 +105,9 @@ const Home = () => {
                     <Button
                         variant="plain"
                         color="primary"
-                        onClick={toggleAnimation}
+                        onClick={() =>
+                            setIsAnimating((prevAnimating) => !prevAnimating)
+                        }
                         startDecorator={
                             isAnimating ? (
                                 <StopCircleOutlinedIcon />
@@ -173,7 +164,6 @@ type PropsOverviewCard = {
     isMain: boolean;
     animating: boolean;
 };
-// eslint-disable-next-line react/display-name
 const OverviewCardComponent = (props: PropsOverviewCard) => {
     const { buch, isMain, animating } = props;
     const router = useRouter();
@@ -184,7 +174,10 @@ const OverviewCardComponent = (props: PropsOverviewCard) => {
             : "Genießen Sie die praktische Tragbarkeit und den sofortigen Zugriff auf Tausende von Titeln.";
 
     return (
-        <CardContainer ismain={`${isMain}`} animating={`${animating}`}>
+        <CardContainer
+            ismain={isMain ? "true" : "false"}
+            animating={animating ? "true" : "false"}
+        >
             <CardContent ismain={`${isMain}`}>
                 <CustomChipComponent value={`${buch.preis.toFixed(2)} €`} />
                 <TitleUndInfoContainer>
@@ -227,9 +220,7 @@ const OverviewCardComponent = (props: PropsOverviewCard) => {
     );
 };
 
-const OverviewContainerWithItemList = styled(Card)<{
-    animating: "true" | "false";
-}>`
+const OverviewContainerWithItemList = styled(Card)`
     display: grid;
     grid-gap: var(--gap-2);
     grid-template-columns: minmax(500px, 1fr) repeat(

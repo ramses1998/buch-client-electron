@@ -13,7 +13,6 @@ type Props = PropsWithChildren & {
 export const PageWrapperComponent: React.FC<Props> = (props) => {
     const { title, subtitle, children } = props;
     const router = useRouter();
-    //const id = router.query.id as string;
 
     const charactersToExcludeFromUrl = ["/", "-", "\\", "[", "]"];
 
@@ -25,11 +24,6 @@ export const PageWrapperComponent: React.FC<Props> = (props) => {
             if (!result.includes(character)) return;
 
             const cleanText = result.replaceAll(character, " ");
-
-            // if (id && typeof id === "string") {
-            //     cleanText = cleanText.replace("id", id);
-            // }
-
             result = cleanText.slice(0);
         });
 
@@ -50,7 +44,7 @@ export const PageWrapperComponent: React.FC<Props> = (props) => {
                 />
                 <link rel="icon" href="/favicon.ico" />
             </Head>
-            <PageHeaderContainer>
+            <Box>
                 {title || title ? (
                     <TitleAndSubtitleContainer>
                         <Typography level="h3">{title}</Typography>
@@ -58,12 +52,10 @@ export const PageWrapperComponent: React.FC<Props> = (props) => {
                     </TitleAndSubtitleContainer>
                 ) : null}
                 <Box>{children}</Box>
-            </PageHeaderContainer>
+            </Box>
         </>
     );
 };
-
-const PageHeaderContainer = styled(Box)``;
 
 const TitleAndSubtitleContainer = styled(Box)`
     display: grid;
