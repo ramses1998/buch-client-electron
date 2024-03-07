@@ -1,10 +1,10 @@
 "use client";
 // eslint-disable-next-line eslint-comments/disable-enable-pair
-/* eslint-disable @typescript-eslint/no-unsafe-assignment */
-import React, { ComponentType, ReactNode, useState, ChangeEvent } from "react";
+/* eslint-disable @typescript-eslint/no-unsafe-assignment, no-unused-vars */
+import React, { ReactNode, useState, ChangeEvent } from "react";
 import { PageWrapperComponent } from "@/components/shared/PageWrapperComponent";
 import styled from "styled-components";
-import { Box, Button, IconButton, ButtonGroup, Input, Stack } from "@mui/joy";
+import { Box, Input, Stack } from "@mui/joy";
 import SearchIcon from "@mui/icons-material/Search";
 import useSWR from "swr";
 import { Buch } from "@/api/buch";
@@ -14,12 +14,9 @@ import {
     BookListComponent,
     BookListViewType,
 } from "@/components/shared/BookListComponent";
-import { useMediaQuery } from "@/hooks/useMediaQuery";
-import GridViewOutlinedIcon from "@mui/icons-material/GridViewOutlined";
-import ViewListOutlinedIcon from "@mui/icons-material/ViewListOutlined";
-import FormatListBulletedOutlinedIcon from "@mui/icons-material/FormatListBulletedOutlined";
 import { useSearchBooks } from "@/hooks/useSearchBooks";
 import { useApplicationContextApi } from "@/context/ApplicationContextApi";
+import { ViewSwitcherComponent } from "@/components/shared/ViewSwitcherComponent";
 
 const BooksPage: React.FC = () => {
     const appContext = useApplicationContextApi();
@@ -51,21 +48,20 @@ const BooksPage: React.FC = () => {
 
 type PropsBooksSearchWrapper = {
     buecher: Buch[];
-    // eslint-disable-next-line no-unused-vars
     children?: (searchResult: Buch[]) => ReactNode;
 };
-
 const BookSearchWrapper: React.FC<PropsBooksSearchWrapper> = (
     props: PropsBooksSearchWrapper,
 ) => {
     const { buecher, children } = props;
     const [inputValue, setInputValue] = useState<string>("");
+    const [view, setView] = useState<BookListViewType>("CARD");
+
     const { searchResult } = useSearchBooks({
         buecher,
         searchQuery: inputValue,
     });
 
-    const [view, setView] = useState<BookListViewType>("CARD");
 
     const handleChange = (event: ChangeEvent<HTMLInputElement>) => {
         event?.preventDefault();
@@ -94,75 +90,6 @@ const BookSearchWrapper: React.FC<PropsBooksSearchWrapper> = (
     );
 };
 
-type ViewOption = {
-    view: BookListViewType;
-    title: string;
-    icon: ComponentType<any>;
-};
-type PropsViewSwitch = {
-    view: BookListViewType;
-    // eslint-disable-next-line no-unused-vars
-    setView: (view: BookListViewType) => void;
-};
-const ViewSwitcherComponent: React.FC<PropsViewSwitch> = (
-    props: PropsViewSwitch,
-) => {
-    const { view, setView } = props;
-    const { isSmall } = useMediaQuery();
-
-    const viewOptions: ViewOption[] = [
-        {
-            view: "CARD",
-            title: "Kartenansicht",
-            icon: GridViewOutlinedIcon,
-        },
-        {
-            view: "TABLE",
-            title: "Tabellenansicht",
-            icon: ViewListOutlinedIcon,
-        },
-        {
-            view: "LIST",
-            title: "Listenansicht",
-            icon: FormatListBulletedOutlinedIcon,
-        },
-    ];
-
-    return (
-        <ButtonGroup sx={{ justifySelf: "end" }}>
-            {isSmall ? (
-                <>
-                    {viewOptions.map((option) => (
-                        <IconButton key={option.view}>
-                            <option.icon
-                                sx={{ padding: "5px" }}
-                                fontSize="large"
-                                color={
-                                    view === option.view ? "primary" : "neutral"
-                                }
-                                onClick={() => setView(option.view)}
-                            />
-                        </IconButton>
-                    ))}
-                </>
-            ) : (
-                <>
-                    {viewOptions.map((option) => (
-                        <Button
-                            key={option.view}
-                            color={view === option.view ? "primary" : "neutral"}
-                            variant={view === option.view ? "solid" : undefined}
-                            onClick={() => setView(option.view)}
-                        >
-                            {option.title}
-                        </Button>
-                    ))}
-                </>
-            )}
-        </ButtonGroup>
-    );
-};
-
 const FilterContainer = styled(Box)`
     display: grid;
     grid-template-columns: max-content 1fr;
@@ -174,5 +101,4 @@ const FilterContainer = styled(Box)`
         grid-gap: var(--gap-2);
     }
 `;
-
 export default BooksPage;

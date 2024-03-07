@@ -39,6 +39,7 @@ import DialogActions from "@mui/joy/DialogActions";
 import Modal from "@mui/joy/Modal";
 import ModalDialog from "@mui/joy/ModalDialog";
 import { LoadingPopUpComponent } from "@/components/shared/LoadingPopUpComponent";
+import { SchlagwoerterPopUpComponent } from "@/components/shared/SchlagwoerterPopUpComponent";
 
 const NUMBER_OF_KEYWORDS_BEFORE_TEXT_ELIPSIS = 2;
 
@@ -161,9 +162,12 @@ const BookDetailPage: React.FC = () => {
                                             value={w}
                                         />
                                     ))}
-                                <ModalSchlagwoerterComponent
+                                <SchlagwoerterPopUpComponent
                                     buchId={buch.id}
                                     schlagwoerter={buch.schlagwoerter}
+                                    keywordsBeforeTextElipsis={
+                                        NUMBER_OF_KEYWORDS_BEFORE_TEXT_ELIPSIS
+                                    }
                                 />
                             </>
                         ) : (
@@ -242,75 +246,6 @@ const BookDetailPage: React.FC = () => {
                 />
             ) : null}
         </PageWrapperComponent>
-    );
-};
-
-type PropsModalSchlagwoerter = {
-    schlagwoerter: string[];
-    buchId: number;
-};
-const ModalSchlagwoerterComponent: React.FC<PropsModalSchlagwoerter> = (
-    props: PropsModalSchlagwoerter,
-) => {
-    const [open, setOpen] = React.useState<boolean>(false);
-    const { schlagwoerter, buchId } = props;
-    const router = useRouter();
-
-    return (
-        <React.Fragment>
-            <Button
-                variant="plain"
-                color="primary"
-                onClick={() => setOpen(true)}
-            >
-                {`und ${schlagwoerter.length - NUMBER_OF_KEYWORDS_BEFORE_TEXT_ELIPSIS} weitere`}
-            </Button>
-            <Modal open={open} onClose={() => setOpen(false)}>
-                <ModalDialog variant="outlined" role="alertdialog">
-                    <ModalClose />
-                    <DialogTitle>
-                        <VpnKeyOutlinedIcon />
-                        Alle Schlagwörter
-                    </DialogTitle>
-                    <Divider />
-                    <DialogContent>
-                        <Sheet
-                            variant="outlined"
-                            sx={{
-                                display: "flex",
-                                gap: "var(--gap-1)",
-                                flexWrap: "wrap",
-                                p: 2,
-                                borderRadius: "md",
-                                maxWidth: "600px",
-                            }}
-                        >
-                            {schlagwoerter.map((s, index) => (
-                                <CustomChipComponent key={index} value={s} />
-                            ))}
-                        </Sheet>
-                    </DialogContent>
-                    <DialogActions>
-                        <Button
-                            variant="solid"
-                            color="primary"
-                            onClick={() =>
-                                router.push(`/buecher/update/${buchId}`)
-                            }
-                        >
-                            Schlagwörter hinzufügen
-                        </Button>
-                        <Button
-                            variant="plain"
-                            color="neutral"
-                            onClick={() => setOpen(false)}
-                        >
-                            Schließen
-                        </Button>
-                    </DialogActions>
-                </ModalDialog>
-            </Modal>
-        </React.Fragment>
     );
 };
 

@@ -17,7 +17,7 @@ body {
     overflow-y: hidden;
 }
 
-/* Globale Styles-Variablen z.B Farben, Paddings, Gaps, Schatten, Schriftgrößen, Animationen, */
+/* Globale Styles-Variablen z.B Farben, Paddings, Gaps, Schatten, Schriftgrößen, Animationen. */
 :root {
 
     /* Schriftgrößen */
@@ -27,7 +27,6 @@ body {
     --font-extra-large-size: 30px;
     --font-extra-extra-large-size: 40px;
     --font-3x-lage-size: 50px;
-
 
     /* Farben */
     --color-white: #fff;
@@ -44,7 +43,6 @@ body {
     --color-light-black: #1b1e2e;
     --btn-primary: #C2185B;
     --btn-primary-light: #E9C6D4;
-
 
     /* Abstände */
     --gap-1: 10px;

@@ -15,8 +15,9 @@ import MoreHorizOutlinedIcon from "@mui/icons-material/MoreHorizOutlined";
 type GroupName = "Über das System" | "Über die Software";
 
 const EinstellungenPage: React.FC = () => {
-
-    const [betriebsystem, setBetriebsystem] = useState<string | undefined>(undefined);
+    const [betriebsystem, setBetriebsystem] = useState<string | undefined>(
+        undefined,
+    );
 
     useEffect(() => {
         const getOperatingSystem = (): string | undefined => {
@@ -33,7 +34,7 @@ const EinstellungenPage: React.FC = () => {
                 // @ts-ignore
                 return window.navigator.oscpu;
             }
-            return undefined
+            return undefined;
         };
 
         setBetriebsystem(getOperatingSystem());

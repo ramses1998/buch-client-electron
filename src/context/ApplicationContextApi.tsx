@@ -1,6 +1,6 @@
 "use client";
 // eslint-disable-next-line eslint-comments/disable-enable-pair
-/* eslint-disable no-unused-vars,@typescript-eslint/ban-ts-comment, @typescript-eslint/no-floating-promises, react-hooks/exhaustive-deps, @typescript-eslint/no-unused-vars */
+/* eslint-disable no-unused-vars, @typescript-eslint/ban-ts-comment, @typescript-eslint/no-floating-promises, react-hooks/exhaustive-deps, @typescript-eslint/no-unused-vars */
 import React, { createContext, PropsWithChildren, useContext } from "react";
 import {
     AxiosResponse,
@@ -19,6 +19,7 @@ import {
     getBuchByIdApi,
     updateBuchApi,
 } from "@/api/buch";
+import { InputTypeMap } from "@mui/joy/Input/InputProps";
 
 type ContextOutput = {
     getBuchById: (id: number) => Promise<Buch>;
@@ -142,6 +143,12 @@ export const convertBuchToBuchDto = (buch: Buch): BuchDto => {
 const extractIdFromUrl = (url: string): number => {
     const slashSeperatedChars = url.split("/");
     return parseInt(slashSeperatedChars[slashSeperatedChars.length - 1]);
+};
+
+export type InputField = InputTypeMap["props"] & {
+    isDropdown?: boolean | undefined;
+    options?: string[];
+    isDynamicList?: boolean | undefined;
 };
 
 export const regexValidator = {
