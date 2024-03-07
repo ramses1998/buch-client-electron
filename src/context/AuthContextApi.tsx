@@ -64,6 +64,11 @@ export const AuthContextProvider: React.FC<Props> = (props: Props) => {
                     httpMethod === "put" ||
                     httpMethod === "delete"
                 ) {
+                    if (!auth || hasRefreshTokenExpired()) {
+                        router.push("/login");
+                        return requestConfig;
+                    }
+
                     // @ts-expect-error
                     requestConfig.headers = {
                         ...requestConfig.headers,

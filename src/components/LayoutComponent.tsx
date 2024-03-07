@@ -28,7 +28,12 @@ export const LayoutComponent: React.FC<Props> = (props: PropsWithChildren) => {
 const ApplicationMainContainer = styled(Box)`
     display: grid;
     grid-template-rows: 7vh 93vh;
+    grid-gap: 4px;
     overflow-y: hidden;
+    
+    @media screen and (max-height: 700px) {
+        grid-template-rows: 15vh 85vh;
+    }
 `;
 
 const StickyContainer = styled(Box)<{ zindex?: number }>`
@@ -50,4 +55,8 @@ const MainBoxContainer = styled(Box)`
     background: rgba(187, 187, 187, 0.3);
     overflow: auto;
     width: 100%;
+    
+    @media screen and (max-width: 900px) {
+        padding: var(--gap-5) var(--gap-3) var(--gap-8) var(--gap-3);
+    }
 `;
