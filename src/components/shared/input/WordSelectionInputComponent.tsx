@@ -1,3 +1,5 @@
+// eslint-disable-next-line eslint-comments/disable-enable-pair
+/* eslint-disable no-unused-vars */
 import React, { ChangeEvent, useState } from "react";
 import { InputField } from "@/context/ApplicationContextApi";
 import {

@@ -1,3 +1,5 @@
+// eslint-disable-next-line eslint-comments/disable-enable-pair
+/* eslint-disable @typescript-eslint/no-misused-promises */
 import React from "react";
 import { useRouter } from "next/router";
 import { Button, ModalClose, Sheet } from "@mui/joy";

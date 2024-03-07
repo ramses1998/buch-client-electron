@@ -1,3 +1,6 @@
+// eslint-disable-next-line eslint-comments/disable-enable-pair
+/* eslint-disable @typescript-eslint/no-unsafe-return, @typescript-eslint/no-unsafe-member-access, @typescript-eslint/ban-ts-comment */
+
 "use client";
 import React, { useEffect, useState } from "react";
 import { PageWrapperComponent } from "@/components/shared/PageWrapperComponent";
@@ -22,16 +25,16 @@ const EinstellungenPage: React.FC = () => {
     useEffect(() => {
         const getOperatingSystem = (): string | undefined => {
             // Für Chromium-Browser
-            // @ts-ignore
+            // @ts-expect-error
             if (window.navigator.userAgentData) {
-                // @ts-ignore
+                // @ts-expect-error
                 return window.navigator.userAgentData.platform;
             }
 
             // Für Firefox-Browser
-            // @ts-ignore
+            // @ts-expect-error
             if (window.navigator.oscpu) {
-                // @ts-ignore
+                // @ts-expect-error
                 return window.navigator.oscpu;
             }
             return undefined;

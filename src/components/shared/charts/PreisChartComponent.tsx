@@ -1,8 +1,16 @@
-import {Buch} from "@/api/buch";
+import { Buch } from "@/api/buch";
 import React from "react";
-import {Sheet} from "@mui/joy";
+import { Sheet } from "@mui/joy";
 import Typography from "@mui/joy/Typography";
-import {Area, AreaChart, CartesianGrid, ResponsiveContainer, Tooltip, XAxis, YAxis} from "recharts";
+import {
+    Area,
+    AreaChart,
+    CartesianGrid,
+    ResponsiveContainer,
+    Tooltip,
+    XAxis,
+    YAxis,
+} from "recharts";
 
 type PropsPreisChart = {
     buecher: Buch[];

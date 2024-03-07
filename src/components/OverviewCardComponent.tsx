@@ -1,3 +1,6 @@
+// eslint-disable-next-line eslint-comments/disable-enable-pair
+/* eslint-disable @typescript-eslint/no-misused-promises */
+"use client";
 import { Buch } from "@/api/buch";
 import { useRouter } from "next/router";
 import { CustomChipComponent } from "@/components/shared/CustomChipComponent";

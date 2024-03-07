@@ -62,7 +62,6 @@ const BookSearchWrapper: React.FC<PropsBooksSearchWrapper> = (
         searchQuery: inputValue,
     });
 
-
     const handleChange = (event: ChangeEvent<HTMLInputElement>) => {
         event?.preventDefault();
         setInputValue(event.target.value);

@@ -1,6 +1,8 @@
 {
   "name": "buch-client-electron",
   "version": "0.1.0",
+  "description": "Desktop-Anwendung mit Electron, NEXT.js und Material UI",
+  "author": "Ramses II Tetang Zebowve",
   "private": true,
   "main": "electron/main.js",
   "scripts": {

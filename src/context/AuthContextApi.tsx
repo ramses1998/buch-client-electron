@@ -1,5 +1,5 @@
 // eslint-disable-next-line eslint-comments/disable-enable-pair
-/* eslint-disable no-unused-vars, @typescript-eslint/ban-ts-comment, @typescript-eslint/no-unsafe-assignment, @typescript-eslint/no-unsafe-member-access, @typescript-eslint/no-unsafe-argument, react-hooks/exhaustive-deps */
+/* eslint-disable no-unused-vars, @typescript-eslint/ban-ts-comment, @typescript-eslint/no-unsafe-assignment, @typescript-eslint/no-unsafe-member-access, @typescript-eslint/no-unsafe-argument, react-hooks/exhaustive-deps, @typescript-eslint/no-floating-promises */
 import {
     AuthResponse,
     loginApi,
@@ -72,7 +72,7 @@ export const AuthContextProvider: React.FC<Props> = (props: Props) => {
                     // @ts-expect-error
                     requestConfig.headers = {
                         ...requestConfig.headers,
-                        Authorization: `Bearer ${auth!.access_token}`,
+                        Authorization: `Bearer ${auth.access_token}`,
                     };
                 }
                 return requestConfig;

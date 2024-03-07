@@ -19,7 +19,7 @@ import PercentOutlinedIcon from "@mui/icons-material/PercentOutlined";
 import StarBorderPurple500OutlinedIcon from "@mui/icons-material/StarBorderPurple500Outlined";
 import AutoStoriesOutlinedIcon from "@mui/icons-material/AutoStoriesOutlined";
 import { useRouter } from "next/router";
-import {PreisChartComponent} from "@/components/shared/charts/PreisChartComponent";
+import { PreisChartComponent } from "@/components/shared/charts/PreisChartComponent";
 
 type KeyValue = {
     icon: ReactNode;

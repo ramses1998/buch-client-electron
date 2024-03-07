@@ -7,7 +7,7 @@ import useSWR from "swr";
 import { Buch } from "@/api/buch";
 import { LoadingComponent } from "@/components/shared/LoadingComponent";
 import Alert from "@mui/material/Alert";
-import { Button, ModalClose, Sheet, Stack } from "@mui/joy";
+import { Button, Stack } from "@mui/joy";
 import { PageWrapperComponent } from "@/components/shared/PageWrapperComponent";
 import { BookCardComponent } from "@/components/shared/BookCardComponent";
 import NumbersOutlinedIcon from "@mui/icons-material/NumbersOutlined";
@@ -32,12 +32,6 @@ import {
     useMitteilungContext,
 } from "@/context/NotificationContextApi";
 import { v4 as uuid } from "uuid";
-import Divider from "@mui/joy/Divider";
-import DialogTitle from "@mui/joy/DialogTitle";
-import DialogContent from "@mui/joy/DialogContent";
-import DialogActions from "@mui/joy/DialogActions";
-import Modal from "@mui/joy/Modal";
-import ModalDialog from "@mui/joy/ModalDialog";
 import { LoadingPopUpComponent } from "@/components/shared/LoadingPopUpComponent";
 import { SchlagwoerterPopUpComponent } from "@/components/shared/SchlagwoerterPopUpComponent";
 
