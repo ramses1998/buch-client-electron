@@ -61,7 +61,9 @@ const LoginPage: React.FC = () => {
         const authExpiryIn = authContext.auth.expires_in;
 
         if (!sessionState || !authExpiryIn) {
-            console.error("Session_state und expires konnten nicht gelesen werden!");
+            console.error(
+                "Session_state und expires konnten nicht gelesen werden!",
+            );
             return;
         }
         setSessionState(sessionState);
