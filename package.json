@@ -9,7 +9,7 @@
     "electron:dev": "concurrently -n \"NEXT,ELECTRON\" -c \"yellow,blue\" --kill-others \"next dev --port 3001\" \"electron .\"",
     "next:dev": "next dev --port 3001",
     "build": "next build && electron-builder",
-    "start": "next start",
+    "next:start": "next start --port 3001",
     "electron:start": "electron .",
     "lint": "next lint",
     "prettier": "prettier --write --check \"**/*.+(js|jsx|ts|tsx)\""
