@@ -21,6 +21,10 @@ import {
 } from "@/api/buch";
 import { InputTypeMap } from "@mui/joy/Input/InputProps";
 
+/**
+ * Kontexttyp für die ApplicationContext Komponente.
+ * Definiert die Funktionen, die im Kontext verfügbar sein werden.
+ */
 type ContextOutput = {
     getBuchById: (id: number) => Promise<Buch>;
     getAlleBuecher: () => Promise<Buch[]>;
@@ -33,16 +37,31 @@ type ContextOutput = {
     deleteBuch: (id: number, version: number) => Promise<AxiosResponse<void>>;
 };
 
+/**
+ * Erstellt einen React-Context mit dem ContextOutput-Typ.
+ */
 // @ts-ignore
 const ApplicationContext = createContext<ContextOutput>({});
 
+/**
+ * Hook zum Abrufen des Kontexts.
+ * Stellt den Kontext in React-Komponenten zur Verfügung.
+ */
 export const useApplicationContextApi = () => {
     return useContext(ApplicationContext);
 };
 
+/**
+ * Faktor zur Konvertierung von Unix-Zeitstempeln in JavaScript-Zeitstempel.
+ */
 export const UNIX_TIME_TO_JAVASCRIPT_TIME_FACTOR = 1000;
 
 type Props = PropsWithChildren;
+
+/**
+ * Provider-Komponente für den ApplicationContext.
+ * Verwaltet den Kontext und stellt die Funktionen den Kindkomponenten zur Verfügung.
+ */
 export const ApplicationContextProvider: React.FC<Props> = (props: Props) => {
     const { children } = props;
 
@@ -151,6 +170,9 @@ export type InputField = InputTypeMap["props"] & {
     isDynamicList?: boolean | undefined;
 };
 
+/**
+ * Reguläre Ausdrücke zur Validierung von Attributen eines Buches.
+ */
 export const regexValidator = {
     isbn: /^(?:ISBN(?:-13)?:? )?(?=\d{13}$|(?=(?:\d+[- ]){4})[- \d]{17}$)97[89][- ]?\d{1,5}[- ]?(?:\d+[- ]\d+|\d{2,})[- ]?\d$/,
     titel: /^.{0,40}$/,

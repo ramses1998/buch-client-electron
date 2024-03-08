@@ -24,15 +24,27 @@ type Output = {
     refresh: () => Promise<void>;
 };
 
+/**
+ * Erstellt einen React-Context für Authentifizierung.
+ */
 // @ts-expect-error
 const AuthContext = createContext<Output>({});
 
+/**
+ * Hook zum Abrufen des Authentifizierungskontexts in React-Komponenten.
+ *
+ * @returns Der Authentifizierungskontext.
+ */
 export const useAuthContext = () => {
     return useContext(AuthContext);
 };
 
 type Props = PropsWithChildren;
 
+/**
+ * Provider-Komponente für den AuthContext.
+ * Verwaltet den Authentifizierungszustand und stellt Funktionen fürs Login, Logout und Token-Refresh bereit.
+ */
 export const AuthContextProvider: React.FC<Props> = (props: Props) => {
     const { children } = props;
     const [auth, setAuth] = useState<AuthResponse | undefined>(undefined);

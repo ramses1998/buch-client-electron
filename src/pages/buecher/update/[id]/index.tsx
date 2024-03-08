@@ -22,11 +22,17 @@ import { v4 as uuid } from "uuid";
 import { WrapperBuchFormularComponent } from "@/components/shared/WrapperBuchFormularComponent";
 import { LoadingPopUpComponent } from "@/components/shared/LoadingPopUpComponent";
 
+/**
+ * React-Komponente für die Buchbearbeitungs-Seite.
+ */
 const BookUpdatePage: React.FC = () => {
     const mitteilungContext = useMitteilungContext();
     const appContext = useApplicationContextApi();
     const router = useRouter();
 
+    /**
+     * SWR-Hook zum Abrufen des Buches über den Applikationskontext.
+     */
     const {
         data: buch,
         isLoading: isBuchLoading,
@@ -35,11 +41,23 @@ const BookUpdatePage: React.FC = () => {
         appContext.getBuchById(parseInt(router.query?.id as string)),
     );
 
+    /**
+     * Zustand zum Markieren, ob das Bearbeiten gerade ausgeführt wird.
+     */
     const [isUpdateLoading, setIsUpdateLoading] = useState<boolean>(false);
+
+    /**
+     * Zustand zum Speichern eines Fehlers beim Bearbeiten.
+     */
     const [updateError, setUpdateError] = useState<Error | undefined>(
         undefined,
     );
 
+    /**
+     * Handler für das Submit-Event des Formulars.
+     *
+     * @param buchDto - Das DTO des zu bearbeitenden Buches.
+     */
     const handleSubmit = async (buchDto: BuchDto) => {
         if (!buch) return;
         const buchUpdateModel = convertBuchDtoToBuchUpdateModel(buchDto);
@@ -63,6 +81,9 @@ const BookUpdatePage: React.FC = () => {
         }
     };
 
+    /**
+     * Funktion zum Auslösen einer Mitteilung nach erfolgreicher Aktualisierung.
+     */
     const mitteilungAusloesen = () => {
         const neuMitteilung: Mitteilung = {
             id: uuid(),

@@ -11,13 +11,24 @@ import { Box, Stack, Typography, IconButton } from "@mui/joy";
 import DeleteOutlineIcon from "@mui/icons-material/DeleteOutline";
 import Alert from "@mui/material/Alert";
 
+/**
+ * React-Komponente für die Mitteilungen-Seite.
+ */
 const MitteilungenPage: React.FC = () => {
     const mitteilungContext = useMitteilungContext();
 
+    /**
+     * Markieren aller Mitteilungen als "gelesen" beim Laden der Seite.
+     */
     useEffect(() => {
         mitteilungContext.setAllAsSeen();
     }, []);
 
+    /**
+     * Funktion zum Sortieren der Mitteilungen nach Erstellungsdatum (absteigend).
+     *
+     * @returns Die sortierten Mitteilungen.
+     */
     const sortMitteilungen = (): Mitteilung[] => {
         return mitteilungContext.mitteilungen.sort(
             (a, b) =>
@@ -49,6 +60,12 @@ type PropsMitteilung = {
     mitteilungen: Mitteilung[];
     onDelete: (id: string) => void;
 };
+
+/**
+ * React-Komponente für die Liste der Mitteilungen.
+ *
+ * @props Daten und Funktionen für die Mitteilungsliste.
+ */
 const MitteilungListComponent: React.FC<PropsMitteilung> = (
     props: PropsMitteilung,
 ) => {

@@ -1,6 +1,6 @@
 "use client";
 // eslint-disable-next-line eslint-comments/disable-enable-pair
-/* eslint-disable @typescript-eslint/no-misused-promises, @typescript-eslint/no-unsafe-assignment */
+/* eslint-disable @typescript-eslint/no-misused-promises, @typescript-eslint/no-unsafe-assignment, no-undef */
 import "@fontsource/inter";
 import React, { useEffect, useState } from "react";
 import { PageWrapperComponent } from "@/components/shared/PageWrapperComponent";
@@ -23,6 +23,9 @@ const MINIMUM_RATING_FOR_POPULAR_BOOK = 2;
 const OVERVIEW_CARD_ANIMATION_DURATION = 3;
 const MILLISECOND_FACTOR = 1000;
 
+/**
+ * React-Komponente für die Startseite.
+ */
 const Home: React.FC = () => {
     const appContext = useApplicationContextApi();
     const [buecher, setBuecher] = useState<Buch[] | undefined>(undefined);
@@ -48,7 +51,6 @@ const Home: React.FC = () => {
     useEffect(() => {
         if (!buecher) return;
 
-        // eslint-disable-next-line no-undef
         let intervalId: NodeJS.Timeout | undefined = undefined;
 
         if (isAnimating) {

@@ -69,18 +69,35 @@ export type BuchListResponse = {
     };
 };
 
+/**
+ * Eine Anfrage wird über REST an den Server abgesetzt, um Bücher zu laden.
+ *
+ * @returns Ein Promise, das mit einer AxiosResponse aufgelöst wird, die eine Liste von Büchern enthält.
+ */
 export const getAlleBuecherApi = async (): Promise<
     AxiosResponse<BuchListResponse>
 > => {
     return await axiosClient.get<BuchListResponse>("/rest");
 };
 
+/**
+ * Eine Anfrage wird über REST an den Server abgesetzt, um ein Buch zu laden.
+ *
+ * @param id - Die ID des Buches, das abgerufen werden soll.
+ * @returns Ein Promise, das mit einer AxiosResponse aufgelöst wird, die das Buch mit der angegebenen ID enthält.
+ */
 export const getBuchByIdApi = async (
     id: number,
 ): Promise<AxiosResponse<BuchResponse>> => {
     return await axiosClient.get<BuchResponse>(`/rest/${id}`);
 };
 
+/**
+ * Erstellt ein neues Buch.
+ *
+ * @param buchInputModel - Das Modell, das die Daten für das neue Buch enthält.
+ * @returns Ein Promise, das mit einer AxiosResponse aufgelöst wird.
+ */
 export const createBuchApi = async (
     buchInputModel: BuchInputModel,
 ): Promise<AxiosResponse> => {
@@ -95,6 +112,14 @@ export const createBuchApi = async (
     return await axiosClient.request(requestConfig);
 };
 
+/**
+ * Aktualisiert ein vorhandenes Buch.
+ *
+ * @param id - Die ID des Buches, das aktualisiert werden soll.
+ * @param version - Die ETag-Version des Buches, die für die optimistische Synchronisierung verwendet wird.
+ * @param buchUpdateModel - Das Modell, das die aktualisierten Daten für das Buch enthält.
+ * @returns Ein Promise, das mit einer AxiosResponse aufgelöst wird.
+ */
 export const updateBuchApi = async (
     id: number,
     version: number,
@@ -110,6 +135,13 @@ export const updateBuchApi = async (
     return await axiosClient.put(`/rest/${id}`, serializedBody, requestConfig);
 };
 
+/**
+ * Löscht ein vorhandenes Buch.
+ *
+ * @param id - Die ID des Buches, das gelöscht werden soll.
+ * @param version - Die ETag-Version des Buches, die für die optimistische Synchronisierung verwendet wird.
+ * @returns Ein Promise, das mit einer AxiosResponse aufgelöst wird, die angibt, ob das Buch erfolgreich gelöscht wurde.
+ */
 export const deleteBuchApi = async (
     id: number,
     version: number,

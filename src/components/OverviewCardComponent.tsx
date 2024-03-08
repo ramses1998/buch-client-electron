@@ -16,10 +16,19 @@ type Props = {
     animating: boolean;
     animationDuration: number;
 };
+
+/**
+ * React-Komponente für eine Karte in der Übersicht.
+ *
+ * @param props - Eigenschaften der Komponente.
+ */
 export const OverviewCardComponent = (props: Props) => {
     const { buch, isMain, animating, animationDuration } = props;
     const router = useRouter();
 
+    /**
+     * Beschreibung des Buches, abhängig vom der Art.
+     */
     const description =
         buch.art === "DRUCKAUSGABE"
             ? "Genießen Sie das Gefühl der Seiten und die einzigartige Erfahrung, ein physisches Buch zu lesen."

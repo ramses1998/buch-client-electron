@@ -16,16 +16,27 @@ import { LoadingPopUpComponent } from "@/components/shared/LoadingPopUpComponent
 import { Box } from "@mui/joy";
 import Alert from "@mui/material/Alert";
 
+/**
+ * React-Komponente für die Anlegen-Seite.
+ */
 const AnlegenPage: React.FC = () => {
     const appContext = useApplicationContextApi();
     const mitteilungContext = useMitteilungContext();
     const router = useRouter();
 
+    /**
+     * Zustand zum Markieren, ob das Anlegen gerade ausgeführt wird.
+     */
     const [isCreateLoading, setIsCreateLoading] = useState<boolean>(false);
     const [createError, setCreateError] = useState<Error | undefined>(
         undefined,
     );
 
+    /**
+     * Funktion zum Auslösen einer Mitteilung nach erfolgreichem Anlegen.
+     *
+     * @param buchDto - Das DTO des angelegten Buches.
+     */
     const mitteilungAusloesen = (buchDto: BuchDto) => {
         const neuMitteilung: Mitteilung = {
             id: uuid(),
@@ -37,6 +48,11 @@ const AnlegenPage: React.FC = () => {
         mitteilungContext.triggerMitteilung(neuMitteilung);
     };
 
+    /**
+     * Handler für das Submit-Event des Formulars.
+     *
+     * @param buchDto - Das DTO des zu erstellenden Buches.
+     */
     const handleSubmit = async (buchDto: BuchDto) => {
         setIsCreateLoading(true);
         setCreateError(undefined);

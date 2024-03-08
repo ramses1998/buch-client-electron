@@ -18,12 +18,23 @@ type Props = {
     buecher: Buch[];
 };
 
+/**
+ * React-Komponente für eine Tabelle zur Darstellung von Büchern.
+ *
+ * @param props - Eigenschaften der Komponente.
+ */
 const BookTableComponent: React.FC<Props> = (props: Props) => {
     const { buecher } = props;
     const router = useRouter();
     const { isLarge } = useMediaQuery();
     const theme = useTheme();
 
+    /**
+     * Formatiert die anzuzeigenden Bücher mit zusätzlichen Informationen.
+     *
+     * @param buecher - Liste von Buch-Objekten.
+     * @returns Liste von formatierten Buch-Objekten.
+     */
     const formatBooksToShow = (buecher: Buch[]) => {
         return buecher.map((buch) => ({
             ...buch,

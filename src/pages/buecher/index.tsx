@@ -18,8 +18,15 @@ import { useSearchBooks } from "@/hooks/useSearchBooks";
 import { useApplicationContextApi } from "@/context/ApplicationContextApi";
 import { ViewSwitcherComponent } from "@/components/shared/ViewSwitcherComponent";
 
+/**
+ * React-Komponente für die Bücher-Übersichtsseite.
+ */
 const BooksPage: React.FC = () => {
     const appContext = useApplicationContextApi();
+
+    /**
+     * SWR-Hook zum Abrufen aller Bücher.
+     */
     const {
         data: buecher,
         isLoading,
@@ -50,6 +57,11 @@ type PropsBooksSearchWrapper = {
     buecher: Buch[];
     children?: (searchResult: Buch[]) => ReactNode;
 };
+
+/**
+ * React-Komponente für die Buchsuch-Funktionalität.
+ *
+ */
 const BookSearchWrapper: React.FC<PropsBooksSearchWrapper> = (
     props: PropsBooksSearchWrapper,
 ) => {

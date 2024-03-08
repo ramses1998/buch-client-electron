@@ -15,6 +15,10 @@ export type Mitteilung = {
     creationTimeStamp: string;
 };
 
+/**
+ * Kontexttyp für den MitteilungContext.
+ * Definiert die Funktionen, die im Kontext verfügbar sein werden.
+ */
 type ContextOutput = {
     mitteilungen: Mitteilung[];
     triggerMitteilung: (mitteilung: Mitteilung) => void;
@@ -22,15 +26,27 @@ type ContextOutput = {
     deleteMitteilung: (id: string) => void;
 };
 
+/**
+ * Erstellt einen React-Context für Mitteilungen.
+ */
 // @ts-expect-error
 const MitteilungContext = createContext<ContextOutput>({});
 
+/**
+ * Hook zum Abrufen des Mitteilungskontexts in React-Komponenten.
+ *
+ * @returns Der Mitteilungskontext.
+ */
 export const useMitteilungContext = () => {
     return useContext(MitteilungContext);
 };
 
 type Props = PropsWithChildren;
 
+/**
+ * Provider-Komponente für den MitteilungContext.
+ * Verwaltet den Mitteilungszustand und stellt Funktionen zum Hinzufügen, Löschen und Markieren von Mitteilungen bereit.
+ */
 export const MitteilungContextProvider: React.FC<Props> = (props: Props) => {
     const { children } = props;
     const [mitteilungen, setMitteilungen] = useState<Mitteilung[]>([]);

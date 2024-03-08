@@ -21,22 +21,37 @@ import AutoStoriesOutlinedIcon from "@mui/icons-material/AutoStoriesOutlined";
 import { useRouter } from "next/router";
 import { PreisChartComponent } from "@/components/shared/charts/PreisChartComponent";
 
+/**
+ * Typ für ein Key-Value-Paar, das in der Analyse-Übersicht angezeigt wird.
+ */
 type KeyValue = {
     icon: ReactNode;
     title: string;
     description: string;
     onClick: () => void;
 };
+
+/**
+ * React-Komponente für die Analyse-Seite.
+ */
 export const AnalysisPage: React.FC = () => {
     const appContext = useApplicationContextApi();
     const router = useRouter();
 
+    /**
+     * SWR-Hook zum Abrufen aller Bücher.
+     */
     const {
         data: buecher,
         isLoading,
         error,
     } = useSWR<Buch[]>("getAll", appContext.getAlleBuecher);
 
+    /**
+     * Funktion zur Berechnung der Anzahl aller Schlagwörter.
+     *
+     * @returns Die Anzahl aller Schlagwörter.
+     */
     const getAnzahlSchlagwoerter = (): number => {
         if (!buecher) return 0;
         const alleSchlagwoerter = buecher
@@ -52,21 +67,41 @@ export const AnalysisPage: React.FC = () => {
         return alleSchlagwoerterOhneDuplikate.length;
     };
 
+    /**
+     * Funktion zur Berechnung der Anzahl lieferbarer Bücher.
+     *
+     * @returns Die Anzahl lieferbarer Bücher.
+     */
     const getAnzahlLieferbareBuecher = (): number => {
         if (!buecher) return 0;
         return buecher.filter((b) => b.lieferbar).length;
     };
 
+    /**
+     * Funktion zur Berechnung der Anzahl Bücher mit hohem Rabatt.
+     *
+     * @returns Die Anzahl Bücher mit hohem Rabatt.
+     */
     const getAnzahlBuecherMitHohemRabatt = (): number => {
         if (!buecher) return 0;
         return buecher.filter((b) => b.rabatt > 0.05).length;
     };
 
+    /**
+     * Funktion zur Berechnung der Anzahl Bücher mit guter Bewertung.
+     *
+     * @returns Die Anzahl Bücher mit guter Bewertung.
+     */
     const getAnzahlBuecherMitGutemRating = (): number => {
         if (!buecher) return 0;
         return buecher.filter((b) => b.rating >= 3).length;
     };
 
+    /**
+     * Funktion zur Berechnung der Anzahl Kindle-Bücher.
+     *
+     * @returns Die Anzahl Kindle-Bücher.
+     */
     const getAnzahlKindelBuecher = (): number => {
         if (!buecher) return 0;
         return buecher.filter((b) => b.art === "KINDLE").length;

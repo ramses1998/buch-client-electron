@@ -1,6 +1,5 @@
 // eslint-disable-next-line eslint-comments/disable-enable-pair
 /* eslint-disable @typescript-eslint/no-unsafe-return, @typescript-eslint/no-unsafe-member-access, @typescript-eslint/ban-ts-comment */
-
 "use client";
 import React, { useEffect, useState } from "react";
 import { PageWrapperComponent } from "@/components/shared/PageWrapperComponent";
@@ -15,13 +14,22 @@ import HttpOutlinedIcon from "@mui/icons-material/HttpOutlined";
 import HttpsOutlinedIcon from "@mui/icons-material/HttpsOutlined";
 import MoreHorizOutlinedIcon from "@mui/icons-material/MoreHorizOutlined";
 
+/**
+ * Typ für den Gruppennamen in der Einstellungsseite.
+ */
 type GroupName = "Über das System" | "Über die Software";
 
+/**
+ * React-Komponente für die Einstellungsseite.
+ */
 const EinstellungenPage: React.FC = () => {
     const [betriebsystem, setBetriebsystem] = useState<string | undefined>(
         undefined,
     );
 
+    /**
+     * Abrufen des Betriebssystems des Benutzers.
+     */
     useEffect(() => {
         const getOperatingSystem = (): string | undefined => {
             // Für Chromium-Browser

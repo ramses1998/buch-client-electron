@@ -19,6 +19,12 @@ export type AuthResponse = {
     scope: string;
 };
 
+/**
+ * Sendet eine Login-Anfrage an den Server mit den bereitgestellten Anmeldedaten.
+ *
+ * @param loginDaten - Die Login-Daten, die Benutzername und Passwort enthalten.
+ * @returns Ein Promise, das mit einer AxiosResponse aufgelöst wird, die die Authentifizierungs-Antwortdaten enthält.
+ */
 export const loginApi = async (
     loginDaten: LoginDaten,
 ): Promise<AxiosResponse<AuthResponse>> => {
@@ -38,6 +44,12 @@ export const loginApi = async (
     );
 };
 
+/**
+ * Sendet eine Anfrage an den Server, um den Authentifizierungs-Token zu aktualisieren.
+ *
+ * @param refreshToken - Der Refresh-Token, der verwendet wird, um einen neuen Authentifizierungs-Token zu erhalten.
+ * @returns Ein Promise, das mit einer AxiosResponse aufgelöst wird, die die aktualisierten Authentifizierungsdaten enthält.
+ */
 export const refreshTokenApi = async (
     refreshToken: string,
 ): Promise<AxiosResponse<AuthResponse>> => {

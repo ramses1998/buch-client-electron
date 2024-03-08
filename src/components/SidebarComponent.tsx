@@ -22,6 +22,9 @@ import { useMitteilungContext } from "@/context/NotificationContextApi";
 
 const INITIAL_SIDEBAR_STATE = true;
 
+/**
+ * Typ für Schaltflächen in der Seitenleiste.
+ */
 type NavigationButton = {
     label: string;
     icon: ReactNode;
@@ -29,6 +32,10 @@ type NavigationButton = {
     endAction?: ReactNode | undefined;
     onClick: () => void;
 };
+
+/**
+ * React-Komponente für die Seitenleiste der Anwendung.
+ */
 export const SidebarComponent: React.FC = () => {
     const [isOpen, setIsOpen] = useState<boolean>(INITIAL_SIDEBAR_STATE);
     const router = useRouter();

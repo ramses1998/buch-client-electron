@@ -2,12 +2,24 @@
 /* eslint-disable @typescript-eslint/ban-ts-comment */
 import { useEffect, useState } from "react";
 
+/**
+ * Konstante für die maximale Breite von mobilen Ansichten.
+ */
 const MAX_VIEWPORT_WIDTH_ON_MOBILE = 992;
 
+/**
+ * Typ zur Beschreibung der Bildschirmgrößeninformationen.
+ */
 type MediaQuerySize = {
     isSmall: boolean;
     isLarge: boolean;
 };
+
+/**
+ * Hook zur Ermittlung der aktuellen Bildschirmgröße in React-Komponenten.
+ *
+ * @returns Ein Objekt mit Informationen über die Bildschirmgröße.
+ */
 export const useMediaQuery = (): MediaQuerySize => {
     const [isSmall, setIsSmall] = useState<boolean>(false);
     const [isLarge, setIsLarge] = useState<boolean>(false);

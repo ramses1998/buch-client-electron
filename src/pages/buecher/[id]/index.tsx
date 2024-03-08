@@ -35,15 +35,27 @@ import { v4 as uuid } from "uuid";
 import { LoadingPopUpComponent } from "@/components/shared/LoadingPopUpComponent";
 import { SchlagwoerterPopUpComponent } from "@/components/shared/SchlagwoerterPopUpComponent";
 
-const NUMBER_OF_KEYWORDS_BEFORE_TEXT_ELIPSIS = 2;
+/**
+ * Konstante für die Anzahl Schlagwörter, bevor Text mit "..." ellipsisiert wird.
+ */
+const NUMBER_OF_KEYWORDS_BEFORE_TEXT_ELLIPSIS = 2;
 
+/**
+ * Typ für den Gruppennamen in der Detailansicht.
+ */
 type GroupName = "Über das Buch" | "Author" | "Lieferung" | "Sonstiges";
 
+/**
+ * React-Komponente für die Buchdetail-Seite.
+ */
 const BookDetailPage: React.FC = () => {
     const router = useRouter();
 
     const appContext = useApplicationContextApi();
 
+    /**
+     * SWR-Hook zum Abrufen des Buches über den Applikationskontext.
+     */
     const {
         data: buch,
         isLoading,
@@ -52,14 +64,28 @@ const BookDetailPage: React.FC = () => {
         appContext.getBuchById(parseInt(router.query?.id as string)),
     );
 
+    /**
+     * Zustand zum Markieren, ob das Löschen gerade ausgeführt wird.
+     */
     const [isDeleteLoading, setIsDeleteLoading] = useState<boolean>(false);
+
+    /**
+     * Zustand zum Speichern eines Fehlers beim Löschen.
+     */
     const [deleteError, setDeleteError] = useState<Error | undefined>(
         undefined,
     );
 
     const mitteilungContext = useMitteilungContext();
+
+    /**
+     * Merkmal zur Anzeige auf kleinem Bildschirm.
+     */
     const { isSmall } = useMediaQuery();
 
+    /**
+     * Funktion zum Auslösen einer Mitteilung nach erfolgreichem Löschen.
+     */
     const mitteilungAusloesen = () => {
         const neuMitteilung: Mitteilung = {
             id: uuid(),
@@ -143,12 +169,12 @@ const BookDetailPage: React.FC = () => {
                     <Stack direction="row" spacing={"var(--gap-1)"}>
                         {buch &&
                         buch.schlagwoerter.length >
-                            NUMBER_OF_KEYWORDS_BEFORE_TEXT_ELIPSIS ? (
+                            NUMBER_OF_KEYWORDS_BEFORE_TEXT_ELLIPSIS ? (
                             <>
                                 {buch.schlagwoerter
                                     .slice(
                                         0,
-                                        NUMBER_OF_KEYWORDS_BEFORE_TEXT_ELIPSIS,
+                                        NUMBER_OF_KEYWORDS_BEFORE_TEXT_ELLIPSIS,
                                     )
                                     .map((w) => (
                                         <CustomChipComponent
@@ -160,7 +186,7 @@ const BookDetailPage: React.FC = () => {
                                     buchId={buch.id}
                                     schlagwoerter={buch.schlagwoerter}
                                     keywordsBeforeTextElipsis={
-                                        NUMBER_OF_KEYWORDS_BEFORE_TEXT_ELIPSIS
+                                        NUMBER_OF_KEYWORDS_BEFORE_TEXT_ELLIPSIS
                                     }
                                 />
                             </>

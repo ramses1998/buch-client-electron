@@ -5,8 +5,18 @@ import styled from "styled-components";
 import { AppBarComponent } from "@/components/AppBarComponent";
 import { SidebarComponent } from "@/components/SidebarComponent";
 
+/**
+ * Typ-Alias für die Eigenschaften der `LayoutComponent`.
+ *
+ * Erbt von `PropsWithChildren`, welches die Kinder-Komponenten beinhaltet.
+ */
 type Props = PropsWithChildren;
 
+/**
+ * React-Komponente fürs Layout der Anwendung.
+ *
+ * @param props - Eigenschaften der Komponente.
+ */
 export const LayoutComponent: React.FC<Props> = (props: PropsWithChildren) => {
     const { children } = props;
 

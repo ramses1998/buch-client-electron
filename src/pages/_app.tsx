@@ -12,6 +12,9 @@ type Props = {
     pageProps: any;
 };
 
+/**
+ * Hauptkomponente der Anwendung, die die grundlegende Struktur bereitstellt und die Context-Provider initialisiert.
+ */
 const App: React.FC<Props> = (props: Props) => {
     const { Component, pageProps } = props;
 

@@ -30,6 +30,10 @@ import { useAuthContext } from "@/context/AuthContextApi";
 import { UNIX_TIME_TO_JAVASCRIPT_TIME_FACTOR } from "@/context/ApplicationContextApi";
 
 type GroupName = "Benutzer Info" | "Konto";
+
+/**
+ * React-Komponente für die Login-Seite.
+ */
 const LoginPage: React.FC = () => {
     const authContext = useAuthContext();
 
@@ -47,13 +51,17 @@ const LoginPage: React.FC = () => {
         password: "",
     });
 
+    /**
+     * Aktualisieren des Session-States und Ablaufdatums des Access Tokens
+     * basierend auf dem Auth-Objekt des AuthContexts.
+     */
     useEffect(() => {
         if (!authContext.auth) return;
         const sessionState = authContext.auth.session_state;
         const authExpiryIn = authContext.auth.expires_in;
 
         if (!sessionState || !authExpiryIn) {
-            console.error("Session_state und expires konnten gelesen werden!");
+            console.error("Session_state und expires konnten nicht gelesen werden!");
             return;
         }
         setSessionState(sessionState);
@@ -108,7 +116,7 @@ const LoginPage: React.FC = () => {
                 },
                 {
                     icon: <LockClockOutlinedIcon fontSize="small" />,
-                    label: "Anmeldung läuft ab am",
+                    label: "Ablaufdatum der Anmeldung",
                     value: accessTokenExpiryDate?.toLocaleDateString("de-DE", {
                         day: "2-digit",
                         month: "2-digit",

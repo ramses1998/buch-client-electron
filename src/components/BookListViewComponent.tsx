@@ -14,10 +14,23 @@ type Props = {
     buecher: Buch[];
 };
 
+/**
+ * React-Komponente für eine Listenansicht von Büchern.
+ *
+ * @param props - Eigenschaften der Komponente.
+ */
 export const BookListViewComponent: React.FC<Props> = (props) => {
     const { buecher } = props;
     const router = useRouter();
 
+    /**
+     * SxProps für responsives Ein- und Ausblenden der MUI-Komponente.
+     *
+     * Wird nur auf größeren Bildschirmen (lg und größer) angezeigt.
+     *
+     * @see https://mui.com/material-ui/customization/breakpoints
+     *
+     */
     const hideOnSmallScreen: SxProps = {
         display: {
             lg: "block",
