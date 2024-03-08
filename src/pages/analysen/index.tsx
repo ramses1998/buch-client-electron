@@ -20,6 +20,7 @@ import StarBorderPurple500OutlinedIcon from "@mui/icons-material/StarBorderPurpl
 import AutoStoriesOutlinedIcon from "@mui/icons-material/AutoStoriesOutlined";
 import { useRouter } from "next/router";
 import { PreisChartComponent } from "@/components/shared/charts/PreisChartComponent";
+import { useMediaQuery } from "@/hooks/useMediaQuery";
 
 /**
  * Typ für ein Key-Value-Paar, das in der Analyse-Übersicht angezeigt wird.
@@ -202,6 +203,7 @@ const OverviewCardComponent: React.FC<PropsOverviewCard> = (
 ) => {
     const { buecher } = props;
     const router = useRouter();
+    const { isSmall } = useMediaQuery();
 
     return (
         <Sheet
@@ -222,7 +224,7 @@ const OverviewCardComponent: React.FC<PropsOverviewCard> = (
             <Box sx={{ zIndex: 1, position: "relative" }}>
                 <Typography level="h2">{`${buecher.length} Bücher insgesamt`}</Typography>
                 <Typography sx={{ mt: 0.5, mb: 2 }}>
-                    Die Analyseseite gibt Dir einen Überblick über alle Bücher.
+                    Die Analysenseite gibt Dir einen Überblick über alle Bücher.
                 </Typography>
                 <Box
                     sx={{
@@ -258,16 +260,18 @@ const OverviewCardComponent: React.FC<PropsOverviewCard> = (
                 src="/banner-partial-background.png"
                 sx={{ position: "absolute", height: "100%", top: 0, right: 0 }}
             />
-            <Typography
-                sx={{
-                    position: "absolute",
-                    bottom: "1.5rem",
-                    right: "2rem",
-                    borderRadius: "50%",
-                }}
-            >
-                {process.env.NEXT_PUBLIC_APPLICATION_NAME!}
-            </Typography>
+            {isSmall ? null : (
+                <Typography
+                    sx={{
+                        position: "absolute",
+                        bottom: "1.5rem",
+                        right: "2rem",
+                        borderRadius: "50%",
+                    }}
+                >
+                    {process.env.NEXT_PUBLIC_APPLICATION_NAME!}
+                </Typography>
+            )}
         </Sheet>
     );
 };
