@@ -19,7 +19,7 @@ npm install
 ```
 
 ### Umgebungsvariablen
-Der Buch-Server muss gestartet sein und zwar auf _localhost_ und auf Port _3000_. Bei Port bzw. Host-Änderung, 
+Der Buch-Server muss gestartet sein und zwar auf _localhost_ und auf Port _3000_. Bei Port- bzw. Host-Änderung, 
 muss die Umgebungsvariable _NEXT_PUBLIC_BACKEND_SERVER_URL_ in der [.env](.env) Datei entsprechend angepasst werden. 
 
 ### CORS
@@ -42,7 +42,7 @@ Nur Webanwendung in Entwicklungsmodus hochfahren
 npm run next:dev
 ```
 
-Produktionsbündel der Anwendung(Web- und Electron-Anwendung) bauen. Dabei erst die Webanwendung dann die Electron-Anwendung gebaut.
+Produktionsbündel der Anwendung(Web- und Electron-Anwendung) bauen. Dabei wird erst die Webanwendung dann die Electron-Anwendung gebaut.
 ```bash
 npm run build
 ```
@@ -62,7 +62,7 @@ Eslint
 # Nach Formattierungsfehlern prüfen
 npm run lint
 
-# Formattierungsfehlern lösen (Wenn möglich)
+# Formattierungsfehler lösen (Wenn möglich)
 npm run lint -- --fix
 ```
 
@@ -77,7 +77,7 @@ npm run prettier
 
 ### Electron
 
-ElectronJS ist ein Framework, mit dem man plattformübergreifende Desktop-Anwendungen mit 
+Electron ist ein Framework, mit dem man plattformübergreifende Desktop-Anwendungen mit 
 JavaScript, HTML und CSS erstellen kann. Es basiert auf dem Chromium-Webbrowser und der Node.js-Plattform.
 
 Man entwickelt die Benutzeroberfläche der Anwendung mit HTML, CSS und JavaScript, genau wie bei einer Webseite.
@@ -113,7 +113,7 @@ Siehe: https://www.electronjs.org/docs/latest/tutorial/process-model
 ### **Populäre Anwendungen, die mit Electron entwickelt sind**
 
 - Visual Studio Code
-- Microosft Teams
+- Microsoft Teams
 - Skype
 - Figma
 - Postman
