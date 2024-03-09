@@ -1,4 +1,6 @@
-This is a [Next.js](https://nextjs.org/) project bootstrapped with [`create-next-app`](https://github.com/vercel/next.js/tree/canary/packages/create-next-app).
+This is a [Next.js](https://nextjs.org/) 
+project bootstrapped with 
+[`create-next-app`](https://github.com/vercel/next.js/tree/canary/packages/create-next-app).
 
 # Desktop-Anwendung mit Electron, NEXT.js und Material UI
 
@@ -10,6 +12,7 @@ This is a [Next.js](https://nextjs.org/) project bootstrapped with [`create-next
 - [Electron](#electron)
 - [Sicherheit](#sicherheit)
 - [Sonstige Werkzeuge](#sonstige-werkzeuge)
+- [Anmerkungen](#anmerkungen)
 
 ## Installation
 
@@ -19,15 +22,26 @@ npm install
 ```
 
 ### Umgebungsvariablen
-Der Buch-Server muss gestartet sein und zwar auf _localhost_ und auf Port _3000_. Bei Port- bzw. Host-Änderung, 
-muss die Umgebungsvariable _NEXT_PUBLIC_BACKEND_SERVER_URL_ in der [.env](.env) Datei entsprechend angepasst werden. 
+
+Der Buch-Server muss gestartet sein und zwar auf _localhost_ und auf Port _3000_. 
+Bei Port- bzw. Host-Änderung, muss die Umgebungsvariable 
+_NEXT_PUBLIC_BACKEND_SERVER_URL_ in der [.env](.env) Datei entsprechend angepasst werden. 
 
 ### CORS
+
 Der Hostname und Port auf dem die Webanwendung läuft müssen in die Liste der zugelassenen Origins auf dem 
-Buch-Server hinzugefügt werden, um CORS-Fehler zu vermeiden. Defaultmäßig läuft die Webanwendung auf http://localhost:3001
+Buch-Server hinzugefügt werden, um CORS-Fehler zu vermeiden. 
+Defaultmäßig läuft die Webanwendung auf http://localhost:3001
+
+### HTTPS
+
+HTTPS muss auf dem Buch-Server ausgeschaltet sein, 
+da HTTPS weder in der Webanwendung noch in Electron eingerichtet wurde.
 
 ### Port der Webanwendung
-Wenn die Webanwendung auf einem anderen Port laufen muss, kann dies in der Datei [package.json](package.json) gemacht werden. Dabei muss _3001_ in den npm-Skripten durch den neuen Port ersetzt werden. 
+
+Wenn die Webanwendung auf einem anderen Port laufen muss, kann dies in der Datei [package.json](package.json) 
+gemacht werden. Dabei muss _3001_ in den npm-Skripten durch den neuen Port ersetzt werden. 
 
 
 ## Schnellstart
@@ -42,7 +56,8 @@ Nur Webanwendung in Entwicklungsmodus hochfahren
 npm run next:dev
 ```
 
-Produktionsbündel der Anwendung(Web- und Electron-Anwendung) bauen. Dabei wird erst die Webanwendung dann die Electron-Anwendung gebaut.
+Produktionsbündel der Anwendung(Web- und Electron-Anwendung) bauen. Dabei wird erst die 
+Webanwendung dann die Electron-Anwendung gebaut.
 ```bash
 npm run build
 ```
@@ -73,7 +88,7 @@ npm run prettier
 
 ## Architektur der Anwendung
 
-![Architektur der Anwendung](architektur_der_anwendung.svg)
+![Architektur der Anwendung](architektur_diagramm_der_anwendung.svg)
 
 ### Electron
 
@@ -123,12 +138,42 @@ Siehe: https://www.electronjs.org/docs/latest/tutorial/process-model
 - Atom
 - Signal
 
+## Webanwendung
+
+Die Webanwendung ist mit dem Framework [Next.js](https://nextjs.org/) entwickelt.
+Die Webanwendung besteht aus 3 Schichten nämmlich die UI-Schicht, 
+die Businesslogik (Geschäftslogik) und die HTTP-Schicht.
+
+1. **UI-Schicht**
+
+Diese Schicht stellt die Benutzeroberfläche (UI) der Anwendung dar. React-Komponente für die UI, 
+HTML und alle Interaktionen mit dem [DOM](https://developer.mozilla.org/en-US/docs/Web/API/Document_Object_Model), 
+CSS und alle grafischen Benutzer-Interaktionen mit der Anwendung sind Komponenten dieser Schicht. 
+Diese Schicht greift auf die Businesslogikschicht zu, 
+wenn der Benutzer eine Schreib- oder Leseoperation tätigt.
+
+2. **Businesslogik**
+
+Die Businesslogik ist das Herz der Anwendung. Diese Schicht ist verantwortlich 
+für z.B: die Verarbeitung von Daten, die Vorbereitung von Daten für 
+Schreib- und Leseoperationen, die Umwandlung von Daten aus der HTTP-Schicht
+vor und nach Schreib- und Leseoperationen, oder Fehler aus der HTTP-Schicht abfangen. 
+Die [Kontexte](https://react.dev/learn/passing-data-deeply-with-context)
+stellen in dieser Anwendung die Businesslogik dar 
+und sind unter [./src/context/](./src/context/) zu finden.
+
+3. **HTTP-Schicht**
+
+Die HTTP-Schicht ist der Vertreter nach außen. Die Schicht hat die Veranwortung, 
+Anfragen an externe Dienste bzw. Datenquellen zu senden und Antworten auf die Anfragen zu empfangen.
+
 ## Sicherheit
 
 Der Client meldet sich einmal an und bekommt einen Access-Token und Refresh-Token. 
 Wenn der Access-Token abgelaufen ist, wird den Refresh-Token an den Server gesendet und 
 er schickt einen neuen Access-Token und Refresh-Token als Response an den Client. 
-Wenn aber die Tokens (Access-Token und Refresh-Token) alle abgelaufen sind, muss sich der Client nochmal anmelden.
+Wenn aber die Tokens (Access-Token und Refresh-Token) alle abgelaufen sind, 
+muss sich der Client nochmal anmelden.
 So wird vermieden, dass Anmeldedaten (Benutzername und Passwort) ständig übertragen werden.
 
 ## Sonstige Werkzeuge
@@ -150,3 +195,9 @@ So wird vermieden, dass Anmeldedaten (Benutzername und Passwort) ständig übert
 ### Codequalität und -formatierung
 - Eslint (https://eslint.org/)
 - Prettier (https://prettier.io/)
+
+## Anmerkungen
+
+- Der neue [App Router](https://nextjs.org/docs/app) geht nicht (technisch gesehen schon, aber man wird mit einigen Problemen und Bugs konfrontiert, vor allem weil Next.js die statischen HTML-, CSS- und JavaScript-Datein - exportieren muss, anstatt NodeJS hinter den Kulissen auszuführen). Aus diesem Grund wurde der [Pages Router](https://nextjs.org/docs/pages) fürs Routing verwendet.
+- Electron "rendert" lediglich eine statische Webseite innerhalb eines nativen Fensters des Betriebsystems. Backend-Funktionalitäten von NextJS (z.B. getStaticProps, App Router, NextAuth oder /api-Routen direkt von NextJS aus) funktionieren leider nicht, da sie als statisch exportiert werden müssen, anstatt eine NodeJS-Laufzeitumgebung hinter der Anwendung laufen zu lassen. Wenn man Backend-Aufgaben erledigen muss, versucht man, diese auf dem [Hauptprozess](Electron) von Electron auszuführen, anstatt sie an NextJS zu delegieren.
+- Beim Bauen (_npm run built_) der Webanwendung, werden statische Datein(HTML, CSS und JavaScript) generiert. Dies kann unter [next.config.mjs](next.config.mjs) eingestelt werden.
