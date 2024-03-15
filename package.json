@@ -11,8 +11,7 @@
     "build": "next build && electron-builder",
     "next:start": "next start --port 3001",
     "electron:start": "electron .",
-    "lint": "next lint",
-    "prettier": "prettier --write --check \"**/*.+(js|jsx|ts|tsx)\""
+    "lint": "next lint"
   },
   "dependencies": {
     "@emotion/react": "^11.11.3",

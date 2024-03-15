@@ -81,10 +81,6 @@ npm run lint
 npm run lint -- --fix
 ```
 
-Prettier
-```bash
-npm run prettier
-```
 
 ## Architektur der Anwendung
 
