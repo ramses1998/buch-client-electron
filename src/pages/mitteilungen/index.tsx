@@ -41,7 +41,7 @@ const MitteilungenPage: React.FC = () => {
         <PageWrapperComponent
             title="Mitteilungen"
             subtitle={
-                "Hier findest Du Mitteilungen, wenn ein Ereignis eintritt. Ein Ereignis tritt ein, wenn eine Schreiboperation erfolgreich abgeschlossen wurde."
+                "Hier findest Du Mitteilungen, wenn ein Ereignis eintritt. Ein Ereignis tritt ein, wenn eine Schreiboperation erfolgreich abgeschlossen ist."
             }
         >
             {mitteilungContext.mitteilungen.length > 0 ? (

@@ -59,7 +59,7 @@ type PropsBooksSearchWrapper = {
 };
 
 /**
- * React-Komponente für die Buchsuch-Funktionalität.
+ * React-Komponente für die Büchersuche-Funktionalität.
  *
  */
 const BookSearchWrapper: React.FC<PropsBooksSearchWrapper> = (

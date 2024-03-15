@@ -15,13 +15,13 @@ import DialogActions from "@mui/joy/DialogActions";
 type PropsModalSchlagwoerter = {
     schlagwoerter: string[];
     buchId: number;
-    keywordsBeforeTextElipsis: number;
+    keywordsBeforeTextEllipsis: number;
 };
 export const SchlagwoerterPopUpComponent: React.FC<PropsModalSchlagwoerter> = (
     props: PropsModalSchlagwoerter,
 ) => {
     const [open, setOpen] = React.useState<boolean>(false);
-    const { schlagwoerter, buchId, keywordsBeforeTextElipsis } = props;
+    const { schlagwoerter, buchId, keywordsBeforeTextEllipsis } = props;
     const router = useRouter();
 
     return (
@@ -31,7 +31,7 @@ export const SchlagwoerterPopUpComponent: React.FC<PropsModalSchlagwoerter> = (
                 color="primary"
                 onClick={() => setOpen(true)}
             >
-                {`und ${schlagwoerter.length - keywordsBeforeTextElipsis} weitere`}
+                {`und ${schlagwoerter.length - keywordsBeforeTextEllipsis} weitere`}
             </Button>
             <Modal open={open} onClose={() => setOpen(false)}>
                 <ModalDialog variant="outlined" role="alertdialog">

@@ -42,7 +42,7 @@ const ApplicationMainContainer = styled(Box)`
     overflow-y: hidden;
 
     @media screen and (max-height: 700px) {
-        grid-template-rows: 15vh 85vh;
+        grid-template-rows: 10vh 90vh;
     }
 `;
 

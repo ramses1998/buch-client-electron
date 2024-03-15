@@ -185,7 +185,7 @@ const BookDetailPage: React.FC = () => {
                                 <SchlagwoerterPopUpComponent
                                     buchId={buch.id}
                                     schlagwoerter={buch.schlagwoerter}
-                                    keywordsBeforeTextElipsis={
+                                    keywordsBeforeTextEllipsis={
                                         NUMBER_OF_KEYWORDS_BEFORE_TEXT_ELLIPSIS
                                     }
                                 />
@@ -205,6 +205,9 @@ const BookDetailPage: React.FC = () => {
 
     const handleDelete = async () => {
         if (!buch) return;
+
+        setIsDeleteLoading(true);
+        setDeleteError(undefined);
 
         try {
             await appContext.deleteBuch(buch.id, buch.version as number);

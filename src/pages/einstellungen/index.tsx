@@ -28,7 +28,7 @@ const EinstellungenPage: React.FC = () => {
     );
 
     /**
-     * Abrufen des Betriebssystems des Benutzers.
+     * Auslesen des Betriebssystems des Benutzers.
      */
     useEffect(() => {
         const getOperatingSystem = (): string | undefined => {
