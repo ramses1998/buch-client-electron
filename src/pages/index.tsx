@@ -12,7 +12,10 @@ import { Box, Button, Card, Stack, Typography } from "@mui/joy";
 import styled from "styled-components";
 import { BookCardComponent } from "@/components/shared/BookCardComponent";
 import { useRouter } from "next/router";
-import { UNIX_TIME_TO_JAVASCRIPT_TIME_FACTOR, useApplicationContextApi } from "@/context/ApplicationContextApi";
+import {
+    UNIX_TIME_TO_JAVASCRIPT_TIME_FACTOR,
+    useApplicationContextApi,
+} from "@/context/ApplicationContextApi";
 import StopCircleOutlinedIcon from "@mui/icons-material/StopCircleOutlined";
 import PlayCircleFilledWhiteOutlinedIcon from "@mui/icons-material/PlayCircleFilledWhiteOutlined";
 import { v4 as uuid } from "uuid";
@@ -21,7 +24,9 @@ import { OverviewCardComponent } from "@/components/OverviewCardComponent";
 const MAX_BOOKS_COUNT_FOR_OVERVIEW = 4;
 const MINIMUM_RATING_FOR_POPULAR_BOOK = 2;
 const OVERVIEW_CARD_ANIMATION_DURATION_IN_SECONDS = 3;
-const OVERVIEW_CARD_ANIMATION_DURATION_IN_MILLISECONDS = OVERVIEW_CARD_ANIMATION_DURATION_IN_SECONDS * UNIX_TIME_TO_JAVASCRIPT_TIME_FACTOR;
+const OVERVIEW_CARD_ANIMATION_DURATION_IN_MILLISECONDS =
+    OVERVIEW_CARD_ANIMATION_DURATION_IN_SECONDS *
+    UNIX_TIME_TO_JAVASCRIPT_TIME_FACTOR;
 
 /**
  * React-Komponente für die Startseite.
@@ -60,7 +65,7 @@ const Home: React.FC = () => {
             }, OVERVIEW_CARD_ANIMATION_DURATION_IN_MILLISECONDS);
         }
         return () => clearInterval(intervalId);
-    }, [isAnimating, data, buecher, OVERVIEW_CARD_ANIMATION_DURATION_IN_MILLISECONDS]);
+    }, [isAnimating, data, buecher]);
 
     const resolveMostPopularBooks = (buecher: Buch[]): Buch[] => {
         return buecher.filter(
