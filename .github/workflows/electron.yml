@@ -7,7 +7,7 @@ on: [push]
 # Ein Workflow-Lauf besteht aus einem oder mehreren Jobs (Aufträgen). Die Jobs laufen standardmäßig parallel.
 jobs:
   # Build job
-  build:
+  build-on-linux:
     # Der Typ des Rechners, auf dem der Auftrag ausgeführt werden soll.
     # Der Rechner kann entweder ein von GitHub gehosteter Runner oder ein selbst gehosteter Runner sein.
     runs-on: ubuntu-latest
@@ -63,7 +63,7 @@ jobs:
 
       - name: Build
         run: |
-          npm run build
+          next build && electron-builder --linux --x64
 
       - name: Checking that build runs (Running server as background task)
         run: |
@@ -72,3 +72,23 @@ jobs:
       - name: Checking that build runs (Running server as background task)
         run: |
           npm run start &
+
+  build-on-windows:
+    runs-on: windows-latest
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v4
+
+      - name: Build
+        run: |
+          next build && electron-builder --windows --x64
+
+  build-on-macos:
+    runs-on: macos-latest
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v4
+
+      - name: Build
+        run: |
+          next build && electron-builder --macos --x64
