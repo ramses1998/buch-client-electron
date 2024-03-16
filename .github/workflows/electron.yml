@@ -38,7 +38,7 @@ jobs:
 
       - name: Build
         run: |
-          next build
+          npm run next:build
 
       - name: Checking that build runs (Running server as background task)
         run: |
