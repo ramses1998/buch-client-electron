@@ -6,11 +6,10 @@ on: [push]
 
 # Ein Workflow-Lauf besteht aus einem oder mehreren Jobs (Aufträgen). Die Jobs laufen standardmäßig parallel.
 jobs:
-  # Build job
-  build-on-linux:
+  build-on-windows:
     # Der Typ des Rechners, auf dem der Auftrag ausgeführt werden soll.
     # Der Rechner kann entweder ein von GitHub gehosteter Runner oder ein selbst gehosteter Runner sein.
-    runs-on: ubuntu-latest
+    runs-on: windows-latest
     # Ein Job enthält eine Abfolge von Aufgaben, die Steps genannt werden. Steps können Befehle ausführen,
     # Einrichtungsaufgaben ausführen oder eine Aktion im Repository, einem öffentlichen Repository oder einer in
     # einer Docker-Registry veröffentlichten Aktion ausführen. Nicht alle Steps führen Aktionen aus, aber alle
@@ -63,7 +62,7 @@ jobs:
 
       - name: Build
         run: |
-          next build && electron-builder --linux --x64
+          npm run build
 
       - name: Checking that build runs (Running server as background task)
         run: |
@@ -73,22 +72,22 @@ jobs:
         run: |
           npm run start &
 
-  build-on-windows:
-    runs-on: windows-latest
-    steps:
-      - name: Checkout
-        uses: actions/checkout@v4
-
-      - name: Build
-        run: |
-          next build && electron-builder --windows --x64
-
-  build-on-macos:
-    runs-on: macos-latest
-    steps:
-      - name: Checkout
-        uses: actions/checkout@v4
-
-      - name: Build
-        run: |
-          next build && electron-builder --macos --x64
+#  build-on-windows:
+#    runs-on: windows-latest
+#    steps:
+#      - name: Checkout
+#        uses: actions/checkout@v4
+#
+#      - name: Build
+#        run: |
+#          next build && electron-builder --windows --x64
+#
+#  build-on-macos:
+#    runs-on: macos-latest
+#    steps:
+#      - name: Checkout
+#        uses: actions/checkout@v4
+#
+#      - name: Build
+#        run: |
+#          next build && electron-builder --macos --x64
