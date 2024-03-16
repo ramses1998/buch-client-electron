@@ -28,6 +28,11 @@ import NumbersOutlinedIcon from "@mui/icons-material/NumbersOutlined";
 import LockClockOutlinedIcon from "@mui/icons-material/LockClockOutlined";
 import { useAuthContext } from "@/context/AuthContextApi";
 import { UNIX_TIME_TO_JAVASCRIPT_TIME_FACTOR } from "@/context/ApplicationContextApi";
+import {
+    Mitteilung,
+    useMitteilungContext,
+} from "@/context/NotificationContextApi";
+import { v4 as uuid } from "uuid";
 
 type GroupName = "Benutzer Info" | "Konto";
 
@@ -36,6 +41,7 @@ type GroupName = "Benutzer Info" | "Konto";
  */
 const LoginPage: React.FC = () => {
     const authContext = useAuthContext();
+    const mitteilungContext = useMitteilungContext();
 
     const [showPassword, setShowPassword] = useState<boolean>(false);
     const [error, setError] = useState<Error | undefined>(undefined);
@@ -50,6 +56,21 @@ const LoginPage: React.FC = () => {
         username: "",
         password: "",
     });
+
+    /**
+     * Funktion zum Auslösen einer Mitteilung nach erfolgreicher Anmeldung.
+     *
+     */
+    const mitteilungAusloesen = () => {
+        const neuMitteilung: Mitteilung = {
+            id: uuid(),
+            title: "Erfolgreiche Anmeldung",
+            description: "Du hast dich angemeldet",
+            seen: false,
+            creationTimeStamp: new Date().toISOString(),
+        };
+        mitteilungContext.triggerMitteilung(neuMitteilung);
+    };
 
     /**
      * Aktualisieren des Session-States und Ablaufdatums des Access Tokens
@@ -90,6 +111,7 @@ const LoginPage: React.FC = () => {
         try {
             await authContext.login(loginDaten);
             setLoginDaten({ username: "", password: "" });
+            mitteilungAusloesen();
         } catch (err) {
             console.error(err);
             setError(

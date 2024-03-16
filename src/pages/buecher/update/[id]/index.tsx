@@ -87,7 +87,7 @@ const BookUpdatePage: React.FC = () => {
     const mitteilungAusloesen = () => {
         const neuMitteilung: Mitteilung = {
             id: uuid(),
-            title: `Das Buch "${buch?.titel}" wurde erfolgreich geändert`,
+            title: `Das Buch "${buch?.titel}" wurde erfolgreich aktualisiert`,
             description: `Du hast das Buch ${buch?.titel} geändert`,
             seen: false,
             creationTimeStamp: new Date().toISOString(),
