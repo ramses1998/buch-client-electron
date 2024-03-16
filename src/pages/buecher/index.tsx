@@ -104,6 +104,7 @@ const BookSearchWrapper: React.FC<PropsBooksSearchWrapper> = (
 const FilterContainer = styled(Box)`
     display: grid;
     grid-template-columns: max-content 1fr;
+    grid-gap: var(--gap-3);
     align-content: center;
     align-items: center;
 

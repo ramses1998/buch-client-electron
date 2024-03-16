@@ -65,6 +65,7 @@ const MainBoxContainer = styled(Box)`
     background: rgba(187, 187, 187, 0.3);
     overflow: auto;
     width: 100%;
+    min-width: 200px;
 
     @media screen and (max-width: 900px) {
         padding: var(--gap-5) var(--gap-3) var(--gap-8) var(--gap-3);

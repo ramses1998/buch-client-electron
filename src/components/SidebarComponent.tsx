@@ -1,7 +1,7 @@
 "use client";
 // eslint-disable-next-line eslint-comments/disable-enable-pair
 /* eslint-disable @typescript-eslint/no-misused-promises */
-import React, { ReactNode, useState } from "react";
+import React, { ReactNode, useEffect, useState } from "react";
 import DashboardOutlinedIcon from "@mui/icons-material/DashboardOutlined";
 import StyleOutlinedIcon from "@mui/icons-material/StyleOutlined";
 import AddOutlinedIcon from "@mui/icons-material/AddOutlined";
@@ -19,6 +19,7 @@ import ListItemDecorator from "@mui/joy/ListItemDecorator";
 import ListItemButton from "@mui/joy/ListItemButton";
 import { useRouter } from "next/router";
 import { useMitteilungContext } from "@/context/NotificationContextApi";
+import { useMediaQuery } from "@/hooks/useMediaQuery";
 
 const INITIAL_SIDEBAR_STATE = true;
 
@@ -40,6 +41,15 @@ export const SidebarComponent: React.FC = () => {
     const [isOpen, setIsOpen] = useState<boolean>(INITIAL_SIDEBAR_STATE);
     const router = useRouter();
     const mitteilungContext = useMitteilungContext();
+    const { isSmall } = useMediaQuery();
+
+    useEffect(() => {
+        if (!isSmall) {
+            setIsOpen(true);
+            return;
+        }
+        setIsOpen(false);
+    }, [isSmall]);
 
     const notificationEndIcon: ReactNode | undefined =
         mitteilungContext.mitteilungen.filter((m) => !m.seen).length > 0 ? (

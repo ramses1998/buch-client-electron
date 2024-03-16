@@ -17,7 +17,7 @@ export const WrapperBuchFormularComponent: React.FC<Props> = (props: Props) => {
     const informationList: InformationItem[] = [
         {
             title: "ISBN",
-            description: "Die ISBN muss Version 13 sein.",
+            description: "Die ISBN muss der Version 13 entsprechen.",
         },
         {
             title: "Titel",
@@ -45,7 +45,8 @@ export const WrapperBuchFormularComponent: React.FC<Props> = (props: Props) => {
         },
         {
             title: "Homepage",
-            description: "Die Homepage des Buches muss eine gültige URL sein",
+            description:
+                "Die Homepage des Buches muss einer gültigen URL entsprechen",
         },
     ];
 

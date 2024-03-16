@@ -6,11 +6,10 @@
   "private": true,
   "main": "electron/main.js",
   "scripts": {
-    "electron:dev": "concurrently -n \"NEXT,ELECTRON\" -c \"yellow,blue\" --kill-others \"next dev --port 3001\" \"electron .\"",
-    "next:dev": "next dev --port 3001",
-    "build": "next build && electron-builder",
-    "next:start": "next start --port 3001",
-    "electron:start": "electron .",
+    "next:dev": "next dev --port 3001 --experimental-https --experimental-https-cert src/tls/certificate.crt --experimental-https-key src/tls/key.pem",
+    "electron:dev": "concurrently -n \"NEXT,ELECTRON\" -c \"yellow,blue\" --kill-others \"npm run next:dev\" \"electron .\"",
+    "next:start": "serve out -p 3001 --cors --ssl-cert src/tls/certificate.crt --ssl-key src/tls/key.pem",
+    "build": "next build && electron-builder --windows --x64",
     "lint": "next lint"
   },
   "dependencies": {
@@ -25,6 +24,7 @@
     "react": "^18",
     "react-dom": "^18",
     "recharts": "^2.12.2",
+    "serve": "^14.2.1",
     "styled-components": "^6.1.8",
     "swr": "^2.2.4",
     "uuid": "^9.0.1"
