@@ -2,88 +2,101 @@ const { app, BrowserWindow } = require("electron");
 const serve = require("electron-serve");
 const path = require("path");
 
+/**
+ * Breite des Fensters beim Starten der Electron-Anwendung
+ * @type {number}
+ */
+const INITIAL_WINDOW_WIDTH = 1200;
 
-const appServe = app.isPackaged
-  ? serve({
-      directory: path.join(__dirname, "../out"),
+/**
+ * Höhe des Fensters beim Starten der Electron-Anwendung
+ * @type {number}
+ */
+const INITIAL_WINDOW_HEIGHT = 675;
+
+/**
+ * Bereitstellung eines Verzeichnisses, das in Electron geöffnet wird.
+ * Sollte die Anwendung nicht gebaut sein, werden keine Verzeichnisse bereitgestellt.
+ *
+ * @type {electronServe.loadURL|null}
+ */
+const appServe = app.isPackaged ? serve({
+        directory: path.join(__dirname, "../out"),
     })
-  : null;
+    : null;
 
+/**
+ * Ein Electron-Fenster wird erstellt.
+ * @returns {Promise<void>}
+ */
 const createWindow = async () => {
-        const win = new BrowserWindow({
-                width: 1200,
-                height: 675,
-                webPreferences: {
-                        preload: path.join(__dirname, "preload.js"),
-                },
+    const win = new BrowserWindow({
+        width: INITIAL_WINDOW_WIDTH,
+        height: INITIAL_WINDOW_HEIGHT,
+        webPreferences: {
+            preload: path.join(__dirname, "preload.js"),
+        },
+    });
+
+    // https://localhost:3001 wird in Electron geöffnet,
+    // wenn die Electron Anwendung noch nicht gebaut ist. (für die Entwicklung).
+    //
+    // Wichtig!!!:-
+    // Das Verzeichnis ../out muss während der Entwickelung gelöscht werden sonst wird beim Ausführen
+    // des Kommandos "npm run electron:dev" immer das Produktion-Build(aus ../out) ausgeführt.
+    if (!app.isPackaged) {
+
+        await win.loadURL("https://localhost:3001");
+        win.webContents.openDevTools();
+
+        // Electron wird neu geladen ohne Cache bis die Webanwendung gestartet ist und bereit ist Anfragen anzunehmen.
+        win.webContents.on("did-fail-load", (e, code, desc) => {
+            win.webContents.reloadIgnoringCache();
         });
+        return;
+    }
 
-        // win.webContents.session.webRequest.onBeforeSendHeaders(
-        //     (details, callback) => {
-        //       callback({ requestHeaders: { Origin: '*', ...details.requestHeaders } });
-        //     },
-        // );
-        //
-        // win.webContents.session.webRequest.onHeadersReceived((details, callback) => {
-        //   callback({
-        //     responseHeaders: {
-        //       'Access-Control-Allow-Origin': ['*'],
-        //       ...details.responseHeaders,
-        //     },
-        //   });
-        // });
+    // Um CORS-Fehler in Electron zu vermeiden.
+    win.webContents.session.webRequest.onBeforeSendHeaders(
+        (details, callback) => {
+            callback({ requestHeaders: { ...details.requestHeaders, Origin: "*" } });
+        },
+    );
 
-        //
-        // await appServe(win);
-        // await win.loadURL("app://-");
+    // Um CORS-Fehler in Electron zu vermeiden.
+    win.webContents.session.webRequest.onHeadersReceived((details, callback) => {
+        callback({
+            responseHeaders: {
+                ...details.responseHeaders,
+                "Access-Control-Allow-Origin": "*",
+            },
+        });
+    });
 
-        if (app.isPackaged) {
-
-                win.webContents.session.webRequest.onBeforeSendHeaders(
-                    (details, callback) => {
-                      callback({ requestHeaders: { ...details.requestHeaders, Origin: "*" } });
-                    },
-                );
-
-                win.webContents.session.webRequest.onHeadersReceived((details, callback) => {
-                  callback({
-                    responseHeaders: {
-                      ...details.responseHeaders,
-                      "Access-Control-Allow-Origin": "*",
-                    },
-                  });
-                });
-
-                await appServe(win);
-                await win.loadURL("app://-");
-
-        } else {
-                await win.loadURL("https://localhost:3001");
-                win.webContents.openDevTools();
-                win.webContents.on("did-fail-load", (e, code, desc) => {
-                        win.webContents.reloadIgnoringCache();
-                });
-        }
+    // Statische Datein von Next.js aus dem Verzeichnis ../out werden bereitgestellt und in Electron geöffnet.
+    await appServe(win);
+    await win.loadURL("app://-");
 
 };
 
-
-app.on("ready", () => {
-        createWindow();
+// Ein Fenster wird erstellt und geöffnet, sobald Electrons Initiaisierung fertig ist.
+app.on("ready", async () => {
+    await createWindow();
 });
 
-// Damit werden alle Intanzen der Anwendung geschlossen, wenn man eine Instanz schließt.
+// Damit werden alle Intanzen der Anwendung geschlossen, wenn man eine Instanz schließt (gilt nicht für darwin bzw. mac OS).
 app.on("window-all-closed", () => {
-        if (process.platform !== "darwin") {
-                app.quit();
-        }
+    if (process.platform !== "darwin") {
+        app.quit();
+    }
 });
 
-// Zertifikat-Fehler ausschalten. Siehe: https://www.electronjs.org/docs/latest/api/app#event-certificate-error
+// Zertifikat-Fehler ausschalten falls http verwendet wird.
+// Siehe: https://www.electronjs.org/docs/latest/api/app#event-certificate-error
 app.on(
     "certificate-error",
     (event, webContents, url, error, certificate, callback) => {
-            event.preventDefault();
-            callback(true);
+        event.preventDefault();
+        callback(true);
     },
 );
