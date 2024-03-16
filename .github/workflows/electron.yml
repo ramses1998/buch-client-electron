@@ -28,9 +28,9 @@ jobs:
         run: |
           if (Test-Path -Path $Env:GITHUB_WORKSPACE\package.json) {
             # Append output to GITHUB_OUTPUT variable, assuming it's already set
-            $GITHUB_OUTPUT += "manager=npm"`n
-            $GITHUB_OUTPUT += "command=ci"`n
-            $GITHUB_OUTPUT += "runner=npx --no-install"`n
+            $GITHUB_OUTPUT += "manager=npm"
+            $GITHUB_OUTPUT += "command=ci"
+            $GITHUB_OUTPUT += "runner=npx --no-install"
             Exit 0
           } else {
             Write-Host "Unable to determine package manager"
