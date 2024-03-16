@@ -26,15 +26,16 @@ jobs:
       - name: Detect package manager
         id: detect-package-manager
         run: |
-          if [ -f "${{ github.workspace }}/package.json" ]; then
-            echo "manager=npm" >> $GITHUB_OUTPUT
-            echo "command=ci" >> $GITHUB_OUTPUT
-            echo "runner=npx --no-install" >> $GITHUB_OUTPUT
-            exit 0
-          else
-            echo "Unable to determine package manager"
-            exit 1
-          fi
+          if (Test-Path -Path $Env:GITHUB_WORKSPACE\package.json) {
+            # Append output to GITHUB_OUTPUT variable, assuming it's already set
+            $GITHUB_OUTPUT += "manager=npm"`n
+            $GITHUB_OUTPUT += "command=ci"`n
+            $GITHUB_OUTPUT += "runner=npx --no-install"`n
+            Exit 0
+          } else {
+            Write-Host "Unable to determine package manager"
+            Exit 1
+          }
 
       - name: Setup Node
         uses: actions/setup-node@v4
