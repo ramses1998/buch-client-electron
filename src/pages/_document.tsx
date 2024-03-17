@@ -7,11 +7,7 @@ import React from "react";
 const Document: React.FC = () => {
     return (
         <Html lang="de">
-            <Head>
-                {/* Google Schriftarten und Material Icons (wichtig für MUI-Komponenten) */}
-                <link rel="stylesheet" href="/inter.css" />
-                <link rel="stylesheet" href="/material-icons.css" />
-            </Head>
+            <Head />
             <body>
                 <Main />
                 <NextScript />

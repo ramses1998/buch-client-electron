@@ -6,5 +6,6 @@ import axios, { AxiosInstance } from "axios";
  * @see https://nextjs.org/docs/pages/building-your-application/configuring/environment-variables
  */
 export const axiosClient: AxiosInstance = axios.create({
-    baseURL: process.env.NEXT_PUBLIC_BACKEND_SERVER_URL!,
+    baseURL: process.env.NEXT_PUBLIC_BACKEND_SERVER_URL,
+    timeout: process.env.NEXT_PUBLIC_REQUEST_TIMEOUT as unknown as number,
 });

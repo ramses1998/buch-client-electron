@@ -1,6 +1,9 @@
 // eslint-disable-next-line eslint-comments/disable-enable-pair
 /* eslint-disable @typescript-eslint/no-unsafe-assignment */
 import "@/styles/globals.css";
+// Google Schriftarten und Material Icons (wichtig für MUI-Komponenten)
+import "../../public/inter.css";
+import "../../public/material-icons.css";
 import { LayoutComponent } from "@/components/LayoutComponent";
 import React, { ComponentType } from "react";
 import { ApplicationContextProvider } from "@/context/ApplicationContextApi";
