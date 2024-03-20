@@ -38,33 +38,33 @@ Defaultmäßig läuft die Webanwendung auf https://localhost:3001
 Die Webanwendung verwendet ein selbst-signiertes Zertifikat für HTTPS und zwar das gleiche Zertifikat wie das 
 vom Buch-Server. Dafür folgende Schritte:
 
-- Ertstelle einen Ordner mit Namen <code>tls</code> im Verzeichnis [./src](./src)
+- Ertstelle einen Ordner mit Namen <code>tls</code> im Verzeichnis [./src](./src).
 - Kopiere das Zertifikat (<code>certificate.crt</code>) und den private Key (<code>key.pem</code>) aus dem 
-Buch-Server-Projekt und füge sie in den vorher erstellen Ordner (<code>src/tls</code>)
+Buch-Server-Projekt und füge sie in den vorher erstellen Ordner (<code>src/tls</code>) hinzu.
 
 ### Port der Webanwendung
 
-Wenn die Webanwendung auf einem anderen Port laufen muss, kann dies in der Datei [package.json](package.json) 
-gemacht werden. Dabei muss _3001_ in den npm-Skripten durch den neuen Port ersetzt werden. 
+Wenn die Webanwendung auf einem anderen Port als 3001 laufen muss, kann dies in der Datei [package.json](package.json) 
+geändert werden. Dabei muss _3001_ in den npm-Skripten durch den neuen Port ersetzt werden. 
 
 
 ## Schnellstart
 
-Webanwendung und Electron gleichzeitig in Entwicklungsmodus hochfahren
+Webanwendung und Electron gleichzeitig im Entwicklungsmodus starten
 ```bash
 npm run electron:dev
 ```
 
-Nur Webanwendung in Entwicklungsmodus hochfahren
+Nur Webanwendung im Entwicklungsmodus starten
 ```bash
 npm run next:dev
 ```
 
 Produktionsbündel der Anwendung(Web- und Electron-Anwendung) bauen. Dabei wird erst die 
-Webanwendung dann die Electron-Anwendung gebaut. Die ausführbaren (.exe) sind im Verzeichnis 
+Webanwendung dann die Electron-Anwendung gebaut. Die ausführbare Datei (.exe) sind im Verzeichnis 
 <code>/dist</code> generiert.
 Die Electron-Anwendung wird mit dem Software-Paket [electron-builder](https://www.electron.build/index.html) gebaut 
-und dabei ist eine Internetverbindung notwendig, da electron-build sich die notwendigen Datein aus GitHub 
+und dabei ist eine Internetverbindung notwendig, da _electron-build_ sich die notwendigen Datein aus GitHub 
 runterladen muss.
 Dabei werden <code>next build</code> und <code>electron-builder --windows --x64</code> ausgeführt.
 Führe <code>electron-builder --help</code> im Terminal aus, um weitere Optionen zu entdecken.
@@ -97,7 +97,7 @@ npm run lint -- --fix
 Electron ist ein Framework, mit dem man plattformübergreifende Desktop-Anwendungen mit 
 JavaScript, HTML und CSS erstellen kann. Es basiert auf dem Chromium-Webbrowser und der Node.js-Plattform.
 
-Man entwickelt die Benutzeroberfläche der Anwendung mit HTML, CSS und JavaScript, genau wie bei einer Webseite.
+Man entwickelt die Benutzeroberfläche der Anwendung mit HTML, CSS und JavaScript, genau wie bei einer Webanwendung.
 Electron bettet eine Chromium-Instanz ein, die die Webanwendung als native Anwendung ausführt.
 
 1. **Der Hauptprozess (Node.js)**
@@ -111,7 +111,7 @@ von serverbasierten Anwendungen bereit.
 
 Bildet den Kern von Electron und stellt die Web-Engine dar. Chromium ermöglicht auch die 
 Darstellung von HTML, CSS und JavaScript. Chromium kommuniziert mit dem eingebetteten 
-Node.js (der Hauptprozess), wenn es Daten braucht.
+Node.js (der Hauptprozess).
 Siehe: https://www.electronjs.org/docs/latest/tutorial/process-model
 
 ### **Vorteile von Electron**
@@ -125,7 +125,7 @@ zur Verfügung stellt.
 ### **Nachteile von Electron**
 
 - Electron-Anwendungen sind in der Regel deutlich größer als native Anwendungen.
-- Electron-Anwendungen können mehr Ressourcen (CPU, RAM) verbrauchen als native Anwendungen.
+- Electron-Anwendungen können mehr Ressourcen (CPU, Arbeitsspeicher) verbrauchen als native Anwendungen.
 - Für komplexere Anwendungen kann die Entwicklung mit Electron eine Herausforderung werden.
 
 ### **Populäre Anwendungen, die mit Electron entwickelt sind**
@@ -151,7 +151,7 @@ die Businesslogik (Geschäftslogik) und die HTTP-Schicht.
 
 Diese Schicht stellt die Benutzeroberfläche (UI) der Anwendung dar. React-Komponente für die UI, 
 HTML und alle Interaktionen mit dem [DOM](https://developer.mozilla.org/en-US/docs/Web/API/Document_Object_Model), 
-CSS und alle grafischen Benutzer-Interaktionen mit der Anwendung sind Komponenten dieser Schicht. 
+CSS und alle Benutzer-Interaktionen mit der Anwendung sind Komponenten dieser Schicht. 
 Diese Schicht greift auf die Businesslogikschicht zu, 
 wenn der Benutzer eine Schreib- oder Leseoperation tätigt.
 
@@ -167,8 +167,8 @@ und sind unter [./src/context/](./src/context/) zu finden.
 
 3. **HTTP-Schicht**
 
-Die HTTP-Schicht ist der Vertreter nach außen. Die Schicht hat die Veranwortung, 
-Anfragen an externe Dienste bzw. Datenquellen zu senden und Antworten auf die Anfragen zu empfangen.
+Die HTTP-Schicht ist der Vertreter nach außen. Diese Schicht hat die Veranwortung, 
+Anfragen an externe Dienste bzw. Datenquellen zu senden/empfangen und Antworten auf die Anfragen zu empfangen.
 
 ## Sicherheit
 
@@ -202,15 +202,15 @@ So wird vermieden, dass Anmeldedaten (Benutzername und Passwort) ständig übert
 
 ## Anmerkungen
 
-- Der neue [App Router](https://nextjs.org/docs/app) geht nicht (technisch gesehen schon, aber man wird mit einigen Problemen und Bugs 
+- Der neue [App Router](https://nextjs.org/docs/app) geht mit Electron nicht (technisch gesehen schon, aber man wird mit einigen Problemen und Bugs 
 konfrontiert, vor allem weil Next.js die statischen HTML-, CSS- und JavaScript-Datein - exportieren muss, 
 anstatt NodeJS hinter den Kulissen auszuführen). Aus diesem Grund wurde der [Pages Router](https://nextjs.org/docs/pages) fürs Routing verwendet.
 
-- Electron "rendert" lediglich eine statische Webseite innerhalb eines nativen Fensters des Betriebsystems. 
-Backend-Funktionalitäten von NextJS (z.B. getStaticProps, App Router, NextAuth oder /api-Routen direkt von NextJS aus) 
+- Electron "rendert" hier lediglich eine statische Webseite innerhalb eines nativen Fensters des Betriebsystems. 
+Backend-Funktionalitäten von NextJS (z.B. getStaticProps, App Router, NextAuth oder API-Routen) 
 funktionieren leider nicht, da sie als statisch exportiert werden müssen, anstatt eine NodeJS-Laufzeitumgebung 
 hinter der Anwendung laufen zu lassen. Wenn man Backend-Aufgaben erledigen muss, versucht man, 
 diese auf dem [Hauptprozess](Electron) von Electron auszuführen, anstatt sie an NextJS zu delegieren.
 
-- Beim Bauen (_npm run built_) der Webanwendung, werden statische Datein(HTML, CSS und JavaScript) generiert. 
+- Beim Bauen (_npm run built_) der Webanwendung, werden statische Datein (HTML, CSS und JavaScript) generiert. 
 Dies kann unter [next.config.mjs](next.config.mjs) eingestelt werden.
