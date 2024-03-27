@@ -14,6 +14,9 @@ const INITIAL_WINDOW_WIDTH = 1200;
  */
 const INITIAL_WINDOW_HEIGHT = 675;
 
+
+const URL_WEBAPP = "https://localhost:3001";
+
 /**
  * Bereitstellung eines Verzeichnisses, das in Electron geöffnet wird.
  * Sollte die Anwendung nicht gebaut sein, werden keine Verzeichnisse bereitgestellt.
@@ -46,7 +49,7 @@ const createWindow = async () => {
     // des Kommandos "npm run electron:dev" immer das Produktion-Build(aus ../out) ausgeführt.
     if (!app.isPackaged) {
 
-        await win.loadURL("https://localhost:3001");
+        await win.loadURL(URL_WEBAPP);
         win.webContents.openDevTools();
 
         // Electron wird neu geladen ohne Cache bis die Webanwendung gestartet ist und bereit ist Anfragen anzunehmen.

@@ -29,7 +29,7 @@ _NEXT_PUBLIC_BACKEND_SERVER_URL_ in der [.env](.env) Datei entsprechend auch ang
 
 ### CORS
 
-Der Hostname und Port auf dem die Webanwendung läuft müssen in die Liste der zugelassenen Origins auf dem 
+Der Hostname und Port auf dem die Webanwendung läuft müssen in die Liste der zugelassenen Origins im 
 Buch-Server hinzugefügt werden, um CORS-Fehler zu vermeiden. 
 Defaultmäßig läuft die Webanwendung auf https://localhost:3001
 
@@ -38,13 +38,13 @@ Defaultmäßig läuft die Webanwendung auf https://localhost:3001
 Die Webanwendung verwendet ein selbst-signiertes Zertifikat für HTTPS und zwar das gleiche Zertifikat wie das 
 vom Buch-Server. Dafür folgende Schritte:
 
-- Ertstelle einen Ordner mit Namen <code>tls</code> im Verzeichnis [./src](./src).
+- Ertstelle einen Ordner namens <code>tls</code> im Verzeichnis [./src](./src).
 - Kopiere das Zertifikat (<code>certificate.crt</code>) und den private Key (<code>key.pem</code>) aus dem 
-Buch-Server-Projekt und füge sie in den vorher erstellen Ordner (<code>src/tls</code>) hinzu.
+Buch-Server-Projekt und füge sie in den vorher erstellten Ordner (<code>src/tls</code>) hinzu.
 
 ### Port der Webanwendung
 
-Wenn die Webanwendung auf einem anderen Port als 3001 laufen muss, kann dies in der Datei [package.json](package.json) 
+Wenn die Webanwendung auf einem anderen Port als 3001 laufen soll, kann dies in der Datei [package.json](package.json) 
 geändert werden. Dabei muss _3001_ in den npm-Skripten durch den neuen Port ersetzt werden. 
 
 
@@ -61,8 +61,8 @@ npm run next:dev
 ```
 
 Produktionsbündel der Anwendung(Web- und Electron-Anwendung) bauen. Dabei wird erst die 
-Webanwendung dann die Electron-Anwendung gebaut. Die ausführbare Datei (.exe) sind im Verzeichnis 
-<code>/dist</code> generiert.
+Webanwendung dann die Electron-Anwendung gebaut. Die ausführbaren Datein (.exe) sind im Verzeichnis 
+<code>/dist</code> generiert und gespeichert.
 Die Electron-Anwendung wird mit dem Software-Paket [electron-builder](https://www.electron.build/index.html) gebaut 
 und dabei ist eine Internetverbindung notwendig, da _electron-build_ sich die notwendigen Datein aus GitHub 
 runterladen muss.
@@ -98,7 +98,7 @@ Electron ist ein Framework, mit dem man plattformübergreifende Desktop-Anwendun
 JavaScript, HTML und CSS erstellen kann. Es basiert auf dem Chromium-Webbrowser und der Node.js-Plattform.
 
 Man entwickelt die Benutzeroberfläche der Anwendung mit HTML, CSS und JavaScript, genau wie bei einer Webanwendung.
-Electron bettet eine Chromium-Instanz ein, die die Webanwendung als native Anwendung ausführt.
+Electron bettet eine Chromium- und Node.js-Instanz ein.
 
 1. **Der Hauptprozess (Node.js)**
 
@@ -149,7 +149,7 @@ die Businesslogik (Geschäftslogik) und die HTTP-Schicht.
 
 1. **UI-Schicht**
 
-Diese Schicht stellt die Benutzeroberfläche (UI) der Anwendung dar. React-Komponente für die UI, 
+Diese Schicht stellt die Benutzeroberfläche (UI) der Anwendung dar. React-Komponente, 
 HTML und alle Interaktionen mit dem [DOM](https://developer.mozilla.org/en-US/docs/Web/API/Document_Object_Model), 
 CSS und alle Benutzer-Interaktionen mit der Anwendung sind Komponenten dieser Schicht. 
 Diese Schicht greift auf die Businesslogikschicht zu, 
@@ -160,24 +160,24 @@ wenn der Benutzer eine Schreib- oder Leseoperation tätigt.
 Die Businesslogik ist das Herz der Anwendung. Diese Schicht ist verantwortlich 
 für z.B: die Verarbeitung von Daten, die Vorbereitung von Daten für 
 Schreib- und Leseoperationen, die Umwandlung von Daten aus der HTTP-Schicht
-vor und nach Schreib- und Leseoperationen, oder Fehler aus der HTTP-Schicht abfangen. 
+vor und nach Schreib- und Leseoperationen, oder Abfangen von Fehlern aus der HTTP-Schicht. 
 Die [Kontexte](https://react.dev/learn/passing-data-deeply-with-context)
-stellen in dieser Anwendung die Businesslogik dar 
+stellen in dieser Webannwendung die Businesslogik dar 
 und sind unter [./src/context/](./src/context/) zu finden.
 
 3. **HTTP-Schicht**
 
 Die HTTP-Schicht ist der Vertreter nach außen. Diese Schicht hat die Veranwortung, 
-Anfragen an externe Dienste bzw. Datenquellen zu senden/empfangen und Antworten auf die Anfragen zu empfangen.
+Anfragen an externe Dienste bzw. Datenquellen zu senden und Antworten auf die Anfragen zu empfangen.
 
 ## Sicherheit
 
-Der Client meldet sich einmal an und bekommt einen Access-Token und Refresh-Token. 
-Wenn der Access-Token abgelaufen ist, wird den Refresh-Token an den Server gesendet und 
-er schickt einen neuen Access-Token und Refresh-Token als Response an den Client. 
+Der Client meldet sich einmalig an und erhält einen Access-Token und einen Refresh-Token. 
+Wenn der Access-Token abgelaufen ist, sendet der Client den Refresh-Token an den Server. Der Server erhält den 
+Refresh-Token, prüft ihn und schickt einen neuen Access-Token und Refresh-Token als Response an den Client zurück. 
 Wenn aber die Tokens (Access-Token und Refresh-Token) alle abgelaufen sind, 
-muss sich der Client nochmal anmelden.
-So wird vermieden, dass Anmeldedaten (Benutzername und Passwort) ständig übertragen werden.
+muss sich der Client erneut anmelden und der Prozess wiederholt sich.
+Dadurch wird verhindert, dass die Anmeldedaten (Benutzername und Passwort) ständig übertragen werden.
 
 ## Sonstige Werkzeuge
 
@@ -202,14 +202,14 @@ So wird vermieden, dass Anmeldedaten (Benutzername und Passwort) ständig übert
 
 ## Anmerkungen
 
-- Der neue [App Router](https://nextjs.org/docs/app) geht mit Electron nicht (technisch gesehen schon, aber man wird mit einigen Problemen und Bugs 
-konfrontiert, vor allem weil Next.js die statischen HTML-, CSS- und JavaScript-Datein - exportieren muss, 
+- Der neue [App Router](https://nextjs.org/docs/app) funktioniert nicht mit Electron (technisch gesehen schon, aber es gibt einige 
+Probleme und Bugs, vor allem weil Next.js die statischen HTML-, CSS- und JavaScript-Datein - exportieren muss, 
 anstatt NodeJS hinter den Kulissen auszuführen). Aus diesem Grund wurde der [Pages Router](https://nextjs.org/docs/pages) fürs Routing verwendet.
 
-- Electron "rendert" hier lediglich eine statische Webseite innerhalb eines nativen Fensters des Betriebsystems. 
-Backend-Funktionalitäten von NextJS (z.B. getStaticProps, App Router, NextAuth oder API-Routen) 
+- Electron "rendert" hier lediglich eine statische Webseite in einem nativen Fenster des Betriebssystems. 
+Backend-Funktionen von NextJS (z.B. getStaticProps, App Router, NextAuth oder API-Routen) 
 funktionieren leider nicht, da sie als statisch exportiert werden müssen, anstatt eine NodeJS-Laufzeitumgebung 
-hinter der Anwendung laufen zu lassen. Wenn man Backend-Aufgaben erledigen muss, versucht man, 
+hinter der Anwendung auszuführen. Wenn man Backend-Aufgaben erledigen muss, versucht man, 
 diese auf dem [Hauptprozess](Electron) von Electron auszuführen, anstatt sie an NextJS zu delegieren.
 
 - Beim Bauen (_npm run built_) der Webanwendung, werden statische Datein (HTML, CSS und JavaScript) generiert. 

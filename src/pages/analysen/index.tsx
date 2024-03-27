@@ -161,7 +161,7 @@ export const AnalysisPage: React.FC = () => {
                 justifyItems="space-between"
                 sx={{ my: "var(--gap-5)" }}
             >
-                <Typography level="h3">Kernzahlen</Typography>
+                <Typography level="h3">Kennzahlen</Typography>
                 <Button variant="plain" onClick={() => router.push("/buecher")}>
                     Alle Bücher
                 </Button>
