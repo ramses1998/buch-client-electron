@@ -213,4 +213,4 @@ hinter der Anwendung auszuführen. Wenn man Backend-Aufgaben erledigen muss, ver
 diese auf dem [Hauptprozess](Electron) von Electron auszuführen, anstatt sie an NextJS zu delegieren.
 
 - Beim Bauen (_npm run built_) der Webanwendung, werden statische Datein (HTML, CSS und JavaScript) generiert. 
-Dies kann unter [next.config.mjs](next.config.mjs) eingestelt werden.
+Dies kann unter [next.config.mjs](next.config.mjs) eingestelt werden...
